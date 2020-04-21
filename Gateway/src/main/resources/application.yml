@@ -1,0 +1,19 @@
+# 서버 포트
+server:
+  port: 8888
+  
+# 로그 레벨 설정
+logging:
+  level:
+    root: INFO
+    
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"   
+    
+#사용자 정의 속성
+services:
+  api:
+    routeSeverUrl: http://localhost:8080/api/service/v1/routes
