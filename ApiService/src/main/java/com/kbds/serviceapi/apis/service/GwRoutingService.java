@@ -6,6 +6,7 @@ import javax.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.kbds.serviceapi.apis.dto.EmptyJsonBody;
 import com.kbds.serviceapi.apis.dto.RoutingDTO;
@@ -14,6 +15,7 @@ import com.kbds.serviceapi.apis.querydsl.GwRoutingCustomRepository;
 import com.kbds.serviceapi.apis.repository.GwRoutingRepository;
 import com.kbds.serviceapi.common.code.BizExceptionCode;
 import com.kbds.serviceapi.common.constants.CommonConstants;
+import com.kbds.serviceapi.common.utils.CommonUtils;
 import com.kbds.serviceapi.framework.exception.BizException;
 
 /**
@@ -34,14 +36,20 @@ import com.kbds.serviceapi.framework.exception.BizException;
 @Service
 public class GwRoutingService {
 
+  // QueryDsl용 커스텀 레파지토리
   @Autowired
   GwRoutingCustomRepository gwServiceCustomRepository;
 
   @Autowired
   GwRoutingRepository gwServiceRepository;
 
+  // 형 변환을 위한 ModelMapper
   @Autowired
   ModelMapper modelMapper;
+
+  // Routes,Filter 관리 서버 주소
+  @Value("${gateway.cluster.refreshUrl}")
+  String gatewayRefreshUrl;
 
   /**
    * 서비스 검색 기능
@@ -134,9 +142,11 @@ public class GwRoutingService {
     try {
 
       // DTO -> Entity로 형변환을 한 후 DB에 저장한다.
-      GwService param = modelMapper.map(reqParam, GwService.class);
+      gwServiceRepository.save(modelMapper.map(reqParam, GwService.class));
 
-      gwServiceRepository.save(param);
+      // 등록 이후 게이트웨이에 해당 정보를 갱신해준다.
+      CommonUtils.refreshGatewayRoutes(gatewayRefreshUrl, reqParam.getRegUserNo());
+
     } catch (Exception e) {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
@@ -190,17 +200,27 @@ public class GwRoutingService {
       throw new BizException(BizExceptionCode.COM003, BizExceptionCode.COM003.getMsg());
     }
 
-    // 데이터 정합성 체크가 끝나면 최종적으로 서비스를 갱신 시킨다.
-    gwService.setServiceNm(reqParam.getServiceNm());
-    gwService.setServicePath(reqParam.getServicePath());
-    gwService.getFilter().setFilterId(reqParam.getFilterId());
-    gwService.setServiceDesc(reqParam.getServiceDesc());
-    gwService.setUptUserNo(reqParam.getUptUserNo());
-    gwService.setServiceLoginType(reqParam.getServiceLoginType());
-    gwService.setServiceAuthType(reqParam.getServiceAuthType());
-    gwService.setServiceTargetUrl(reqParam.getServiceTargetUrl());
+    try {
 
-    gwServiceRepository.save(gwService);
+      // 데이터 정합성 체크가 끝나면 최종적으로 서비스를 갱신 시킨다.
+      gwService.setServiceNm(reqParam.getServiceNm());
+      gwService.setServicePath(reqParam.getServicePath());
+      gwService.getFilter().setFilterId(reqParam.getFilterId());
+      gwService.setServiceDesc(reqParam.getServiceDesc());
+      gwService.setUptUserNo(reqParam.getUptUserNo());
+      gwService.setServiceLoginType(reqParam.getServiceLoginType());
+      gwService.setServiceAuthType(reqParam.getServiceAuthType());
+      gwService.setServiceTargetUrl(reqParam.getServiceTargetUrl());
+
+      gwServiceRepository.save(gwService);
+
+      // 수정 이후 게이트웨이에 해당 정보를 갱신해준다.
+      CommonUtils.refreshGatewayRoutes(gatewayRefreshUrl, reqParam.getUptUserNo());
+
+    } catch (Exception e) {
+
+      throw new BizException(BizExceptionCode.COM001, e.toString());
+    }
   }
 
 

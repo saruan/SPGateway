@@ -1,6 +1,5 @@
 package com.kbds.serviceapi.framework.exception;
 
-import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -9,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import com.kbds.serviceapi.common.code.BizExceptionCode;
 import com.kbds.serviceapi.framework.dto.ResponseDTO;
+import reactor.netty.http.server.HttpServerRequest;
 
 /**
  *
@@ -31,7 +31,7 @@ public class ServiceExceptionHandler {
   Logger logger = LoggerFactory.getLogger(ServiceExceptionHandler.class);
 
   @ExceptionHandler(BizException.class)
-  public ResponseEntity<Object> bizExceptionHandler(HttpServletRequest request, BizException ex) {
+  public ResponseEntity<Object> bizExceptionHandler(HttpServerRequest request, BizException ex) {
 
     ResponseDTO responseDTO = new ResponseDTO();
 

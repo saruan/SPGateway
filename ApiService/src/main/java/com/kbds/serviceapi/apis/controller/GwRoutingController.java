@@ -1,5 +1,7 @@
 package com.kbds.serviceapi.apis.controller;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +36,8 @@ import com.kbds.serviceapi.common.utils.CommonUtils;
 @RestController
 @RequestMapping("/api/service")
 public class GwRoutingController {
+
+  private final Logger logger = LogManager.getLogger(GwRoutingController.class);
 
   @Autowired
   GwRoutingService gwRoutingService;
@@ -72,6 +76,8 @@ public class GwRoutingController {
    */
   @PostMapping(value = "/v1/routes")
   public ResponseEntity<Object> registRoutingService(@RequestBody RoutingDTO params) {
+
+    logger.error("1");
 
     gwRoutingService.registService(params);
 

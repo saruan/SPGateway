@@ -1,4 +1,4 @@
-package com.kbds.serviceapi.framework.bean;
+package com.kbds.serviceapi.framework.config;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

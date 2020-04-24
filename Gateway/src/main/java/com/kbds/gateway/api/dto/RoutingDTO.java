@@ -1,4 +1,4 @@
-package com.kbds.gateway.api.model;
+package com.kbds.gateway.api.dto;
 
 import java.util.Date;
 import lombok.Data;

@@ -23,5 +23,7 @@ public class CommonConstants {
   public static String N = "N";
   /* Gateway Filter 메소드명 */
   public static String GATEWAY_FILTER_APPLY = "apply";
+  /* Gateway Refresh 서비스명 */
+  public static String GATEWAY_REFRESH_SERVICE_NM = "Gateway Routes Refresh";
 
 }

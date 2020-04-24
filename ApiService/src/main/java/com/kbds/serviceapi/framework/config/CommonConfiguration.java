@@ -1,11 +1,11 @@
-package com.kbds.serviceapi.framework.bean;
+package com.kbds.serviceapi.framework.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class CommonBean {
+public class CommonConfiguration {
 
   @Bean
   public ModelMapper modelMapper() {
