@@ -1,0 +1,50 @@
+#log4j2 설정
+Configuration:
+  #Appender Console 로그 설정, 레벨 - 날짜 - 메시지 형식으로 구성
+  appenders:
+    Console:
+      name: LogToConsole
+      PatternLayout:
+        Pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"
+    Jdbc:
+      name: LogToDatabase
+      tableName: GW_ERROR_LOG
+      ConnectionFactory:
+        class: com.kbds.serviceapi.framework.component.ConnectionComponent
+        method: getDatabaseConnection      
+      Column:
+        -
+          name: ERR_DT
+          isEventTimestamp: true 
+        -
+          name: GUID
+          Pattern: "%X{GUID}"
+        -
+          name: ERR_DESC
+          Pattern: "%msg"   
+        -
+          name: SERVICE_DESC
+          Pattern: "%X{SERVICE_DESC}"   
+        -
+          name: REG_USER_NO
+          Pattern: "%X{REG_USER_NO}"                   
+  #Appender를 package경로로 등록해줌
+  Loggers:
+    Root:
+      Level: INFO    
+      AppenderRef:
+          - ref: LogToConsole        
+    logger:
+      #[INFO]Console 로그
+      - name: com.kbds.serviceapi
+        level: DEBUG
+        additivity: false
+        AppenderRef:
+          - ref: LogToConsole        
+      #[ERROR]JDBC 로그
+      - name: com.kbds.serviceapi
+        level: ERROR
+        additivity: false
+        AppenderRef:
+          - ref: LogToDatabase
+ 
