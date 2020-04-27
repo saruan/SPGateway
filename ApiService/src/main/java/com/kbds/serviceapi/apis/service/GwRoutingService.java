@@ -80,6 +80,12 @@ public class GwRoutingService {
   @Transactional
   public Object findServiceDetail(Long id) {
 
+    // 필수 파라미터 체크
+    if (id == null) {
+
+      throw new BizException(BizExceptionCode.COM002, "ID");
+    }
+
     try {
 
       // DB 상에서 해당 serviceId를 가진 Entity를 불러온다.
