@@ -48,7 +48,7 @@ public class GwRoutingController {
    * @return
    */
   @GetMapping(value = "/v1/routes")
-  public ResponseEntity<Object> selectRoutingList(@ModelAttribute RoutingDTO params) {
+  public ResponseEntity<Object> findServices(@ModelAttribute RoutingDTO params) {
 
     Object result = CommonUtils.getResponseEntity(gwRoutingService.findServices(params));
 
@@ -61,7 +61,7 @@ public class GwRoutingController {
    * @return
    */
   @GetMapping(value = "/v1/routes/{id}")
-  public ResponseEntity<Object> selectRoutingDetail(@PathVariable Long id) {
+  public ResponseEntity<Object> findServiceDetail(@PathVariable Long id) {
 
     Object result = CommonUtils.getResponseEntity(gwRoutingService.findServiceDetail(id));
 
@@ -75,7 +75,7 @@ public class GwRoutingController {
    * @return
    */
   @PostMapping(value = "/v1/routes")
-  public ResponseEntity<Object> registRoutingService(@RequestBody RoutingDTO params) {
+  public ResponseEntity<Object> registService(@RequestBody RoutingDTO params) {
 
     logger.error("1");
 
@@ -93,7 +93,7 @@ public class GwRoutingController {
    * @return
    */
   @PutMapping(value = "/v1/routes/{id}")
-  public ResponseEntity<Object> updateRoutingService(@PathVariable Long id,
+  public ResponseEntity<Object> updateService(@PathVariable Long id,
       @RequestBody RoutingDTO params) {
 
     gwRoutingService.updateService(params, id);
@@ -110,11 +110,11 @@ public class GwRoutingController {
    * @return
    */
   @DeleteMapping(value = "/v1/routes/{id}")
-  public ResponseEntity<Object> deleteRoutingService(@PathVariable Long id) {
+  public ResponseEntity<Object> deleteService(@PathVariable Long[] id) {
 
     gwRoutingService.deleteService(id);
 
-    Object result = CommonUtils.getResponseEntity(true);
+    Object result = CommonUtils.getResponseEntity("1");
 
     return new ResponseEntity<Object>(result, HttpStatus.OK);
   }

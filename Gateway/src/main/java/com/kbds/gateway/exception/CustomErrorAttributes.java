@@ -1,4 +1,4 @@
-package com.kbds.gateway.common.exception;
+package com.kbds.gateway.exception;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ServerWebExchange;
-import com.kbds.gateway.common.code.GatewayExceptionCode;
+import com.kbds.gateway.code.GatewayExceptionCode;
 
 /**
  * 

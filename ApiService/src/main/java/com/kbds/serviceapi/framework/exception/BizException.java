@@ -26,13 +26,13 @@ public class BizException extends RuntimeException {
 
   private static final long serialVersionUID = -2310235629517721586L;
 
-  // 사용자 Exception 메시지
-  private String arg;
+  // 실제 서버 오류 메시지
+  private String msg;
 
-  public BizException(BizExceptionCode exception, String arg) {
+  public BizException(BizExceptionCode exception, String msg) {
 
     super(exception.getCode());
-    this.arg = arg;
+    this.msg = msg;
   }
 
   public BizException(BizExceptionCode exception) {

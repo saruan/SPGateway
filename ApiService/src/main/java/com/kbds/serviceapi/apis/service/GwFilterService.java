@@ -13,7 +13,7 @@ import com.kbds.serviceapi.apis.entity.GwServiceFilter;
 import com.kbds.serviceapi.apis.querydsl.GwFilterCustomRepository;
 import com.kbds.serviceapi.apis.repository.GwFilterRepository;
 import com.kbds.serviceapi.common.code.BizExceptionCode;
-import com.kbds.serviceapi.common.constants.CommonConstants;
+import com.kbds.serviceapi.common.code.CommonCode;
 import com.kbds.serviceapi.framework.exception.BizException;
 
 /**
@@ -54,9 +54,6 @@ public class GwFilterService {
     try {
 
       return gwFilterCustomRepository.findbyConditions(params);
-    } catch (BizException e) {
-
-      throw new BizException(BizExceptionCode.COM001, e.getArg());
     } catch (Exception e) {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
@@ -70,7 +67,7 @@ public class GwFilterService {
    * @return
    */
   @Transactional
-  public Object findServiceDetail(Long id) {
+  public Object findFilterDetail(Long id) {
 
     try {
 
@@ -84,9 +81,6 @@ public class GwFilterService {
 
       // 결과 값으로 전달할 FilterDTO로 변환한 후 리턴한다.
       return modelMapper.map(gwServiceFilter.get(), FilterDTO.class);
-    } catch (BizException e) {
-
-      throw new BizException(BizExceptionCode.COM001, e.getArg());
     } catch (Exception e) {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
@@ -99,23 +93,25 @@ public class GwFilterService {
    * 
    * @param reqParam
    */
-  public void regiestFilter(FilterDTO reqParam) {
+
+  @Transactional
+  public void registFilter(FilterDTO reqParam) {
 
     // 필수 파라미터 체크
     // 항목 - filterBean, 필터명, 사용자명
     if (StringUtils.isEmpty(reqParam.getFilterBean())) {
 
-      throw new BizException(BizExceptionCode.COM002, "filterBean");
+      throw new BizException(BizExceptionCode.COM002);
     }
 
     if (StringUtils.isEmpty(reqParam.getFilterNm())) {
 
-      throw new BizException(BizExceptionCode.COM002, "filterNm");
+      throw new BizException(BizExceptionCode.COM002);
     }
 
     if (StringUtils.isEmpty(reqParam.getRegUserNo())) {
 
-      throw new BizException(BizExceptionCode.COM002, "regUserNo");
+      throw new BizException(BizExceptionCode.COM002);
     }
 
     // 필터가 이미 등록 된 필터인지 체크한다.
@@ -127,7 +123,7 @@ public class GwFilterService {
 
     if (gwFilterCustomRepository.checkRegistValidation(checkParam)) {
 
-      throw new BizException(BizExceptionCode.COM003, BizExceptionCode.COM003.getMsg());
+      throw new BizException(BizExceptionCode.COM003);
     }
 
     try {
@@ -148,26 +144,41 @@ public class GwFilterService {
    * 
    * @param reqParam
    */
+  @Transactional
   public void updateFilter(FilterDTO reqParam) {
+
+    GwServiceFilter gwServiceFilter = null;
 
     // 필수 파라미터 체크
     // 항목 - 서비스 ID
+
+    if (reqParam == null) {
+
+      throw new BizException(BizExceptionCode.COM002);
+    }
+
     if (reqParam.getFilterId() == null) {
 
-      throw new BizException(BizExceptionCode.COM002, "filterId");
+      throw new BizException(BizExceptionCode.COM002);
     }
 
     if (reqParam.getUptUserNo() == null) {
 
-      throw new BizException(BizExceptionCode.COM002, "uptUserNo");
+      throw new BizException(BizExceptionCode.COM002);
     }
 
-    // DB 상에서 해당 serviceId를 가진 Entity를 불러온다.
-    GwServiceFilter gwServiceFilter = gwFilterRepository.findById(reqParam.getFilterId()).get();
+    try {
+      // DB 상에서 해당 serviceId를 가진 Entity를 불러온다.
+      gwServiceFilter = gwFilterRepository.findById(reqParam.getFilterId()).get();
+
+    } catch (Exception e) {
+
+      throw new BizException(BizExceptionCode.COM001, e.toString());
+    }
 
     if (gwServiceFilter == null) {
 
-      throw new BizException(BizExceptionCode.COM004, BizExceptionCode.COM004.getMsg());
+      throw new BizException(BizExceptionCode.COM004);
     }
 
     // 수정하고자 하는 내용 중 중복이 허용되지 않는 데이터가 DB상에 등록되어 있는지 체크한다.
@@ -180,7 +191,7 @@ public class GwFilterService {
 
     if (gwFilterCustomRepository.checkUpdateValidation(checkParam)) {
 
-      throw new BizException(BizExceptionCode.COM003, BizExceptionCode.COM003.getMsg());
+      throw new BizException(BizExceptionCode.COM003);
     }
 
     // 데이터 정합성 체크가 끝나면 최종적으로 서비스를 갱신 시킨다.
@@ -189,7 +200,14 @@ public class GwFilterService {
     gwServiceFilter.setFilterBean(reqParam.getFilterBean());
     gwServiceFilter.setUptUserNo(reqParam.getUptUserNo());
 
-    gwFilterRepository.save(gwServiceFilter);
+    try {
+
+      gwFilterRepository.save(gwServiceFilter);
+
+    } catch (Exception e) {
+
+      throw new BizException(BizExceptionCode.COM001, e.toString());
+    }
   }
 
   /**
@@ -197,26 +215,44 @@ public class GwFilterService {
    * 
    * @param reqParam
    */
+  @Transactional
   public void deleteFilter(FilterDTO reqParam) {
+
+    GwServiceFilter gwServiceFilter = null;
 
     // 필수 파라미터 체크
     // 항목 - 서비스 ID
     if (reqParam.getFilterId() == null) {
 
-      throw new BizException(BizExceptionCode.COM002, "filterId");
+      throw new BizException(BizExceptionCode.COM002);
     }
 
-    // DB 상에서 해당 serviceId를 가진 Entity를 불러온다.
-    GwServiceFilter gwServiceFilter = gwFilterRepository.findById(reqParam.getFilterId()).get();
+    try {
+
+      gwServiceFilter = gwFilterRepository.findById(reqParam.getFilterId()).get();
+
+    } catch (Exception e) {
+
+      throw new BizException(BizExceptionCode.COM001, e.toString());
+    }
 
     if (gwServiceFilter == null) {
 
-      throw new BizException(BizExceptionCode.COM004, BizExceptionCode.COM004.getMsg());
+      throw new BizException(BizExceptionCode.COM004);
     }
 
     // 데이터 정합성 체크가 끝나면 최종적으로 서비스를 갱신 시킨다.
-    gwServiceFilter.setUseYn(CommonConstants.N);
+    gwServiceFilter.setUseYn(CommonCode.N.getResultCode());
 
-    gwFilterRepository.save(gwServiceFilter);
+    try {
+
+      gwFilterRepository.save(gwServiceFilter);
+
+      // 해당 필터에 연결 되어 있는 Routing Service의 Filter 정보를 기본 필터로 변경한 후 사용여부를 N으로 변경한다.
+
+    } catch (Exception e) {
+
+      throw new BizException(BizExceptionCode.COM002);
+    }
   }
 }

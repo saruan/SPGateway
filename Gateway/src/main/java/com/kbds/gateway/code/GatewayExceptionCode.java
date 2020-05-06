@@ -1,12 +1,14 @@
-package com.kbds.gateway.api.dto;
+package com.kbds.gateway.code;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
+ * 
  *
  * <pre>
- *  Class Name     : ResponseDTO.java
- *  Description    : 공통 Response 모델 클래스
+ *  Class Name     : BizExceptionCode.java
+ *  Description    : 비지니스 실패 처리용 코드
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
  * 
  * -------------------------------------------------------------------------------
@@ -17,17 +19,15 @@ import lombok.Data;
  * </pre>
  *
  */
-@Data
-public class ResponseDTO {
 
-  // 결과 코드
-  private String resultCode;
+@Getter
+@AllArgsConstructor
+public enum GatewayExceptionCode {
 
-  // 결과 메시지
-  private String resultMessage;
+  GWE0001("GWE0001", "사전 검증 실패. [%s]"),
 
-  // 결과 데이터
-  private Object resultData;
+  DUMMY("", "");
 
-
+  private String code;
+  private String msg;
 }

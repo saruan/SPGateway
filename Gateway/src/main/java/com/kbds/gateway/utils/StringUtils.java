@@ -1,4 +1,4 @@
-package com.kbds.gateway.common.utils;
+package com.kbds.gateway.utils;
 
 /**
  * 
@@ -27,10 +27,15 @@ public class StringUtils {
    * @return
    */
   public static String replaceLast(String str, String regex, String replacement) {
+
+    // 제거하고자 하는 문자의 마지막 index 검색
     int regexIndexOf = str.lastIndexOf(regex);
+
     if (regexIndexOf == -1) {
+
       return str;
     } else {
+
       return str.substring(0, regexIndexOf) + replacement
           + str.substring(regexIndexOf + regex.length());
     }

@@ -1,6 +1,5 @@
-package com.kbds.gateway.api.dto;
+package com.kbds.gateway.dto;
 
-import java.util.Date;
 import lombok.Data;
 
 /**
@@ -19,37 +18,16 @@ import lombok.Data;
  *
  */
 @Data
-public class RoutingDTO {
+public class ResponseDTO {
 
-  private Long serviceId;
+  // 결과 코드
+  private String resultCode;
 
-  private Long filterId;
+  // 결과 메시지
+  private String resultMessage;
 
-  private String serviceNm;
-
-  private String servicePath;
-
-  private String serviceTargetUrl;
-
-  private String serviceDesc;
-
-  private String serviceLoginType;
-
-  private String serviceAuthType;
-
-  private String useYn;
-
-  private String filterBean;
-
-  private String filterUseYn;
-
-  private String regUserNo;
-
-  private String uptUserNo;
-
-  private Date regDt;
-
-  private Date uptDt;
+  // 결과 데이터
+  private Object resultData;
 
 
 }

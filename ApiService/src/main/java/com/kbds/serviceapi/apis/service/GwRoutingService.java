@@ -14,7 +14,6 @@ import com.kbds.serviceapi.apis.entity.GwService;
 import com.kbds.serviceapi.apis.querydsl.GwRoutingCustomRepository;
 import com.kbds.serviceapi.apis.repository.GwRoutingRepository;
 import com.kbds.serviceapi.common.code.BizExceptionCode;
-import com.kbds.serviceapi.common.constants.CommonConstants;
 import com.kbds.serviceapi.common.utils.CommonUtils;
 import com.kbds.serviceapi.framework.exception.BizException;
 
@@ -26,7 +25,7 @@ import com.kbds.serviceapi.framework.exception.BizException;
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
  * 
  * -------------------------------------------------------------------------------
- *     변경No        변경일자        	       변경자          Description
+ *     변경No        변경일자                변경자          Description
  * -------------------------------------------------------------------------------
  *     Ver 1.0      2020-04-14     구경태          Initialized
  * -------------------------------------------------------------------------------
@@ -62,9 +61,6 @@ public class GwRoutingService {
     try {
 
       return gwServiceCustomRepository.findbyConditions(params);
-    } catch (BizException e) {
-
-      throw new BizException(BizExceptionCode.COM001, e.getArg());
     } catch (Exception e) {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
@@ -83,7 +79,7 @@ public class GwRoutingService {
     // 필수 파라미터 체크
     if (id == null) {
 
-      throw new BizException(BizExceptionCode.COM002, "ID");
+      throw new BizException(BizExceptionCode.COM002);
     }
 
     try {
@@ -98,9 +94,6 @@ public class GwRoutingService {
 
       // 결과 값으로 전달할 RoutingDTO로 변환한 후 리턴한다.
       return modelMapper.map(gwService.get(), RoutingDTO.class);
-    } catch (BizException e) {
-
-      throw new BizException(BizExceptionCode.COM001, e.getArg());
     } catch (Exception e) {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
@@ -119,17 +112,17 @@ public class GwRoutingService {
     // 항목 - 서비스명, 서비스 API URL 경로, 사용자
     if (StringUtils.isEmpty(reqParam.getServiceNm())) {
 
-      throw new BizException(BizExceptionCode.COM002, "serviceNm");
+      throw new BizException(BizExceptionCode.COM002);
     }
 
     if (StringUtils.isEmpty(reqParam.getServicePath())) {
 
-      throw new BizException(BizExceptionCode.COM002, "servicePath");
+      throw new BizException(BizExceptionCode.COM002);
     }
 
     if (StringUtils.isEmpty(reqParam.getRegUserNo())) {
 
-      throw new BizException(BizExceptionCode.COM002, "regUserNo");
+      throw new BizException(BizExceptionCode.COM002);
     }
 
     // 서비스가 이미 등록 된 서비스인지 체크한다.
@@ -142,7 +135,7 @@ public class GwRoutingService {
 
     if (gwServiceCustomRepository.checkRegistValidation(checkParam)) {
 
-      throw new BizException(BizExceptionCode.COM003, BizExceptionCode.COM003.getMsg());
+      throw new BizException(BizExceptionCode.COM003);
     }
 
     try {
@@ -167,29 +160,39 @@ public class GwRoutingService {
   @Transactional
   public void updateService(RoutingDTO reqParam, Long id) {
 
+    GwService gwService = null;
+
     // 필수 파라미터 체크
     // 항목 - 서비스 ID, 수정자, 타겟 URL
     if (id == null) {
 
-      throw new BizException(BizExceptionCode.COM002, "serviceId");
+      throw new BizException(BizExceptionCode.COM002);
     }
 
     if (reqParam.getUptUserNo() == null) {
 
-      throw new BizException(BizExceptionCode.COM002, "uptUserNo");
+      throw new BizException(BizExceptionCode.COM002);
     }
 
     if (reqParam.getServiceTargetUrl() == null) {
 
-      throw new BizException(BizExceptionCode.COM002, "serviceTargetUrl");
+      throw new BizException(BizExceptionCode.COM002);
     }
 
-    // DB 상에서 해당 serviceId를 가진 Entity를 불러온다.
-    GwService gwService = gwServiceRepository.findById(id).get();
+    try {
 
+      // DB 상에서 해당 serviceId를 가진 Entity를 불러온다.
+      gwService = gwServiceRepository.findById(id).get();
+
+    } catch (Exception e) {
+
+      throw new BizException(BizExceptionCode.COM001, e.toString());
+    }
+
+    // 해당 데이터가 없다면 화면으로 오류 전달
     if (gwService == null) {
 
-      throw new BizException(BizExceptionCode.COM004, BizExceptionCode.COM004.getMsg());
+      throw new BizException(BizExceptionCode.COM004);
     }
 
     // 수정하고자 하는 내용 중 중복이 허용되지 않는 데이터가 DB상에 등록되어 있는지 체크한다.
@@ -203,7 +206,7 @@ public class GwRoutingService {
 
     if (gwServiceCustomRepository.checkUpdateValidation(checkParam, id)) {
 
-      throw new BizException(BizExceptionCode.COM003, BizExceptionCode.COM003.getMsg());
+      throw new BizException(BizExceptionCode.COM003);
     }
 
     try {
@@ -235,27 +238,31 @@ public class GwRoutingService {
    * 
    * @param id
    */
-  public void deleteService(Long id) {
+  @Transactional
+  public void deleteService(Long[] serviceId) {
 
-    // 필수 파라미터 체크
-    // 항목 - 서비스 ID, 수정자
-    if (id == null) {
+    long deletedCnt = -1;
 
-      throw new BizException(BizExceptionCode.COM002, "serviceId");
+    // 필수 파라미터 체크, 기본적으로 API 전체 삭제는 허용하지 않는다.
+    if (serviceId == null) {
+
+      throw new BizException(BizExceptionCode.COM002);
     }
 
-    // DB 상에서 해당 serviceId를 가진 Entity를 불러온다.
-    GwService gwService = gwServiceRepository.findById(id).get();
+    try {
 
-    if (gwService == null) {
+      // 서비스 사용 유무를 변경한다.
+      deletedCnt = gwServiceCustomRepository.deleteService(serviceId);
 
-      throw new BizException(BizExceptionCode.COM004, BizExceptionCode.COM004.getMsg());
+    } catch (Exception e) {
+
+      throw new BizException(BizExceptionCode.COM001, e.toString());
     }
 
-    // 서비스 사용 유무를 변경한다.
-    gwService.setUseYn(CommonConstants.N);
+    // 실제 삭제 건수와 요청 건수가 일치하지 않으면 전체 롤백한다.
+    if (deletedCnt != serviceId.length) {
 
-    gwServiceRepository.save(gwService);
+      throw new BizException(BizExceptionCode.COM005);
+    }
   }
-
 }

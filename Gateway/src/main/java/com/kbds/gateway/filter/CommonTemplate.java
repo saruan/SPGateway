@@ -1,11 +1,11 @@
-package com.kbds.gateway.common.filter;
+package com.kbds.gateway.filter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.stereotype.Service;
-import com.kbds.gateway.api.dto.RoutingDTO;
+import com.kbds.gateway.dto.RoutingDTO;
 
 /**
  * 

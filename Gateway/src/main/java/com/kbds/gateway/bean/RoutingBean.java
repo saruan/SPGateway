@@ -1,4 +1,4 @@
-package com.kbds.gateway.common.bean;
+package com.kbds.gateway.bean;
 
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -18,9 +18,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kbds.gateway.api.dto.ResponseDTO;
-import com.kbds.gateway.api.dto.RoutingDTO;
-import com.kbds.gateway.common.constants.CommonConstants;
+import com.kbds.gateway.code.GatewayCode;
+import com.kbds.gateway.dto.ResponseDTO;
+import com.kbds.gateway.dto.RoutingDTO;
 import reactor.core.publisher.Mono;
 
 /**
@@ -115,7 +115,7 @@ public class RoutingBean {
           Object c = appContext.getBean(routingDTO.getFilterBean());
           Class<?> cl = c.getClass();
           final Method method =
-              cl.getDeclaredMethod(CommonConstants.GATEWAY_FILTER_APPLY, Object.class);
+              cl.getDeclaredMethod(GatewayCode.GATEWAY_FILTER_APPLY.getCode(), Object.class);
 
           // AbstractGatewayFilterFactory를 참조하는 사용자 정의 필터 클래스의 apply 메소드를 호출한다.
           GatewayFilter filter = (GatewayFilter) method.invoke(c, routingDTO);

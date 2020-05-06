@@ -29,7 +29,7 @@ public class GwFilterController {
    * @return
    */
   @GetMapping(value = "/v1/filter")
-  public ResponseEntity<Object> selectRoutingList(@ModelAttribute FilterDTO params) {
+  public ResponseEntity<Object> findFilters(@ModelAttribute FilterDTO params) {
 
     Object result = CommonUtils.getResponseEntity(gwFilterService.findFilters(params));
 
@@ -43,9 +43,9 @@ public class GwFilterController {
    * @return
    */
   @GetMapping(value = "/v1/filter/{id}")
-  public ResponseEntity<Object> selectRoutingDetail(@PathVariable Long id) {
+  public ResponseEntity<Object> findFilterDetail(@PathVariable Long id) {
 
-    Object result = CommonUtils.getResponseEntity(gwFilterService.findServiceDetail(id));
+    Object result = CommonUtils.getResponseEntity(gwFilterService.findFilterDetail(id));
 
     return new ResponseEntity<Object>(result, HttpStatus.OK);
   }
@@ -57,9 +57,9 @@ public class GwFilterController {
    * @return
    */
   @PostMapping(value = "/v1/filter")
-  public ResponseEntity<Object> registRoutingService(@RequestBody FilterDTO params) {
+  public ResponseEntity<Object> registFilter(@RequestBody FilterDTO params) {
 
-    gwFilterService.regiestFilter(params);
+    gwFilterService.registFilter(params);
 
     Object result = CommonUtils.getResponseEntity(true);
 
@@ -73,7 +73,7 @@ public class GwFilterController {
    * @return
    */
   @PutMapping(value = "/v1/filter")
-  public ResponseEntity<Object> updateRoutingService(@RequestBody FilterDTO params) {
+  public ResponseEntity<Object> updateFilter(@RequestBody FilterDTO params) {
 
     gwFilterService.updateFilter(params);
 

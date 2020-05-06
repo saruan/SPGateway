@@ -1,7 +1,7 @@
-package com.kbds.gateway.common.exception;
+package com.kbds.gateway.exception;
 
 import org.springframework.http.HttpStatus;
-import com.kbds.gateway.common.code.GatewayExceptionCode;
+import com.kbds.gateway.code.GatewayExceptionCode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

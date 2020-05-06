@@ -45,4 +45,22 @@ public interface GwRoutingCustomRepository {
    */
   public boolean checkUpdateValidation(RoutingDTO param, Long serviceId);
 
+
+  /**
+   * 서비스 삭제
+   * 
+   * @param serviceId
+   * @return
+   */
+  public long deleteService(Long[] serviceId);
+
+
+  /**
+   * 필터 삭제 시 해당 필터를 사용하는 서비스 정보 업데이트
+   * 
+   * @param filterId
+   * @return
+   */
+  public long updateServiceByFilter(Long[] filterId);
+
 }

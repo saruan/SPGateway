@@ -9,6 +9,7 @@ import com.kbds.serviceapi.apis.entity.GwService;
 import com.kbds.serviceapi.apis.entity.QGwService;
 import com.kbds.serviceapi.apis.entity.QGwServiceFilter;
 import com.kbds.serviceapi.apis.querydsl.GwRoutingCustomRepository;
+import com.kbds.serviceapi.common.code.CommonCode;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 
@@ -127,7 +128,8 @@ public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
     BooleanBuilder builder = new BooleanBuilder();
 
     // filterId가 유효한 값인지 체크한다.
-    builder.and(gwServiceFilter.filterId.eq(param.getFilterId()));
+    builder.and(gwServiceFilter.filterId.eq(param.getFilterId()))
+        .and(gwServiceFilter.useYn.eq(CommonCode.Y.getResultCode()));
 
     // 해당 serviceId 이 외의 자료를 체크하기 위한 조건
     builder.and(gwService.serviceId.ne(serviceId));
@@ -142,6 +144,44 @@ public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
     // 이미 등록되어 있는 데이터가 있다면 true 없다면 false를 리턴한다.
     return from(gwService).innerJoin(gwServiceFilter).on(builder).fetchJoin().select()
         .fetchCount() > 0 ? true : false;
+  }
+
+
+  /**
+   * 서비스 삭제
+   */
+  @Override
+  public long deleteService(Long[] serviceId) {
+    QGwService gwService = QGwService.gwService;
+
+    // 검색 조건문 등록
+    BooleanBuilder builder = new BooleanBuilder();
+
+    // 논리적으로 삭제 처리할 데이터들을 IN 조건에 등록한다.
+    builder.and(gwService.serviceId.in(serviceId));
+
+    // USE_YN 값을 N으로 변경하는 쿼리를 수행한다.
+    return update(gwService).where(builder).set(gwService.useYn, CommonCode.N.getResultCode())
+        .execute();
+  }
+
+  /**
+   * 필터 삭제 이후 연관 서비스 수정
+   */
+  @Override
+  public long updateServiceByFilter(Long[] filterId) {
+
+    QGwService gwService = QGwService.gwService;
+
+    // 검색 조건문 등록
+    BooleanBuilder builder = new BooleanBuilder();
+
+    // 논리적으로 삭제 처리할 데이터들을 IN 조건에 등록한다.
+    builder.and(gwService.filter.filterId.in(filterId));
+
+    // USE_YN 값을 N으로 변경하는 쿼리를 수행한다.
+    return update(gwService).where(builder).set(gwService.useYn, CommonCode.N.getResultCode())
+        .execute();
   }
 
 }

@@ -23,7 +23,13 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum CommonCode {
 
-  SUCCESS("200", "Success"), COMMON_FAIL("1000", "Server Fail");
+  SUCCESS("200", "Success"),
+  COMMON_FAIL("1000", "Server Fail"),
+
+  Y("Y", "예"),
+  N("N", "아니오"),
+  GATEWAY_FILTER_APPLY("apply", "Gateway Filter 메소드명"),
+  GATEWAY_REFRESH_SERVICE_NM("Gateway Routes Refresh", "Gateway Routes Refresh");
 
   private String resultCode;
 

@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import com.kbds.serviceapi.common.code.CommonCode;
-import com.kbds.serviceapi.common.constants.CommonConstants;
 import com.kbds.serviceapi.framework.dto.ResponseDTO;
 
 /**
@@ -63,7 +62,7 @@ public class CommonUtils {
     WebClient.create().post().uri(gatewayUrl).exchange().onErrorMap(e -> {
 
       // Webflux 내부는 기존의 Thread 정보를 불러오지 못하므로 새롭게 등록해준다.
-      CommonUtils.setCommonLog(CommonConstants.GATEWAY_REFRESH_SERVICE_NM, regUserNo);
+      CommonUtils.setCommonLog(CommonCode.GATEWAY_REFRESH_SERVICE_NM.getResultCode(), regUserNo);
       logger.error(e.toString());
 
       return e;

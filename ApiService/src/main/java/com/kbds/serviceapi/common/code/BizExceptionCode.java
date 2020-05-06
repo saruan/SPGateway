@@ -24,13 +24,15 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum BizExceptionCode {
 
-  COM001("COM001", "요청한 서비스의 호출이 실패했습니다. [%s]"),
+  COM001("COM001", "요청한 서비스의 호출이 실패했습니다. 잠시 후 다시 시도해 주세요."),
 
-  COM002("COM002", "필수 파라미터 누락. [%s]"),
+  COM002("COM002", "Required parameters is Null"),
 
   COM003("COM003", "이미 등록된 데이터입니다."),
 
   COM004("COM004", "존재하지 않는 데이터입니다."),
+
+  COM005("COM005", "유효하지 않은 요청 자료가 있습니다. 파라미터를 체크 해 주세요."),
 
   DUMMY("", "");
 
