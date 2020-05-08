@@ -169,7 +169,7 @@ public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
    * 필터 삭제 이후 연관 서비스 수정
    */
   @Override
-  public long updateServiceByFilter(Long[] filterId) {
+  public long updateServiceByFilter(Long filterId) {
 
     QGwService gwService = QGwService.gwService;
 
@@ -177,7 +177,7 @@ public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
     BooleanBuilder builder = new BooleanBuilder();
 
     // 논리적으로 삭제 처리할 데이터들을 IN 조건에 등록한다.
-    builder.and(gwService.filter.filterId.in(filterId));
+    builder.and(gwService.filter.filterId.eq(filterId));
 
     // USE_YN 값을 N으로 변경하는 쿼리를 수행한다.
     return update(gwService).where(builder).set(gwService.useYn, CommonCode.N.getResultCode())

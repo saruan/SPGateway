@@ -44,7 +44,17 @@ public class CustomErrorAttributes implements ErrorAttributes {
       errorAttributes.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
       errorAttributes.put("resultCd",
           GatewayExceptionCode.valueOf(((GatewayException) error).getMessage()).getCode());
-      errorAttributes.put("resultMsg", ((GatewayException) error).getArg());
+      errorAttributes.put("resultMsg",
+          GatewayExceptionCode.valueOf(((GatewayException) error).getMessage()).getMsg());
+    }
+    // 그 이외의 정해진 규격이 아닌 Gateway 오류일 경우 아래와 같이 설정한다.
+    else {
+
+      errorAttributes.put("timestamp", new Date());
+      errorAttributes.put("path", request.path());
+      errorAttributes.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+      errorAttributes.put("resultCd", GatewayExceptionCode.GWE0001.getCode());
+      errorAttributes.put("resultMsg", error.getMessage());
     }
 
     return errorAttributes;

@@ -114,7 +114,7 @@ public class GwRoutingController {
 
     gwRoutingService.deleteService(id);
 
-    Object result = CommonUtils.getResponseEntity("1");
+    Object result = CommonUtils.getResponseEntity(true);
 
     return new ResponseEntity<Object>(result, HttpStatus.OK);
   }

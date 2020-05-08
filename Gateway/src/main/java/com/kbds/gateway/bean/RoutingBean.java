@@ -85,19 +85,14 @@ public class RoutingBean {
 
       try {
 
+        // TODO 정책 확인이 필요.
+        // 현재는 /api/sample과 같은 형태로 API 등록을 할 경우 아래의 형태를 모두 수용한다.
+        // /api/sample, /api/sample, /api/sample/1
+        // 하지만 /api/sample/과 같은 형태로 등록을 할 경우 /api/sample/, /api/sample/1과 같은 형태만 수용
+
         String targetPath = new URL(routingDTO.getServiceTargetUrl()).getPath();
         String tempServicePath = routingDTO.getServicePath();
 
-        /**
-         * <pre>
-         * 
-         * TODO 정책 확인이 필요. 
-         * 현재는 /api/sample과 같은 형태로 API 등록을 할 경우 아래의 형태를 모두 수용한다.
-         * /api/sample, /api/sample, /api/sample/1
-         * 하지만 /api/sample/과 같은 형태로 등록을 할 경우 /api/sample/, /api/sample/1과 같은 형태만 수용
-         * 
-         * </pre>
-         */
         if ("/".equals(tempServicePath.substring(tempServicePath.length() - 1))) {
 
           tempServicePath += "**";

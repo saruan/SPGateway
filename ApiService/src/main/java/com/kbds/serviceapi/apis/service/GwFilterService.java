@@ -1,6 +1,7 @@
 package com.kbds.serviceapi.apis.service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +12,7 @@ import com.kbds.serviceapi.apis.dto.EmptyJsonBody;
 import com.kbds.serviceapi.apis.dto.FilterDTO;
 import com.kbds.serviceapi.apis.entity.GwServiceFilter;
 import com.kbds.serviceapi.apis.querydsl.GwFilterCustomRepository;
+import com.kbds.serviceapi.apis.querydsl.GwRoutingCustomRepository;
 import com.kbds.serviceapi.apis.repository.GwFilterRepository;
 import com.kbds.serviceapi.common.code.BizExceptionCode;
 import com.kbds.serviceapi.common.code.CommonCode;
@@ -39,6 +41,9 @@ public class GwFilterService {
 
   @Autowired
   GwFilterCustomRepository gwFilterCustomRepository;
+
+  @Autowired
+  GwRoutingCustomRepository gwRoutingCustomRepository;
 
   @Autowired
   ModelMapper modelMapper;
@@ -145,7 +150,7 @@ public class GwFilterService {
    * @param reqParam
    */
   @Transactional
-  public void updateFilter(FilterDTO reqParam) {
+  public void updateFilter(FilterDTO reqParam, Long id) {
 
     GwServiceFilter gwServiceFilter = null;
 
@@ -157,7 +162,7 @@ public class GwFilterService {
       throw new BizException(BizExceptionCode.COM002);
     }
 
-    if (reqParam.getFilterId() == null) {
+    if (id == null) {
 
       throw new BizException(BizExceptionCode.COM002);
     }
@@ -169,7 +174,7 @@ public class GwFilterService {
 
     try {
       // DB 상에서 해당 serviceId를 가진 Entity를 불러온다.
-      gwServiceFilter = gwFilterRepository.findById(reqParam.getFilterId()).get();
+      gwServiceFilter = gwFilterRepository.findById(id).get();
 
     } catch (Exception e) {
 
@@ -216,29 +221,27 @@ public class GwFilterService {
    * @param reqParam
    */
   @Transactional
-  public void deleteFilter(FilterDTO reqParam) {
+  public void deleteFilter(Long id) {
 
     GwServiceFilter gwServiceFilter = null;
 
     // 필수 파라미터 체크
     // 항목 - 서비스 ID
-    if (reqParam.getFilterId() == null) {
+    if (id == null) {
 
       throw new BizException(BizExceptionCode.COM002);
     }
 
     try {
 
-      gwServiceFilter = gwFilterRepository.findById(reqParam.getFilterId()).get();
+      gwServiceFilter = gwFilterRepository.findById(id).get();
 
-    } catch (Exception e) {
-
-      throw new BizException(BizExceptionCode.COM001, e.toString());
-    }
-
-    if (gwServiceFilter == null) {
-
+    } catch (NoSuchElementException e) {
+      // 데이터가 없는 경우
       throw new BizException(BizExceptionCode.COM004);
+    } catch (Exception e) {
+      // 그 이외의 에러
+      throw new BizException(BizExceptionCode.COM001, e.toString());
     }
 
     // 데이터 정합성 체크가 끝나면 최종적으로 서비스를 갱신 시킨다.
@@ -246,9 +249,11 @@ public class GwFilterService {
 
     try {
 
+      // 필터를 논리적으로 삭제한다.
       gwFilterRepository.save(gwServiceFilter);
 
       // 해당 필터에 연결 되어 있는 Routing Service의 Filter 정보를 기본 필터로 변경한 후 사용여부를 N으로 변경한다.
+      gwRoutingCustomRepository.updateServiceByFilter(gwServiceFilter.getFilterId());
 
     } catch (Exception e) {
 

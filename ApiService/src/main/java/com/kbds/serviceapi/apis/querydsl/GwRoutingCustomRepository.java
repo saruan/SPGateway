@@ -61,6 +61,6 @@ public interface GwRoutingCustomRepository {
    * @param filterId
    * @return
    */
-  public long updateServiceByFilter(Long[] filterId);
+  public long updateServiceByFilter(Long filterId);
 
 }

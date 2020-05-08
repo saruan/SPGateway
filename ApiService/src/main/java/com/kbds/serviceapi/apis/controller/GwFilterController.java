@@ -3,6 +3,7 @@ package com.kbds.serviceapi.apis.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -72,10 +73,26 @@ public class GwFilterController {
    * @param params
    * @return
    */
-  @PutMapping(value = "/v1/filter")
-  public ResponseEntity<Object> updateFilter(@RequestBody FilterDTO params) {
+  @PutMapping(value = "/v1/filter/{id}")
+  public ResponseEntity<Object> updateFilter(@RequestBody FilterDTO params, @PathVariable Long id) {
 
-    gwFilterService.updateFilter(params);
+    gwFilterService.updateFilter(params, id);
+
+    Object result = CommonUtils.getResponseEntity(true);
+
+    return new ResponseEntity<Object>(result, HttpStatus.OK);
+  }
+
+  /**
+   * 필터 삭제
+   * 
+   * @param params
+   * @return
+   */
+  @DeleteMapping(value = "/v1/filter/{id}")
+  public ResponseEntity<Object> deleteService(@PathVariable Long id) {
+
+    gwFilterService.deleteFilter(id);
 
     Object result = CommonUtils.getResponseEntity(true);
 
