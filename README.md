@@ -2,10 +2,10 @@
 
 ## 1. 프로젝트 구성
 
-     1.1 RoutingService - G/W Routing Service, Service Filter를 관리하는 API 서버  
-     1.2 Gateway        - Spring Cloud Gateway 기반 API Gateway 서버
-     1.3 AuthService    - JWT, OAuth를 사용하는 인증 서버
-     1.4 APIService     - 실제 EndPoint API 서버
+     - RoutingService - G/W Routing Service, Service Filter를 관리하는 API 서버  
+     - Gateway        - Spring Cloud Gateway 기반 API Gateway 서버
+     - AuthService    - JWT, OAuth를 사용하는 인증 서버
+     - APIService     - 실제 EndPoint API 서버
 
 ## 2. 프로젝트 구성도
 
