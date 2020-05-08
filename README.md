@@ -10,4 +10,4 @@
 <img src ="https://user-images.githubusercontent.com/6766147/81356556-69ddcc80-910c-11ea-85d5-735fd12b8d71.png">
 
     2.1 AuthSerice - 인증(OAuth 2.0 , JWT 토큰을 관리, 인증 처리를 수행하는 서버
-    2.2 APIService - N개의 마이크로 서비스
+    2.2 APIService - EndPoint API Server
