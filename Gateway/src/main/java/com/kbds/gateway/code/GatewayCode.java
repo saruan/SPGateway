@@ -24,7 +24,9 @@ public enum GatewayCode {
 
   Y("Y", "예"),
   N("N", "아니오"),
+  ROLE_ADMIN("ROLE_ADMIN", "관리자 권한"),
   GATEWAY_FILTER_APPLY("apply", "Gateway Filter 메소드명"),
+  TOKEN_PREFIX("Bearer ", "TOKEN 헤더 PREFIX"),
 
   DUMMY("", "");
 

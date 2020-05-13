@@ -16,4 +16,4 @@ management:
 #사용자 정의 속성
 services:
   api:
-    routeSeverUrl: http://localhost:8080/api/service/v1/routes
+    routeSeverUrl: http://localhost:8080/api/service/v1/routes/

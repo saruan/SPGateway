@@ -47,7 +47,7 @@ public class GwRoutingController {
    * 
    * @return
    */
-  @GetMapping(value = "/v1/routes")
+  @GetMapping(value = "/v1/routes/")
   public ResponseEntity<Object> findServices(@ModelAttribute RoutingDTO params) {
 
     Object result = CommonUtils.getResponseEntity(gwRoutingService.findServices(params));

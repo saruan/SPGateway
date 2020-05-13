@@ -76,7 +76,6 @@ public class GwRoutingService {
   @Transactional
   public Object findServiceDetail(Long id) {
 
-    // 필수 파라미터 체크
     if (id == null) {
 
       throw new BizException(BizExceptionCode.COM002);
@@ -84,7 +83,6 @@ public class GwRoutingService {
 
     try {
 
-      // DB 상에서 해당 serviceId를 가진 Entity를 불러온다.
       Optional<GwService> gwService = gwServiceRepository.findById(id);
 
       if (!gwService.isPresent()) {
@@ -92,7 +90,6 @@ public class GwRoutingService {
         return new EmptyJsonBody();
       }
 
-      // 결과 값으로 전달할 RoutingDTO로 변환한 후 리턴한다.
       return modelMapper.map(gwService.get(), RoutingDTO.class);
     } catch (Exception e) {
 
@@ -125,14 +122,13 @@ public class GwRoutingService {
       throw new BizException(BizExceptionCode.COM002);
     }
 
-    // 서비스가 이미 등록 된 서비스인지 체크한다.
-    // 항목 - 서비스명, 서비스 API URL 경로
     RoutingDTO checkParam = new RoutingDTO();
 
     checkParam.setServiceNm(reqParam.getServiceNm());
     checkParam.setServicePath(reqParam.getServicePath());
     checkParam.setFilterId(reqParam.getFilterId());
 
+    // 서비스 등록 여부 체크
     if (gwServiceCustomRepository.checkRegistValidation(checkParam)) {
 
       throw new BizException(BizExceptionCode.COM003);
@@ -140,7 +136,6 @@ public class GwRoutingService {
 
     try {
 
-      // DTO -> Entity로 형변환을 한 후 DB에 저장한다.
       gwServiceRepository.save(modelMapper.map(reqParam, GwService.class));
 
       // 등록 이후 게이트웨이에 해당 정보를 갱신해준다.
