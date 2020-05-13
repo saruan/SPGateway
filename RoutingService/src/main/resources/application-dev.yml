@@ -32,3 +32,7 @@ logging:
 gateway:
   cluster:
     refreshUrl: http://localhost:8888/actuator/refresh
+    
+jwt:
+  secret-key: 1EB87004BBEA8377C5F584DAE670AA293E6A856C2B4B4708E63B713EBDABBEF8
+  issuer: saruan

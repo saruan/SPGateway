@@ -1,5 +1,9 @@
 package com.kbds.gateway.utils;
 
+import java.util.Map;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * 
  *
@@ -57,6 +61,21 @@ public class StringUtils {
     }
 
     return false;
+  }
+
+
+  public static String convertToJsonString(Map<String, String> param) {
+
+
+    ObjectMapper mapper = new ObjectMapper();
+
+    try {
+
+      return mapper.writeValueAsString(param);
+    } catch (JsonProcessingException e) {
+
+      return "";
+    }
   }
 
 }

@@ -51,7 +51,7 @@ public class RoutingBean {
   ApplicationContext appContext;
 
   // Routes,Filter 관리 서버 주소
-  @Value("${services.api.routeSeverUrl}")
+  @Value("${services.api.route-url}")
   String routeSeverUrl;
 
   /**
