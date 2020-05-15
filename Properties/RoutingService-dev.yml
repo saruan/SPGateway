@@ -36,3 +36,11 @@ gateway:
 jwt:
   secret-key: 1EB87004BBEA8377C5F584DAE670AA293E6A856C2B4B4708E63B713EBDABBEF8
   issuer: saruan
+  
+#RabbitMQ 연동
+spring:
+  rabbitmq:       # RabbitMQ 정보 수정.
+    host: localhost   
+    port: 5672
+    username: guest
+    password: guest

@@ -13,6 +13,21 @@ import com.kbds.gateway.utils.StringUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+/**
+ *
+ * <pre>
+ *  Class Name     : CommonAuthenticationEntryPoint.java
+ *  Description    : 401(권한없음) 커스텀 오류 관리 클래스
+ *  Author         : 구경태 (kyungtae.koo@kbfg.com)
+ * 
+ * -------------------------------------------------------------------------------
+ *     변경No        변경일자        	       변경자          Description
+ * -------------------------------------------------------------------------------
+ *     Ver 1.0      2020-05-15    	   구경태          Initialized
+ * -------------------------------------------------------------------------------
+ * </pre>
+ *
+ */
 @Component
 public class CommonAuthenticationEntryPoint implements ServerAuthenticationEntryPoint {
 
