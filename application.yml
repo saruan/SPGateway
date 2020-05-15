@@ -1,2 +1,19 @@
 application:
   message: dummy
+
+jwt:
+  secret-key: 1EB87004BBEA8377C5F584DAE670AA293E6A856C2B4B4708E63B713EBDABBEF8
+  issuer: saruan
+
+#사용자 정의 속성
+services:
+  api:
+    route-url: http://localhost:8080/api/service/v1/routes/
+
+#RabbitMQ 연동
+spring:
+  rabbitmq:       # RabbitMQ 정보 수정.
+    host: localhost   
+    port: 5672
+    username: guest
+    password: guest
