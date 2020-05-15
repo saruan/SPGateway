@@ -4,10 +4,12 @@ import java.util.UUID;
 import org.apache.logging.log4j.ThreadContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import com.auth0.jwt.JWTCreator;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.kbds.serviceapi.common.code.CommonCode;
 import com.kbds.serviceapi.framework.dto.ResponseDTO;
 
@@ -32,9 +34,15 @@ public class CommonUtils {
   // 로그용 변수
   private static Logger logger = LoggerFactory.getLogger(CommonUtils.class);
 
-  @Autowired
-  public CommonUtils() {
+  private static String secretKey;
 
+  @Value("${jwt.secret-key}")
+  public void setSecretKey(String secretKey) {
+    CommonUtils.secretKey = secretKey;
+  }
+
+  public String getSecretKey() {
+    return secretKey;
   }
 
   /**
@@ -59,12 +67,15 @@ public class CommonUtils {
    */
   public static void refreshGatewayRoutes(String gatewayUrl, String regUserNo) {
 
+    JWTCreator.Builder builder = com.auth0.jwt.JWT.create();
+    Algorithm algorithm = Algorithm.HMAC256(secretKey);
+
     // @formatter:off
     // TODO 추후 JWT 토큰으로 변경
     WebClient.create()
               .post()
               .uri(gatewayUrl)
-              .header(HttpHeaders.AUTHORIZATION, "Bearer A")
+              .header(HttpHeaders.AUTHORIZATION, CommonCode.TOKEN_PREFIX  + builder.sign(algorithm))
               .exchange().onErrorMap(e -> {
                 
                   // Webflux 내부는 기존의 Thread 정보를 불러오지 못하므로 새롭게 등록해준다.

@@ -64,7 +64,6 @@ public class RoutingBean {
   @RefreshScope
   public RouteLocator routeLocater(RouteLocatorBuilder builder) {
 
-    // Spring WebClient를 통해 Routing 목록을 가져온다.
     Mono<ResponseDTO> responseDTO =
         WebClient.create().get().uri(routeSeverUrl).retrieve().bodyToMono(ResponseDTO.class);
 
@@ -77,7 +76,6 @@ public class RoutingBean {
 
     for (RoutingDTO routingDTO : routingDTOList) {
 
-      // 유효하지 않은 정보가 혹시나 존재한다면 로그만 남기고 등록하지 않는다.
       if (StringUtils.isEmptyParams(routingDTO.getServicePath(),
           routingDTO.getServiceTargetUrl())) {
 

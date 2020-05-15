@@ -1,0 +1,26 @@
+#Spring Config Server 설정
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/saruan/SPGateway.git
+          search-paths:
+          - 'Properties/'
+          password: rnrudxo1184018
+          username: kookyungte@naver.com
+  rabbitmq:                  
+    host: localhost
+    username: guest
+    password: guest
+    
+#Actuactor 활성화    
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: ['bus-refresh']
+             
+server:
+  port: 9999

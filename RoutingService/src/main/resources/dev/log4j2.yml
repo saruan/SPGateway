@@ -49,4 +49,5 @@ Configuration:
         additivity: false
         AppenderRef:
           - ref: LogToDatabase
+          - ref: LogToConsole
  

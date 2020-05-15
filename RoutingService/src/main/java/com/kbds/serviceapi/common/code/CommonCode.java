@@ -29,7 +29,8 @@ public enum CommonCode {
   Y("Y", "예"),
   N("N", "아니오"),
   GATEWAY_FILTER_APPLY("apply", "Gateway Filter 메소드명"),
-  GATEWAY_REFRESH_SERVICE_NM("Gateway Routes Refresh", "Gateway Routes Refresh");
+  GATEWAY_REFRESH_SERVICE_NM("Gateway Routes Refresh", "Gateway Routes Refresh"),
+  TOKEN_PREFIX("Bearer ", "Bearer Token");
 
   private String resultCode;
 
