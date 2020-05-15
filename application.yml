@@ -1,2 +1,0 @@
-application:
-  message: "Message From {ENV} Local Git Repository"
