@@ -17,14 +17,14 @@ spring:
       format_sql: true
 
 # 로그 설정
-#logging:
-#  config: classpath:${spring.profiles.active}/log4j2.yml
-#  level:
-#    org:
-#      hibernate:
-#        SQL: DEBUG
-#        type:
-#          descriptor:
-#            sql:
-#              BasicBinder: TRACE
+logging:
+  config: classpath:${spring.profiles.active}/log4j2.yml
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
              
