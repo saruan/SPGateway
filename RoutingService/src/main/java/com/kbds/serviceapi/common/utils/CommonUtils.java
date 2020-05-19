@@ -71,7 +71,6 @@ public class CommonUtils {
     Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
     // @formatter:off
-    // TODO 추후 JWT 토큰으로 변경
     WebClient.create()
               .post()
               .uri(gatewayUrl)
