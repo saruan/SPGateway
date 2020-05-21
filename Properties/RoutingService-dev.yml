@@ -2,8 +2,8 @@
 server:
   port: 8080
 
-# Datasource 설정
-spring:
+spring:  
+  # Datasource 설정
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/gateway?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
@@ -15,6 +15,12 @@ spring:
     show-sql: true
     hibernate:
       format_sql: true
+  # RabbitMQ 설정
+  rabbitmq:       
+    host: localhost   
+    port: 5672
+    username: guest
+    password: guest
 
 # 로그 설정
 logging:
@@ -37,10 +43,3 @@ jwt:
   secret-key: 1EB87004BBEA8377C5F584DAE670AA293E6A856C2B4B4708E63B713EBDABBEF8
   issuer: saruan
   
-#RabbitMQ 연동
-spring:
-  rabbitmq:       # RabbitMQ 정보 수정.
-    host: localhost   
-    port: 5672
-    username: guest
-    password: guest
