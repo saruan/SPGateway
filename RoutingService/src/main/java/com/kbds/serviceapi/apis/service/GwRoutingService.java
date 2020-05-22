@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 import com.kbds.serviceapi.apis.dto.EmptyJsonBody;
 import com.kbds.serviceapi.apis.dto.RoutingDTO;
 import com.kbds.serviceapi.apis.entity.GwService;
+import com.kbds.serviceapi.apis.entity.GwServiceFilter;
 import com.kbds.serviceapi.apis.querydsl.GwRoutingCustomRepository;
+import com.kbds.serviceapi.apis.repository.GwFilterRepository;
 import com.kbds.serviceapi.apis.repository.GwRoutingRepository;
 import com.kbds.serviceapi.common.code.BizExceptionCode;
 import com.kbds.serviceapi.common.utils.CommonUtils;
@@ -41,6 +43,9 @@ public class GwRoutingService {
 
   @Autowired
   GwRoutingRepository gwServiceRepository;
+
+  @Autowired
+  GwFilterRepository gwFilterRepository;
 
   // 형 변환을 위한 ModelMapper
   @Autowired
@@ -104,6 +109,8 @@ public class GwRoutingService {
    * @param reqParam
    */
   public void registService(RoutingDTO reqParam) {
+
+    System.out.println(reqParam.toString());
 
     // 필수 파라미터 체크
     // 항목 - 서비스명, 서비스 API URL 경로, 사용자
@@ -206,10 +213,13 @@ public class GwRoutingService {
 
     try {
 
+      GwServiceFilter serviceFilter = new GwServiceFilter();
+      serviceFilter.setFilterId(reqParam.getFilterId());
+
       // 데이터 정합성 체크가 끝나면 최종적으로 서비스를 갱신 시킨다.
       gwService.setServiceNm(reqParam.getServiceNm());
       gwService.setServicePath(reqParam.getServicePath());
-      gwService.getFilter().setFilterId(reqParam.getFilterId());
+      gwService.setFilter(serviceFilter);
       gwService.setServiceDesc(reqParam.getServiceDesc());
       gwService.setUptUserNo(reqParam.getUptUserNo());
       gwService.setServiceLoginType(reqParam.getServiceLoginType());

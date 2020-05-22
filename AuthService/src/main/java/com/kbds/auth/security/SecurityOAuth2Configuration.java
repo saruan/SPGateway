@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import com.kbds.auth.exception.CustomOAuthResponseExceptionTranslator;
 
 /**
  * 
@@ -40,12 +41,12 @@ public class SecurityOAuth2Configuration extends AuthorizationServerConfigurerAd
 
   @Bean
   public TokenStore tokenStore() {
-    return new CutomTokenStore();
+    return new CustomTokenStore();
   }
 
   @Override
   public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
-    oauthServer.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()");
+    oauthServer.tokenKeyAccess("permitAll()").checkTokenAccess("permitAll()");
   }
 
   @Override
@@ -57,5 +58,6 @@ public class SecurityOAuth2Configuration extends AuthorizationServerConfigurerAd
   public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
     endpoints.authenticationManager(authenticationManager);
     endpoints.tokenStore(tokenStore());
+    endpoints.exceptionTranslator(new CustomOAuthResponseExceptionTranslator());
   }
 }

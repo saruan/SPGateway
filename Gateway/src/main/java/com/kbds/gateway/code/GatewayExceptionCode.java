@@ -24,7 +24,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum GatewayExceptionCode {
 
-  GWE0001("GWE0001", "사전 검증 실패. [%s]"),
+  GWE0001("GWE0001", "사전 검증 실패."),
+
+  TOK001("TOK001", "AccessToken 만료"),
+  TOK002("TOK002", "AccessToken가 유효하지 않습니다."),
 
   DUMMY("", "");
 

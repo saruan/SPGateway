@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kbds.gateway.code.GatewayCode;
 import com.kbds.gateway.dto.ResponseDTO;
 import com.kbds.gateway.dto.RoutingDTO;
+import com.kbds.gateway.filter.CachingRequestBodyFilter;
 import com.kbds.gateway.utils.StringUtils;
 import reactor.core.publisher.Mono;
 
@@ -49,6 +50,9 @@ public class RoutingBean {
   // Spring Bean을 가져오기 위한 변수
   @Autowired
   ApplicationContext appContext;
+
+  @Autowired
+  CachingRequestBodyFilter cachingRequestBodyFilter;
 
   // Routes,Filter 관리 서버 주소
   @Value("${services.api.route-url}")
@@ -99,11 +103,12 @@ public class RoutingBean {
           GatewayFilter filter = (GatewayFilter) method.invoke(c, routingDTO);
 
           // 최종 Routing 서비스를 G/W에 등록한다.
-          routeLocator
-              .route(r -> r.path(servicePath)
-                  .filters(f -> f.rewritePath(routingDTO.getServicePath() + "(?<segment>.*)",
-                      targetPath + "${segment}").filter(filter))
-                  .uri(routingDTO.getServiceTargetUrl()));
+          routeLocator.route(r -> r.path(servicePath)
+              .filters(f -> f.rewritePath(routingDTO.getServicePath() + "(?<segment>.*)",
+                  targetPath + "${segment}")
+                  .filters(cachingRequestBodyFilter.apply(new CachingRequestBodyFilter.Config()),
+                      filter))
+              .uri(routingDTO.getServiceTargetUrl()));
         } else {
 
           routeLocator.route(r -> r.path(servicePath)

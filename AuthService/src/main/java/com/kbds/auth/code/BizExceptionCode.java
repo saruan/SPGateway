@@ -1,4 +1,4 @@
-package com.kbds.gateway.code;
+package com.kbds.auth.code;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,8 +6,8 @@ import lombok.Getter;
 /**
  *
  * <pre>
- *  Class Name     : GatewayCode.java
- *  Description    : Gateway 공통 코드
+ *  Class Name     : AuthExceptionCode.java
+ *  Description    : Exception 코드
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
  * 
  * -------------------------------------------------------------------------------
@@ -20,17 +20,11 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum GatewayCode {
+public enum BizExceptionCode {
 
-  Y("Y", "예"),
-  N("N", "아니오"),
-  ROLE_ADMIN("ROLE_ADMIN", "관리자 권한"),
-  GATEWAY_FILTER_APPLY("apply", "Gateway Filter 메소드명"),
-  TOKEN_PREFIX("Bearer ", "TOKEN 헤더 PREFIX"),
+  SAML001("SAML001", "SAML 생성 실패"),
 
-  OAUTH_TYPE("1", "OAuth 인증 방식"),
-
-  REUQESTPARAM_SAML("saml", "SAML 토큰"),
+  COM001("COM001", "서비스 처리 실패"),
 
   DUMMY("", "");
 

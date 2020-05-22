@@ -1,6 +1,9 @@
 package com.kbds.gateway.utils;
 
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
+import org.springframework.core.io.buffer.DataBuffer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -63,7 +66,12 @@ public class StringUtils {
     return false;
   }
 
-
+  /**
+   * MAP -> JSON String
+   * 
+   * @param param
+   * @return
+   */
   public static String convertToJsonString(Map<String, String> param) {
 
 
@@ -78,4 +86,32 @@ public class StringUtils {
     }
   }
 
+  /**
+   * QueryString to Map
+   * 
+   * @param query
+   * @return
+   */
+  public static Map<String, String> queryToMap(DataBuffer buffer) {
+
+    StringBuilder builder = new StringBuilder();
+    builder.append(StandardCharsets.UTF_8.decode(buffer.asByteBuffer()).toString());
+
+    Map<String, String> result = new HashMap<String, String>();
+
+    for (String param : builder.toString().split("&")) {
+
+      String pair[] = param.split("=");
+
+      if (pair.length > 1) {
+
+        result.put(pair[0], pair[1]);
+      } else {
+
+        result.put(pair[0], "");
+      }
+    }
+
+    return result;
+  }
 }

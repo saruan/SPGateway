@@ -1,9 +1,5 @@
 package com.kbds.auth.security;
 
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -18,15 +14,21 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.AuthenticationKeyGenerator;
 import org.springframework.security.oauth2.provider.token.DefaultAuthenticationKeyGenerator;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import com.kbds.auth.code.AuthCode;
+import com.kbds.auth.code.BizExceptionCode;
 import com.kbds.auth.entity.OAuthAccessToken;
 import com.kbds.auth.entity.OAuthRefreshToken;
+import com.kbds.auth.exception.CustomOAuthException;
 import com.kbds.auth.repository.OAuthAccessTokenRepository;
 import com.kbds.auth.repository.OAuthRefreshTokenRepository;
+import com.kbds.auth.service.GatewayClusterService;
+import com.kbds.auth.utils.OAuthUtils;
+import com.kbds.auth.utils.StringUtils;
 
 /**
  *
  * <pre>
- *  Class Name     : CutomTokenStore.java
+ *  Class Name     : CustomTokenStore.java
  *  Description    : TokenStore 커스터마이징 클래스
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
  * 
@@ -38,10 +40,10 @@ import com.kbds.auth.repository.OAuthRefreshTokenRepository;
  * </pre>
  *
  */
-public class CutomTokenStore implements TokenStore {
+public class CustomTokenStore implements TokenStore {
 
   // 로그용 변수
-  Logger logger = LoggerFactory.getLogger(CutomTokenStore.class);
+  Logger logger = LoggerFactory.getLogger(CustomTokenStore.class);
 
   @Autowired
   OAuthAccessTokenRepository oAuthAccessTokenRepository;
@@ -49,8 +51,14 @@ public class CutomTokenStore implements TokenStore {
   @Autowired
   OAuthRefreshTokenRepository oAuthRefreshTokenRepository;
 
+  @Autowired
+  GatewayClusterService gatewayClusterService;
+
+  // DefaultAuthenticationKeyGenerator : Client / AccessToken가 1:1 일 경우
+  // UniqueAuthenticationKeyGenerator : Client / AccessToken가 1:N 일 경우
   private AuthenticationKeyGenerator authenticationKeyGenerator =
       new DefaultAuthenticationKeyGenerator();
+  // new UniqueAuthenticationKeyGenerator();
 
   @Override
   public OAuth2Authentication readAuthentication(OAuth2AccessToken token) {
@@ -62,7 +70,7 @@ public class CutomTokenStore implements TokenStore {
   public OAuth2Authentication readAuthentication(String token) {
 
     Optional<OAuthAccessToken> accessToken =
-        oAuthAccessTokenRepository.findByTokenId(extractTokenKey(token));
+        oAuthAccessTokenRepository.findByTokenId(OAuthUtils.extractTokenKey(token));
 
     if (accessToken.isPresent()) {
 
@@ -91,14 +99,14 @@ public class CutomTokenStore implements TokenStore {
 
     OAuthAccessToken accessToken = new OAuthAccessToken();
 
-    accessToken.setTokenId(extractTokenKey(oAuth2AccessToken.getValue()));
+    accessToken.setTokenId(OAuthUtils.extractTokenKey(oAuth2AccessToken.getValue()));
     accessToken.setToken(SerializationUtils.serialize(oAuth2AccessToken));
     accessToken.setAuthenticationId(authenticationKeyGenerator.extractKey(oAuth2Authentication));
     accessToken.setUserName(
         oAuth2Authentication.isClientOnly() ? "Clients" : oAuth2Authentication.getName());
     accessToken.setClientId(oAuth2Authentication.getOAuth2Request().getClientId());
     accessToken.setAuthentication(SerializationUtils.serialize(oAuth2Authentication));
-    accessToken.setRefreshToken(extractTokenKey(refreshToken));
+    accessToken.setRefreshToken(OAuthUtils.extractTokenKey(refreshToken));
     accessToken.setAdditionalInfo(
         oAuth2Authentication.getOAuth2Request().getRequestParameters().toString());
 
@@ -109,7 +117,7 @@ public class CutomTokenStore implements TokenStore {
   public OAuth2AccessToken readAccessToken(String tokenValue) {
 
     Optional<OAuthAccessToken> accessToken =
-        oAuthAccessTokenRepository.findByTokenId(extractTokenKey(tokenValue));
+        oAuthAccessTokenRepository.findByTokenId(OAuthUtils.extractTokenKey(tokenValue));
 
     if (accessToken.isPresent()) {
 
@@ -122,8 +130,8 @@ public class CutomTokenStore implements TokenStore {
   @Override
   public void removeAccessToken(OAuth2AccessToken oAuth2AccessToken) {
 
-    Optional<OAuthAccessToken> accessToken =
-        oAuthAccessTokenRepository.findByTokenId(extractTokenKey(oAuth2AccessToken.getValue()));
+    Optional<OAuthAccessToken> accessToken = oAuthAccessTokenRepository
+        .findByTokenId(OAuthUtils.extractTokenKey(oAuth2AccessToken.getValue()));
 
     if (accessToken.isPresent()) {
 
@@ -137,7 +145,7 @@ public class CutomTokenStore implements TokenStore {
 
     OAuthRefreshToken oAuthRefreshToken = new OAuthRefreshToken();
 
-    oAuthRefreshToken.setTokenId(extractTokenKey(oAuth2RefreshToken.getValue()));
+    oAuthRefreshToken.setTokenId(OAuthUtils.extractTokenKey(oAuth2RefreshToken.getValue()));
     oAuthRefreshToken.setToken(SerializationUtils.serialize(oAuth2RefreshToken));
     oAuthRefreshToken.setAuthentication(SerializationUtils.serialize(authentication));
 
@@ -148,7 +156,7 @@ public class CutomTokenStore implements TokenStore {
   public OAuth2RefreshToken readRefreshToken(String tokenValue) {
 
     Optional<OAuthRefreshToken> refreshToken =
-        oAuthRefreshTokenRepository.findByTokenId(extractTokenKey(tokenValue));
+        oAuthRefreshTokenRepository.findByTokenId(OAuthUtils.extractTokenKey(tokenValue));
 
     return refreshToken.isPresent()
         ? (OAuth2RefreshToken) SerializationUtils.deserialize(refreshToken.get().getToken())
@@ -159,8 +167,8 @@ public class CutomTokenStore implements TokenStore {
   public OAuth2Authentication readAuthenticationForRefreshToken(
       OAuth2RefreshToken oAuth2RefreshToken) {
 
-    Optional<OAuthRefreshToken> oAuthRefreshToken =
-        oAuthRefreshTokenRepository.findByTokenId(extractTokenKey(oAuth2RefreshToken.getValue()));
+    Optional<OAuthRefreshToken> oAuthRefreshToken = oAuthRefreshTokenRepository
+        .findByTokenId(OAuthUtils.extractTokenKey(oAuth2RefreshToken.getValue()));
 
     return oAuthRefreshToken.isPresent()
         ? (OAuth2Authentication) SerializationUtils
@@ -171,8 +179,8 @@ public class CutomTokenStore implements TokenStore {
   @Override
   public void removeRefreshToken(OAuth2RefreshToken oAuth2RefreshToken) {
 
-    Optional<OAuthRefreshToken> oAuthRefreshToken =
-        oAuthRefreshTokenRepository.findByTokenId(extractTokenKey(oAuth2RefreshToken.getValue()));
+    Optional<OAuthRefreshToken> oAuthRefreshToken = oAuthRefreshTokenRepository
+        .findByTokenId(OAuthUtils.extractTokenKey(oAuth2RefreshToken.getValue()));
 
     if (oAuthRefreshToken.isPresent()) {
 
@@ -184,7 +192,7 @@ public class CutomTokenStore implements TokenStore {
   public void removeAccessTokenUsingRefreshToken(OAuth2RefreshToken oAuth2RefreshToken) {
 
     Optional<OAuthAccessToken> oAuthAccessToken = oAuthAccessTokenRepository
-        .findByRefreshToken(extractTokenKey(oAuth2RefreshToken.getValue()));
+        .findByRefreshToken(OAuthUtils.extractTokenKey(oAuth2RefreshToken.getValue()));
 
     if (oAuthAccessToken.isPresent()) {
 
@@ -198,6 +206,15 @@ public class CutomTokenStore implements TokenStore {
     OAuth2AccessToken oAuth2AccessToken = null;
 
     String authenticationId = authenticationKeyGenerator.extractKey(oAuthAuthentication);
+
+    // Access 토큰 발급 로직 전 SAML 체크
+    String keySAML = oAuthAuthentication.getOAuth2Request().getRequestParameters()
+        .get(AuthCode.PARAMTER_SAML.getCode());
+
+    if (StringUtils.isEmptyParams(keySAML) || !gatewayClusterService.isValidSAML(keySAML)) {
+
+      throw new CustomOAuthException(BizExceptionCode.SAML001);
+    }
 
     Optional<OAuthAccessToken> oAuthAccessToken =
         oAuthAccessTokenRepository.findByAuthenticationId(authenticationId);
@@ -243,40 +260,5 @@ public class CutomTokenStore implements TokenStore {
         .forEach(e -> tokens.add((OAuth2AccessToken) SerializationUtils.deserialize(e.getToken())));
 
     return tokens;
-  }
-
-  /**
-   * Token MD5 복호화
-   * 
-   * @param value
-   * @return
-   */
-  private String extractTokenKey(String value) {
-
-    if (value == null) {
-      return null;
-    } else {
-
-      MessageDigest digest;
-
-      try {
-
-        digest = MessageDigest.getInstance("MD5");
-      } catch (NoSuchAlgorithmException var5) {
-
-        throw new IllegalStateException(
-            "MD5 algorithm not available.  Fatal (should be in the JDK).");
-      }
-
-      try {
-
-        byte[] e = digest.digest(value.getBytes("UTF-8"));
-        return String.format("%032x", new Object[] {new BigInteger(1, e)});
-      } catch (UnsupportedEncodingException var4) {
-
-        throw new IllegalStateException(
-            "UTF-8 encoding not available.  Fatal (should be in the JDK).");
-      }
-    }
   }
 }

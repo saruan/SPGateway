@@ -10,16 +10,33 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+/**
+ *
+ * <pre>
+ *  Class Name     : SecurityConfig.java
+ *  Description    : Spring Security 설정
+ *  Author         : 구경태 (kyungtae.koo@kbfg.com)
+ * 
+ * -------------------------------------------------------------------------------
+ *     변경No        변경일자        	       변경자          Description
+ * -------------------------------------------------------------------------------
+ *     Ver 1.0      2020-05-20    	   구경태          Initialized
+ * -------------------------------------------------------------------------------
+ * </pre>
+ *
+ */
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    http.csrf().disable().authorizeRequests().anyRequest().authenticated();
+
+    http.csrf().disable().authorizeRequests().anyRequest().permitAll();
   }
 
   @Bean
   public PasswordEncoder encoder() {
+
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();
   }
 
@@ -27,11 +44,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Bean
   @Override
   protected AuthenticationManager authenticationManager() throws Exception {
+
     return super.authenticationManager();
   }
 
   @Autowired
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+
     auth.inMemoryAuthentication().withUser("user").password("{noop}pass").roles("USER");
 
   }
