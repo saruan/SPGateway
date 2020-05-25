@@ -38,5 +38,6 @@ logging:
 eureka:
   client:
     service-url:
-      defaultZone: http://Eureka:8761/eureka/
-             
+      defaultZone: http://eureka-server:8761/eureka/
+  instance:
+    hostname: auth-service             
