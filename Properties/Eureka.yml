@@ -1,9 +1,14 @@
 server:
   port: 8761
 
+spring:
+  cloud:
+    clients:
+      hostname: eureka-server
+
 eureka:
   instance:
-    hostname: eureka-server  
+    hostname: ${spring.cloud.clients.hostname}
   client:
     egisterWithEureka: false
     fetchRegistry: false
