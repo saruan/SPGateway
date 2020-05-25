@@ -34,4 +34,9 @@ logging:
 ##          descriptor:
 #            sql:
 #              BasicBinder: TRACE
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://Eureka:8761/eureka/
              

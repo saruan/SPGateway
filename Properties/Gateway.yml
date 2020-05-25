@@ -17,9 +17,9 @@ jwt:
 #사용자 정의 속성
 services:
   api:
-    route-url: http://localhost:8080/api/service/v1/routes/
+    route-url: http://RoutingService:8080/api/service/v1/routes/
   auth:
-    host: http://localhost:7777
+    host: http://AuthService:7777
     check_token-uri: /oauth/check_token
 
 oauth:
@@ -36,4 +36,4 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://Eureka:8761/eureka/
