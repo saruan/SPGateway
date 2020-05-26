@@ -1,6 +1,8 @@
 package com.kbds.serviceapi.apis.dto;
 
 import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,6 +29,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(value = Include.NON_NULL)
 public class RoutingDTO {
 
   private Long serviceId;
@@ -34,6 +37,8 @@ public class RoutingDTO {
   private Long filterId;
 
   private String serviceNm;
+
+  private String appKeys;
 
   private String servicePath;
 
@@ -58,5 +63,27 @@ public class RoutingDTO {
   private Date regDt;
 
   private Date uptDt;
+
+  public RoutingDTO(Long serviceId, Long filterId, String serviceNm, String servicePath,
+      String serviceTargetUrl, String serviceDesc, String serviceLoginType, String serviceAuthType,
+      String useYn, String filterBean, String filterUseYn, String regUserNo, String uptUserNo,
+      Date regDt, Date uptDt) {
+    super();
+    this.serviceId = serviceId;
+    this.filterId = filterId;
+    this.serviceNm = serviceNm;
+    this.servicePath = servicePath;
+    this.serviceTargetUrl = serviceTargetUrl;
+    this.serviceDesc = serviceDesc;
+    this.serviceLoginType = serviceLoginType;
+    this.serviceAuthType = serviceAuthType;
+    this.useYn = useYn;
+    this.filterBean = filterBean;
+    this.filterUseYn = filterUseYn;
+    this.regUserNo = regUserNo;
+    this.uptUserNo = uptUserNo;
+    this.regDt = regDt;
+    this.uptDt = uptDt;
+  }
 
 }

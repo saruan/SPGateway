@@ -1,5 +1,7 @@
 package com.kbds.serviceapi.common.utils;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 /**
  * 
  *
@@ -29,9 +31,19 @@ public class StringUtils {
 
       if (param == null || "".equals(param)) {
 
-        return false;
+        return true;
       }
     }
-    return true;
+    return false;
+  }
+
+  /**
+   * App-key 생성
+   * 
+   * @return
+   */
+  public static String generateAppKey() {
+
+    return RandomStringUtils.random(10, true, true);
   }
 }

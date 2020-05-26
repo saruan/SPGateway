@@ -30,6 +30,14 @@ public interface GwRoutingCustomRepository {
   public List<RoutingDTO> findbyConditions(RoutingDTO param);
 
   /**
+   * G/W Bean 등록용 서비스 조회
+   * 
+   * @param param
+   * @return
+   */
+  public List<RoutingDTO> findbyGwConditions();
+
+  /**
    * 서비스 등록 전 필수 파라미터 중복 체크
    * 
    * @param param

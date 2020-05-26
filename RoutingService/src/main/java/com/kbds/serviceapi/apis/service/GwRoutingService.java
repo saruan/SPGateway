@@ -47,13 +47,30 @@ public class GwRoutingService {
   @Autowired
   GwFilterRepository gwFilterRepository;
 
-  // 형 변환을 위한 ModelMapper
   @Autowired
   ModelMapper modelMapper;
 
-  // Routes,Filter 관리 서버 주소
   @Value("${gateway.cluster.refreshUrl}")
   String gatewayRefreshUrl;
+
+
+  /**
+   * G/W Routing Bean으로 등록할 정보들 조회 서비스
+   * 
+   * @param params
+   * @return
+   */
+  public List<RoutingDTO> findGwServices() {
+
+    try {
+
+      return gwServiceCustomRepository.findbyGwConditions();
+    } catch (Exception e) {
+
+      throw new BizException(BizExceptionCode.COM001, e.toString());
+    }
+  };
+
 
   /**
    * 서비스 검색 기능
@@ -109,8 +126,6 @@ public class GwRoutingService {
    * @param reqParam
    */
   public void registService(RoutingDTO reqParam) {
-
-    System.out.println(reqParam.toString());
 
     // 필수 파라미터 체크
     // 항목 - 서비스명, 서비스 API URL 경로, 사용자
@@ -184,7 +199,7 @@ public class GwRoutingService {
     try {
 
       // DB 상에서 해당 serviceId를 가진 Entity를 불러온다.
-      gwService = gwServiceRepository.findById(id).get();
+      gwService = gwServiceRepository.findByServiceId(id);
 
     } catch (Exception e) {
 

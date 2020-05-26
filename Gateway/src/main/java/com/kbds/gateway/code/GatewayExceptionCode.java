@@ -28,6 +28,7 @@ public enum GatewayExceptionCode {
 
   TOK001("TOK001", "AccessToken 만료"),
   TOK002("TOK002", "AccessToken가 유효하지 않습니다."),
+  TOK003("TOK003", "API KEY가 유효하지 않습니다."),
 
   DUMMY("", "");
 

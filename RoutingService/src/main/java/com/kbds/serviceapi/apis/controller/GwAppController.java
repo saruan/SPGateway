@@ -3,7 +3,6 @@ package com.kbds.serviceapi.apis.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +11,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.kbds.serviceapi.apis.dto.RoutingDTO;
-import com.kbds.serviceapi.apis.service.GwRoutingService;
+import com.kbds.serviceapi.apis.dto.AppDTO;
+import com.kbds.serviceapi.apis.service.GwAppService;
 import com.kbds.serviceapi.common.utils.CommonUtils;
 
 /**
@@ -33,61 +32,47 @@ import com.kbds.serviceapi.common.utils.CommonUtils;
  */
 @RestController
 @RequestMapping("/api/service")
-public class GwRoutingController {
+public class GwAppController {
 
   @Autowired
-  GwRoutingService gwRoutingService;
+  GwAppService gwAppService;
 
   /**
-   * 전체 Routing 서비스 목록 조회 API
+   * 전체 App 조회
    * 
    * @return
    */
-  @GetMapping(value = "/v1/routes/")
-  public ResponseEntity<Object> findServices(@ModelAttribute RoutingDTO params) {
+  @GetMapping(value = "/v1/app/")
+  public ResponseEntity<Object> findServices(@ModelAttribute AppDTO params) {
 
-    Object result = CommonUtils.getResponseEntity(gwRoutingService.findServices(params));
+    Object result = CommonUtils.getResponseEntity(gwAppService.findApps(params));
 
     return new ResponseEntity<Object>(result, HttpStatus.OK);
   }
 
   /**
-   * G/W Routing Bean으로 등록할 정보들 조회 API
+   * App 상제 조회
    * 
    * @return
    */
-  @GetMapping(value = "/v1/routes/app/")
-  public ResponseEntity<Object> findGwServices() {
-
-    Object result = CommonUtils.getResponseEntity(gwRoutingService.findGwServices());
-
-    return new ResponseEntity<Object>(result, HttpStatus.OK);
-  }
-
-
-  /**
-   * Routing 특정 서비스 조회 API
-   * 
-   * @return
-   */
-  @GetMapping(value = "/v1/routes/{id}")
+  @GetMapping(value = "/v1/app/{id}")
   public ResponseEntity<Object> findServiceDetail(@PathVariable Long id) {
 
-    Object result = CommonUtils.getResponseEntity(gwRoutingService.findServiceDetail(id));
+    Object result = CommonUtils.getResponseEntity(gwAppService.findAppDetail(id));
 
     return new ResponseEntity<Object>(result, HttpStatus.OK);
   }
 
   /**
-   * 신규 Routing 서비스 등록
+   * 신규 App 등록
    * 
    * @param params
    * @return
    */
-  @PostMapping(value = "/v1/routes")
-  public ResponseEntity<Object> registService(@RequestBody RoutingDTO params) {
+  @PostMapping(value = "/v1/app")
+  public ResponseEntity<Object> registService(@RequestBody AppDTO params) {
 
-    gwRoutingService.registService(params);
+    gwAppService.registApp(params);
 
     Object result = CommonUtils.getResponseEntity(true);
 
@@ -95,35 +80,18 @@ public class GwRoutingController {
   }
 
   /**
-   * Routing 서비스 수정
+   * App 수정
    * 
    * @param params
    * @return
    */
-  @PutMapping(value = "/v1/routes/{id}")
-  public ResponseEntity<Object> updateService(@PathVariable Long id,
-      @RequestBody RoutingDTO params) {
+  @PutMapping(value = "/v1/app/{id}")
+  public ResponseEntity<Object> updateService(@RequestBody AppDTO params, @PathVariable Long id) {
 
-    gwRoutingService.updateService(params, id);
-
-    Object result = CommonUtils.getResponseEntity(true);
-
-    return new ResponseEntity<Object>(result, HttpStatus.OK);
-  }
-
-  /**
-   * Routing 서비스 삭제
-   * 
-   * @param params
-   * @return
-   */
-  @DeleteMapping(value = "/v1/routes/{id}")
-  public ResponseEntity<Object> deleteService(@PathVariable Long[] id) {
-
-    gwRoutingService.deleteService(id);
+    gwAppService.updateApp(params, id);
 
     Object result = CommonUtils.getResponseEntity(true);
 
-    return new ResponseEntity<Object>(result, HttpStatus.OK);
+    return new ResponseEntity<Object>(result, HttpStatus.CREATED);
   }
 }

@@ -1,16 +1,14 @@
-package com.kbds.serviceapi.apis.repository;
+package com.kbds.serviceapi.apis.querydsl;
 
 import java.util.List;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
-import com.kbds.serviceapi.apis.entity.GwService;
+import com.kbds.serviceapi.apis.dto.AppDTO;
 
 /**
  * 
  *
  * <pre>
- *  Class Name     : GwServiceRepository.java
- *  Description    : 게이트웨이 라우팅 서비스 Repository 클래스
+ *  Class Name     : GwAppCustomRepository.java
+ *  Description    : App QueryDsl 레파지토리
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
  * 
  * -------------------------------------------------------------------------------
@@ -21,11 +19,15 @@ import com.kbds.serviceapi.apis.entity.GwService;
  * </pre>
  *
  */
+public interface GwAppCustomRepository {
 
-@Repository
-public interface GwRoutingRepository extends CrudRepository<GwService, Long> {
+  /**
+   * Mapping 테이블 갱신
+   * 
+   * @param param
+   * @return
+   */
+  public List<AppDTO> updateServiceAppMapping(AppDTO param);
 
-  public Long countByserviceIdIn(List<Long> serviceId);
 
-  public GwService findByServiceId(Long serviceId);
 }

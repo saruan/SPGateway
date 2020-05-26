@@ -27,6 +27,7 @@ public enum GatewayCode {
   ROLE_ADMIN("ROLE_ADMIN", "관리자 권한"),
   GATEWAY_FILTER_APPLY("apply", "Gateway Filter 메소드명"),
   TOKEN_PREFIX("Bearer ", "TOKEN 헤더 PREFIX"),
+  API_KEY("api_key", "appKey 헤더 정보"),
 
   OAUTH_TYPE("1", "OAuth 인증 방식"),
 

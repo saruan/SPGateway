@@ -7,6 +7,18 @@ Configuration:
       name: LogToConsole
       PatternLayout:
         Pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"
+    RollingFile: 
+      name: LogToFile 
+      fileName: "C:/logs/app.log" 
+      filePattern: "C:/logs/archive/app.log-%d{yyyy-MM-dd}" 
+      append: true 
+      PatternLayout: 
+        pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] [%level] %C{1.} - %msg%n"
+      Policies: 
+       TimeBasedTriggeringPolicy: 
+        interval: 1 
+        modulate: true
+
     #DB 로그    
     Jdbc:
       name: LogToDatabase
@@ -35,14 +47,16 @@ Configuration:
     Root:
       Level: INFO    
       AppenderRef:
-          - ref: LogToConsole        
+          - ref: LogToConsole   
+          - ref: LogToFile     
     logger:
       #[INFO]Console 로그
       - name: com.kbds.serviceapi
         level: DEBUG
         additivity: false
         AppenderRef:
-          - ref: LogToConsole        
+          - ref: LogToConsole    
+          - ref: LogToFile    
       #[ERROR]JDBC 로그
       - name: com.kbds.serviceapi
         level: ERROR

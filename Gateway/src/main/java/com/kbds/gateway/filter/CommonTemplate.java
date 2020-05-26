@@ -1,6 +1,8 @@
 package com.kbds.gateway.filter;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,7 @@ import com.kbds.gateway.code.GatewayExceptionCode;
 import com.kbds.gateway.dto.RoutingDTO;
 import com.kbds.gateway.exception.GatewayException;
 import com.kbds.gateway.feign.AuthClient;
+import com.kbds.gateway.utils.StringUtils;
 
 /**
  * 
@@ -56,14 +59,35 @@ public class CommonTemplate extends AbstractGatewayFilterFactory<RoutingDTO> {
 
     return (exchange, chain) -> {
 
+      ServerHttpRequest request = exchange.getRequest();
       String serviceLoginType = routingDTO.getServiceLoginType();
+
+      String appKey = request.getHeaders().getFirst(GatewayCode.API_KEY.getCode());
+
+      // api-key 검증
+      if (!StringUtils.isEmptyParams(routingDTO.getAppKeys())) {
+
+        List<String> appKeys = Arrays.asList(routingDTO.getAppKeys().split(","));
+
+        if (StringUtils.isEmptyParams(appKey) || !appKeys.contains(appKey)) {
+
+          throw new GatewayException(GatewayExceptionCode.TOK003, HttpStatus.UNAUTHORIZED,
+              GatewayExceptionCode.TOK003.getMsg());
+        }
+      }
 
       // OAuth 인증일 경우 인증 서버에서 토큰값이 유효한지 체크한다.
       if (GatewayCode.OAUTH_TYPE.getCode().equals(serviceLoginType)) {
 
-        ServerHttpRequest request = exchange.getRequest();
-        String accessToken = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION)
-            .replace(GatewayCode.TOKEN_PREFIX.getCode(), "");
+        String accessToken = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+
+        if (StringUtils.isEmptyParams(accessToken)) {
+
+          throw new GatewayException(GatewayExceptionCode.TOK001, HttpStatus.UNAUTHORIZED,
+              GatewayExceptionCode.TOK001.getMsg());
+        }
+
+        accessToken = accessToken.replace(GatewayCode.TOKEN_PREFIX.getCode(), "");
 
         Map<String, String> headers = new HashMap<String, String>();
 

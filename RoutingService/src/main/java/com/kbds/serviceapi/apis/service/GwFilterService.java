@@ -236,28 +236,19 @@ public class GwFilterService {
 
       gwServiceFilter = gwFilterRepository.findById(id).get();
 
-    } catch (NoSuchElementException e) {
-      // 데이터가 없는 경우
-      throw new BizException(BizExceptionCode.COM004);
-    } catch (Exception e) {
-      // 그 이외의 에러
-      throw new BizException(BizExceptionCode.COM001, e.toString());
-    }
-
-    // 데이터 정합성 체크가 끝나면 최종적으로 서비스를 갱신 시킨다.
-    gwServiceFilter.setUseYn(CommonCode.N.getResultCode());
-
-    try {
-
       // 필터를 논리적으로 삭제한다.
+      gwServiceFilter.setUseYn(CommonCode.N.getResultCode());
       gwFilterRepository.save(gwServiceFilter);
 
       // 해당 필터에 연결 되어 있는 Routing Service의 Filter 정보를 기본 필터로 변경한 후 사용여부를 N으로 변경한다.
       gwRoutingCustomRepository.updateServiceByFilter(gwServiceFilter.getFilterId());
 
+    } catch (NoSuchElementException e) {
+
+      throw new BizException(BizExceptionCode.COM004);
     } catch (Exception e) {
 
-      throw new BizException(BizExceptionCode.COM002);
+      throw new BizException(BizExceptionCode.COM001, e.toString());
     }
   }
 }

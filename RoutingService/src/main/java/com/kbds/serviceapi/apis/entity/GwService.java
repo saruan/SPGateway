@@ -1,6 +1,8 @@
 package com.kbds.serviceapi.apis.entity;
 
 import java.io.Serializable;
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -8,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -38,6 +41,9 @@ public class GwService extends AuditLog implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long serviceId;
+
+  @OneToMany(mappedBy = "gwService", cascade = CascadeType.ALL)
+  private Set<GwServiceAppMapping> gwApp;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "FILTER_ID")

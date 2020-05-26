@@ -13,6 +13,8 @@ spring:
     host: localhost
     username: guest
     password: guest
+  application:
+    name: config-server
     
 #Actuactor 활성화    
 management:
