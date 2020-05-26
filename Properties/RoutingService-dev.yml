@@ -10,13 +10,11 @@ spring:
     username: root
     password: 1234
   jpa:
-    #database-platform: org.hibernate.dialect.MySQL8Dialect
-    database: MYSQL
+    database-platform: com.kbds.serviceapi.framework.dialect.CustomMysqlDialect
     open-in-view: false
     show-sql: true
     hibernate:
       format_sql: true
-      dialect: com.kbds.serviceapi.framework.dialect.CustomMysqlDialect
   # RabbitMQ 설정
   rabbitmq:       
     host: localhost   
