@@ -2,7 +2,6 @@
 server:
   port: 7777
 
-
 spring:
   #cache(Redis) 설정
   cache:
@@ -25,19 +24,4 @@ spring:
 
 # 로그 설정
 logging:
-  config: classpath:${spring.profiles.active}/log4j2.yml
-#  level:
-#    org:
-#      hibernate:
-#        SQL: INFO
-#        type:
-##          descriptor:
-#            sql:
-#              BasicBinder: TRACE
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
-  instance:
-    hostname: auth-service             
+  config: classpath:${spring.profiles.active}/log4j2.yml   
