@@ -16,7 +16,7 @@ spring:
     show-sql: true
     hibernate:
       format_sql: true
-      dialect: CustomMysqlDialect
+      dialect: com.kbds.serviceapi.framework.dialect.CustomMysqlDialect
   # RabbitMQ 설정
   rabbitmq:       
     host: localhost   
