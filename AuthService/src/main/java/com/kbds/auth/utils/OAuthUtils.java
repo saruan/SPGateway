@@ -2,8 +2,10 @@ package com.kbds.auth.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import org.apache.commons.codec.digest.MessageDigestAlgorithms;
 
 /**
  * 
@@ -32,6 +34,7 @@ public class OAuthUtils {
   public static String extractTokenKey(String value) {
 
     if (value == null) {
+
       return null;
     } else {
 
@@ -39,7 +42,7 @@ public class OAuthUtils {
 
       try {
 
-        digest = MessageDigest.getInstance("MD5");
+        digest = MessageDigest.getInstance(MessageDigestAlgorithms.MD5);
       } catch (NoSuchAlgorithmException var5) {
 
         throw new IllegalStateException(
@@ -48,7 +51,7 @@ public class OAuthUtils {
 
       try {
 
-        byte[] e = digest.digest(value.getBytes("UTF-8"));
+        byte[] e = digest.digest(value.getBytes(StandardCharsets.UTF_8.name()));
         return String.format("%032x", new Object[] {new BigInteger(1, e)});
       } catch (UnsupportedEncodingException var4) {
 
