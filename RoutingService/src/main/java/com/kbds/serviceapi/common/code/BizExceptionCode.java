@@ -34,6 +34,10 @@ public enum BizExceptionCode {
 
   COM005("COM005", "유효하지 않은 요청 자료가 있습니다. 파라미터를 체크 해 주세요."),
 
+  COM006("COM006", "APP이 현재 사용 중입니다. 비활성화 후 APP을 삭제해 주세요."),
+
+  COM007("COM007", "Filter가 현재 사용 중입니다. Api 정보를 수정한 후 삭제해 주세요."),
+
   DUMMY("", "");
 
   private String code;

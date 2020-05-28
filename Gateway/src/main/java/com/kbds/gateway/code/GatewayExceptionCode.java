@@ -30,6 +30,8 @@ public enum GatewayExceptionCode {
   TOK002("TOK002", "AccessToken가 유효하지 않습니다."),
   TOK003("TOK003", "API KEY가 유효하지 않습니다."),
 
+  APP001("APP001", "APP이 등록되지 않았습니다."),
+
   DUMMY("", "");
 
   private String code;

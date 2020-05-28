@@ -250,6 +250,36 @@ public class GwAppService {
   }
 
   /**
+   * App 삭제 (등록 되어 있는 API가 있을 경우 App 삭제 금지)
+   * 
+   * @param id
+   */
+  public void deleteApp(Long appId) {
+
+    if (appId == null) {
+
+      throw new BizException(BizExceptionCode.COM002);
+    }
+
+    try {
+
+      if (isUseApp(appId)) {
+
+        throw new BizException(BizExceptionCode.COM006);
+      }
+
+      gwAppRepository.deleteById(appId);
+
+    } catch (BizException e) {
+
+      throw new BizException(BizExceptionCode.valueOf(e.getMessage()));
+    } catch (Exception e) {
+
+      throw new BizException(BizExceptionCode.COM001, e.toString());
+    }
+  }
+
+  /**
    * ServiceId 유효성 체크
    * 
    * @param reqParam
@@ -281,5 +311,16 @@ public class GwAppService {
   public boolean isValidModifyAppNm(AppDTO reqParam, Long appId) {
 
     return gwAppRepository.findByAppNmAndAppIdNot(reqParam.getAppNm(), appId).size() == 0;
+  }
+
+  /**
+   * App에 등록 되어 있는 Api가 존재하는지 체크
+   * 
+   * @param appId
+   * @return
+   */
+  public boolean isUseApp(Long appId) {
+
+    return gwServiceAppMappingRepository.countByIdAppId(appId) > 0;
   }
 }

@@ -24,13 +24,35 @@ import com.kbds.auth.entity.GatewayCluster;
 @Repository
 public interface GatewayClusterRepository extends CrudRepository<GatewayCluster, Long> {
 
+  /**
+   * GatewayCluster 목록 조회
+   */
   @Override
   @Cacheable(value = "clusterList")
-  List<GatewayCluster> findAll();
+  public List<GatewayCluster> findAll();
 
-  GatewayCluster findByGatewayId(String gatewayId);
+  /**
+   * GatewayId로 클러스터 조회
+   * 
+   * @param gatewayId
+   * @return
+   */
+  public GatewayCluster findByGatewayId(String gatewayId);
 
-  GatewayCluster findByGatewayIdAndSecretKey(String gatewayId, String secretKey);
+  /**
+   * SecretKey, Id로 클러스터 조회
+   * 
+   * @param gatewayId
+   * @param secretKey
+   * @return
+   */
+  public GatewayCluster findByGatewayIdAndSecretKey(String gatewayId, String secretKey);
 
-  GatewayCluster findByMainYn(String mainYn);
+  /**
+   * 메인 클러스터 조회
+   * 
+   * @param mainYn
+   * @return
+   */
+  public GatewayCluster findByMainYn(String mainYn);
 }

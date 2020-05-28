@@ -31,4 +31,12 @@ public interface GwServiceAppMappingRepository extends CrudRepository<GwServiceA
    * @return
    */
   public Long deleteByIdAppIdAndIdServiceIdNotIn(Long appId, List<Long> serviceId);
+
+  /**
+   * App을 사용중인 데이터 건수 조회
+   * 
+   * @param appId
+   * @return
+   */
+  public Long countByIdAppId(Long appId);
 }

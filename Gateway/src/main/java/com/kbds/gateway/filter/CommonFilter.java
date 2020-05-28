@@ -26,8 +26,8 @@ import com.kbds.gateway.utils.StringUtils;
  * 
  *
  * <pre>
- *  Class Name     : CommonTemplate.java
- *  Description    : 샘플용 공통 필터 템플릿
+ *  Class Name     : CommonFilter.java
+ *  Description    : 일반 공통 필터 템플릿
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
  * 
  * -------------------------------------------------------------------------------
@@ -38,8 +38,8 @@ import com.kbds.gateway.utils.StringUtils;
  * </pre>
  *
  */
-@Service("CommonTemplate")
-public class CommonTemplate extends AbstractGatewayFilterFactory<RoutingDTO> {
+@Service("CommonFilter")
+public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
   @Autowired
   AuthClient authClient;
@@ -48,9 +48,9 @@ public class CommonTemplate extends AbstractGatewayFilterFactory<RoutingDTO> {
   String clientId;
 
   // 로그용 변수
-  Logger logger = LoggerFactory.getLogger(CommonTemplate.class);
+  Logger logger = LoggerFactory.getLogger(CommonFilter.class);
 
-  public CommonTemplate() {
+  public CommonFilter() {
     super();
   }
 
@@ -60,11 +60,11 @@ public class CommonTemplate extends AbstractGatewayFilterFactory<RoutingDTO> {
     return (exchange, chain) -> {
 
       ServerHttpRequest request = exchange.getRequest();
-      String serviceLoginType = routingDTO.getServiceLoginType();
 
+      String serviceLoginType = routingDTO.getServiceLoginType();
       String appKey = request.getHeaders().getFirst(GatewayCode.API_KEY.getCode());
 
-      // api-key 검증
+      // AppKey 검증
       if (!StringUtils.isEmptyParams(routingDTO.getAppKeys())) {
 
         List<String> appKeys = Arrays.asList(routingDTO.getAppKeys().split(","));
@@ -74,6 +74,10 @@ public class CommonTemplate extends AbstractGatewayFilterFactory<RoutingDTO> {
           throw new GatewayException(GatewayExceptionCode.TOK003, HttpStatus.UNAUTHORIZED,
               GatewayExceptionCode.TOK003.getMsg());
         }
+      } else {
+
+        throw new GatewayException(GatewayExceptionCode.APP001, HttpStatus.UNAUTHORIZED,
+            GatewayExceptionCode.APP001.getMsg());
       }
 
       // OAuth 인증일 경우 인증 서버에서 토큰값이 유효한지 체크한다.
@@ -94,6 +98,7 @@ public class CommonTemplate extends AbstractGatewayFilterFactory<RoutingDTO> {
         headers.put(HttpHeaders.AUTHORIZATION, clientId);
         headers.put(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
 
+        // AuthServer에서 토큰 유효성 체크를 수행한다.
         Map<String, Object> results = authClient.checkAccessToken(accessToken, headers);
 
         boolean isValid = isValidToken(results);

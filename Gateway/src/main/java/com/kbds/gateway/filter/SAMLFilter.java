@@ -11,8 +11,8 @@ import com.kbds.gateway.dto.RoutingDTO;
  * 
  *
  * <pre>
- *  Class Name     : CommonTemplate.java
- *  Description    : 샘플용 공통 필터 템플릿
+ *  Class Name     : SAMLFilter.java
+ *  Description    : SAML 발급 필터
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
  * 
  * -------------------------------------------------------------------------------
@@ -23,13 +23,13 @@ import com.kbds.gateway.dto.RoutingDTO;
  * </pre>
  *
  */
-@Service("SAMLTemplate")
-public class SAMLTemplate extends AbstractGatewayFilterFactory<RoutingDTO> {
+@Service("SAMLFilter")
+public class SAMLFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
   // 로그용 변수
-  Logger logger = LoggerFactory.getLogger(SAMLTemplate.class);
+  Logger logger = LoggerFactory.getLogger(SAMLFilter.class);
 
-  public SAMLTemplate() {
+  public SAMLFilter() {
     super();
   }
 
@@ -37,19 +37,6 @@ public class SAMLTemplate extends AbstractGatewayFilterFactory<RoutingDTO> {
   public GatewayFilter apply(RoutingDTO routingDTO) {
 
     return (exchange, chain) -> {
-
-      String serviceLoginType = routingDTO.getServiceLoginType();
-
-      logger.info("PRE FILTER CALLED [" + serviceLoginType + "]");
-
-      // ServerHttpRequest request = exchange.getRequest();
-      // String someHeader = request.getHeaders("TEST");
-
-      if ("1".equals(serviceLoginType)) {
-
-        // throw new GatewayException(GatewayExceptionCode.GWE0001, HttpStatus.UNAUTHORIZED,
-        // "Exception test");
-      }
 
       return chain.filter(exchange);
     };

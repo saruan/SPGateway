@@ -25,7 +25,27 @@ import com.kbds.serviceapi.apis.entity.GwService;
 @Repository
 public interface GwRoutingRepository extends CrudRepository<GwService, Long> {
 
+  /**
+   * ServiceId 건수 조회
+   * 
+   * @param serviceId
+   * @return
+   */
   public Long countByserviceIdIn(List<Long> serviceId);
 
+  /**
+   * 라우팅 서비스 조회
+   * 
+   * @param serviceId
+   * @return
+   */
   public GwService findByServiceId(Long serviceId);
+
+  /**
+   * FilterId 조회
+   * 
+   * @param filterId
+   * @return
+   */
+  public Long countByFilterFilterId(Long filterId);
 }

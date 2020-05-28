@@ -18,8 +18,8 @@ import com.kbds.gateway.utils.StringUtils;
  * 
  *
  * <pre>
- *  Class Name     : CommonTemplate.java
- *  Description    : 샘플용 공통 필터 템플릿
+ *  Class Name     : TokenFilter.java
+ *  Description    : AccessToken 발급용 필터
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
  * 
  * -------------------------------------------------------------------------------
@@ -30,13 +30,13 @@ import com.kbds.gateway.utils.StringUtils;
  * </pre>
  *
  */
-@Service("TokenTemplate")
-public class TokenTemplate extends AbstractGatewayFilterFactory<RoutingDTO> {
+@Service("TokenFilter")
+public class TokenFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
   // 로그용 변수
-  Logger logger = LoggerFactory.getLogger(TokenTemplate.class);
+  Logger logger = LoggerFactory.getLogger(TokenFilter.class);
 
-  public TokenTemplate() {
+  public TokenFilter() {
     super();
   }
 

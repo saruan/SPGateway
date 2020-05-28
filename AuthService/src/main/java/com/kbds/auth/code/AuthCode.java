@@ -22,12 +22,17 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum AuthCode {
 
+  // CODE 정보
   SUCCESS("200", "Success"),
   COMMON_FAIL("1000", "Server Fail"),
 
   Y("Y", "예"),
   N("N", "아니오"),
+
+  // ROLE 정보
   ROLE_ADMIN("ROLE_ADMIN", "관리자 권한"),
+
+  // PARAMETER 정보
   PARAMTER_SAML("saml", "SAML 파라미터 규격"),
 
   DUMMY("", "");

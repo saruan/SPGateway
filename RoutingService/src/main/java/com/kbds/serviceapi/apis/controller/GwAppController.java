@@ -3,6 +3,7 @@ package com.kbds.serviceapi.apis.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,7 +44,7 @@ public class GwAppController {
    * @return
    */
   @GetMapping(value = "/v1/app/")
-  public ResponseEntity<Object> findServices(@ModelAttribute AppDTO params) {
+  public ResponseEntity<Object> findApps(@ModelAttribute AppDTO params) {
 
     Object result = CommonUtils.getResponseEntity(gwAppService.findApps(params));
 
@@ -56,9 +57,9 @@ public class GwAppController {
    * @return
    */
   @GetMapping(value = "/v1/app/{id}")
-  public ResponseEntity<Object> findServiceDetail(@PathVariable Long id) {
+  public ResponseEntity<Object> findAppDetail(@PathVariable Long appId) {
 
-    Object result = CommonUtils.getResponseEntity(gwAppService.findAppDetail(id));
+    Object result = CommonUtils.getResponseEntity(gwAppService.findAppDetail(appId));
 
     return new ResponseEntity<Object>(result, HttpStatus.OK);
   }
@@ -70,7 +71,7 @@ public class GwAppController {
    * @return
    */
   @PostMapping(value = "/v1/app")
-  public ResponseEntity<Object> registService(@RequestBody AppDTO params) {
+  public ResponseEntity<Object> registApp(@RequestBody AppDTO params) {
 
     gwAppService.registApp(params);
 
@@ -86,9 +87,25 @@ public class GwAppController {
    * @return
    */
   @PutMapping(value = "/v1/app/{id}")
-  public ResponseEntity<Object> updateService(@RequestBody AppDTO params, @PathVariable Long id) {
+  public ResponseEntity<Object> updateApp(@RequestBody AppDTO params, @PathVariable Long appId) {
 
-    gwAppService.updateApp(params, id);
+    gwAppService.updateApp(params, appId);
+
+    Object result = CommonUtils.getResponseEntity(true);
+
+    return new ResponseEntity<Object>(result, HttpStatus.CREATED);
+  }
+
+  /**
+   * App 삭제
+   * 
+   * @param params
+   * @return
+   */
+  @DeleteMapping(value = "/v1/app/{id}")
+  public ResponseEntity<Object> deleteApp(@PathVariable Long appId) {
+
+    gwAppService.deleteApp(appId);
 
     Object result = CommonUtils.getResponseEntity(true);
 

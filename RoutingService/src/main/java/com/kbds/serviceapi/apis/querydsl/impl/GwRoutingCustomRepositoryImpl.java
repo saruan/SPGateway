@@ -60,14 +60,14 @@ public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
     BooleanBuilder builder = new BooleanBuilder();
 
     builder.and(gwService.useYn.eq(CommonCode.Y.getResultCode()));
-    builder.and(gwApp.useYn.eq(CommonCode.Y.getResultCode()));
+    // builder.and(gwApp.useYn.eq(CommonCode.Y.getResultCode()));
 
     // @formatter:off
     // GwService, GwApp, Mapping 테이블과 조인 후 appKey를 , 로 합쳐 전달한다.    
     return from(gwService)
-          .innerJoin(gwServiceAppMapping)
+          .leftJoin(gwServiceAppMapping)
              .on(gwService.serviceId.eq(gwServiceAppMapping.gwService.serviceId))
-          .innerJoin(gwApp)
+          .leftJoin(gwApp)
              .on(gwApp.appId.eq(gwServiceAppMapping.gwApp.appId))
           .select(Projections.constructor(RoutingDTO.class, 
                  gwService.serviceId,

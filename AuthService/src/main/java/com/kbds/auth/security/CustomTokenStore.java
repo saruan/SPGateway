@@ -12,7 +12,6 @@ import org.springframework.security.oauth2.common.OAuth2RefreshToken;
 import org.springframework.security.oauth2.common.util.SerializationUtils;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.AuthenticationKeyGenerator;
-import org.springframework.security.oauth2.provider.token.DefaultAuthenticationKeyGenerator;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import com.kbds.auth.code.AuthCode;
 import com.kbds.auth.code.BizExceptionCode;
@@ -54,11 +53,13 @@ public class CustomTokenStore implements TokenStore {
   @Autowired
   GatewayClusterService gatewayClusterService;
 
+  private final String GRANT_TYPE_CLIENTS = "Clients";
+
   // DefaultAuthenticationKeyGenerator : Client / AccessToken가 1:1 일 경우
   // UniqueAuthenticationKeyGenerator : Client / AccessToken가 1:N 일 경우
   private AuthenticationKeyGenerator authenticationKeyGenerator =
-      new DefaultAuthenticationKeyGenerator();
-  // new UniqueAuthenticationKeyGenerator();
+      // new DefaultAuthenticationKeyGenerator();
+      new UniqueAuthenticationKeyGenerator();
 
   @Override
   public OAuth2Authentication readAuthentication(OAuth2AccessToken token) {
@@ -97,13 +98,14 @@ public class CustomTokenStore implements TokenStore {
       this.removeAccessToken(oAuth2AccessToken);
     }
 
+    // AccessToken 저장
     OAuthAccessToken accessToken = new OAuthAccessToken();
 
     accessToken.setTokenId(OAuthUtils.extractTokenKey(oAuth2AccessToken.getValue()));
     accessToken.setToken(SerializationUtils.serialize(oAuth2AccessToken));
     accessToken.setAuthenticationId(authenticationKeyGenerator.extractKey(oAuth2Authentication));
     accessToken.setUserName(
-        oAuth2Authentication.isClientOnly() ? "Clients" : oAuth2Authentication.getName());
+        oAuth2Authentication.isClientOnly() ? GRANT_TYPE_CLIENTS : oAuth2Authentication.getName());
     accessToken.setClientId(oAuth2Authentication.getOAuth2Request().getClientId());
     accessToken.setAuthentication(SerializationUtils.serialize(oAuth2Authentication));
     accessToken.setRefreshToken(OAuthUtils.extractTokenKey(refreshToken));

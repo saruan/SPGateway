@@ -23,6 +23,12 @@ import com.kbds.auth.entity.OAuthRefreshToken;
 @Repository
 public interface OAuthRefreshTokenRepository extends CrudRepository<OAuthRefreshToken, Long> {
 
-  Optional<OAuthRefreshToken> findByTokenId(String tokenId);
+  /**
+   * RefreshToken 조회
+   * 
+   * @param tokenId
+   * @return
+   */
+  public Optional<OAuthRefreshToken> findByTokenId(String tokenId);
 
 }

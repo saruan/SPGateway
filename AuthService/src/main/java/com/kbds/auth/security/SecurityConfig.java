@@ -34,12 +34,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     http.csrf().disable().authorizeRequests().anyRequest().permitAll();
   }
 
+  @Autowired
+  public void configure(AuthenticationManagerBuilder auth) throws Exception {
+
+    auth.inMemoryAuthentication().withUser("user").password("{noop}pass").roles("USER");
+  }
+
   @Bean
   public PasswordEncoder encoder() {
 
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();
   }
-
 
   @Bean
   @Override
@@ -47,12 +52,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     return super.authenticationManager();
   }
-
-  @Autowired
-  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-
-    auth.inMemoryAuthentication().withUser("user").password("{noop}pass").roles("USER");
-
-  }
-
 }

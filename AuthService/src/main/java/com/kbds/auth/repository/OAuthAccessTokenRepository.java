@@ -24,13 +24,44 @@ import com.kbds.auth.entity.OAuthAccessToken;
 @Repository
 public interface OAuthAccessTokenRepository extends CrudRepository<OAuthAccessToken, Long> {
 
-  List<OAuthAccessToken> findByClientId(String clientId);
+  /**
+   * ClientID로 토큰 조회
+   * 
+   * @param clientId
+   * @return
+   */
+  public List<OAuthAccessToken> findByClientId(String clientId);
 
-  List<OAuthAccessToken> findByClientIdAndUserName(String clientId, String userName);
+  /**
+   * ClientID, 사용자명으로 토큰 조회
+   * 
+   * @param clientId
+   * @param userName
+   * @return
+   */
+  public List<OAuthAccessToken> findByClientIdAndUserName(String clientId, String userName);
 
-  Optional<OAuthAccessToken> findByTokenId(String tokenId);
+  /**
+   * 토큰ID로 조회
+   * 
+   * @param tokenId
+   * @return
+   */
+  public Optional<OAuthAccessToken> findByTokenId(String tokenId);
 
-  Optional<OAuthAccessToken> findByRefreshToken(String refreshToken);
+  /**
+   * Refresh 토큰 조회
+   * 
+   * @param refreshToken
+   * @return
+   */
+  public Optional<OAuthAccessToken> findByRefreshToken(String refreshToken);
 
-  Optional<OAuthAccessToken> findByAuthenticationId(String authenticationId);
+  /**
+   * 인증 ID 조회
+   * 
+   * @param authenticationId
+   * @return
+   */
+  public Optional<OAuthAccessToken> findByAuthenticationId(String authenticationId);
 }
