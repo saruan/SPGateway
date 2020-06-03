@@ -1,0 +1,15 @@
+# 서버 포트 설정
+server:
+  port: 8787
+
+spring:  
+  # RabbitMQ 설정
+  rabbitmq:       
+    host: localhost   
+    port: 5672
+    username: guest
+    password: guest
+
+# 로그 설정
+logging:
+  config: classpath:${spring.profiles.active}/log4j2.yml
