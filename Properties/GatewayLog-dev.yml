@@ -3,13 +3,21 @@ server:
   port: 8787
 
 spring:  
+  # Datasource 설정
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/servicelog?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: 1234
+  jpa:
+    database-platform: com.kbds.serviceapi.framework.dialect.CustomMysqlDialect
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      format_sql: true
   # RabbitMQ 설정
   rabbitmq:       
     host: localhost   
     port: 5672
     username: guest
     password: guest
-
-# 로그 설정
-logging:
-  config: classpath:${spring.profiles.active}/log4j2.yml
