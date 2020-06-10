@@ -22,10 +22,11 @@ jwt:
 oauth:
   client-id: Basic Y2xpZW50MjpwYXNzd29yZA==
 
-#RabbitMQ 연동
+#KAFKA 연동
 spring:
-  rabbitmq:       # RabbitMQ 정보 수정.
-    host: localhost   
-    port: 5672
-    username: guest
-    password: guest
+  cloud:
+    bus:
+      enabled: true
+  kafka:
+    bootstrap-servers:
+    - http://localhost:9092

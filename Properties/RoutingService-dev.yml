@@ -15,12 +15,13 @@ spring:
     show-sql: true
     hibernate:
       format_sql: true
-  # RabbitMQ 설정
-  rabbitmq:       
-    host: localhost   
-    port: 5672
-    username: guest
-    password: guest
+  #kafka 연동
+  cloud:
+    bus:
+      enabled: true
+  kafka:
+    bootstrap-servers:
+    - http://localhost:9092
 
 # 로그 설정
 logging:
