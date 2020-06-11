@@ -21,7 +21,13 @@ spring:
     show-sql: true
     hibernate:
       format_sql: true
-
+  #kafka 연동
+  cloud:
+    bus:
+      enabled: true
+  kafka:
+    bootstrap-servers:
+    - http://localhost:9092
 # 로그 설정
 logging:
   config: classpath:${spring.profiles.active}/log4j2.yml   
