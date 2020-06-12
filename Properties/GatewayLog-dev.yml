@@ -15,6 +15,7 @@ spring:
     show-sql: true
     hibernate:
       format_sql: true
+      use-new-id-generator-mappings: false
   #kafka 연동
   cloud:
     bus:
