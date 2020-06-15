@@ -45,27 +45,17 @@ public class TokenFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
     return (exchange, chain) -> {
 
-      // Webflux는 HttpServerRequest에서 body를 한번만 읽을 수 있어 Cache에 담아둔다.
-      Object attribute = exchange.getAttribute("cachedRequestBody");
+      // Request Body 추출
+      Object attribute = exchange.getAttribute(GatewayCode.CACHE_REQUEST_BODY.getCode());
+      DataBuffer buffer = (DataBuffer) attribute;
 
-      // DataBuffer Type 체크
-      if (attribute instanceof DataBuffer) {
+      Map<String, String> queryParam = StringUtils.queryToMap(buffer);
 
-        DataBuffer buffer = (DataBuffer) attribute;
+      // SAML 체크
+      if (!queryParam.containsKey(GatewayCode.REQUESTPARAM_SAML.getCode())) {
 
-        Map<String, String> queryParam = StringUtils.queryToMap(buffer);
-
-        // SAML 체크
-        if (!queryParam.containsKey(GatewayCode.REUQESTPARAM_SAML.getCode())) {
-
-          throw new GatewayException(GatewayExceptionCode.GWE0001, HttpStatus.UNAUTHORIZED,
-              "Invalid SAML");
-        }
-
-      } else {
-
-        throw new GatewayException(GatewayExceptionCode.GWE0001, HttpStatus.UNAUTHORIZED,
-            "Invalid Paramters");
+        throw new GatewayException(GatewayExceptionCode.SAM001, HttpStatus.UNAUTHORIZED,
+            queryParam.toString());
       }
 
       return chain.filter(exchange);

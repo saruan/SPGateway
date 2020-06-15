@@ -1,5 +1,6 @@
 package com.kbds.gateway.exception;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ResourceProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler;
 import org.springframework.boot.web.reactive.error.ErrorAttributes;
@@ -7,6 +8,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.ServerCodecConfigurer;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.RequestPredicates;
@@ -16,7 +18,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import com.kbds.gateway.code.GatewayExceptionCode;
 import com.kbds.gateway.dto.ResponseDTO;
-import com.kbds.gateway.utils.StringUtils;
+import com.kbds.gateway.dto.ServiceLogDTO;
 import reactor.core.publisher.Mono;
 
 /**
@@ -36,6 +38,14 @@ import reactor.core.publisher.Mono;
  */
 @Component
 public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHandler {
+
+  @Autowired
+  private KafkaTemplate<String, ServiceLogDTO> kafkaTemplate;
+
+  // kafka 토픽
+  private final String GATEWAY_TOPIC = "GATEWAY_LOG";
+
+  private final String SERVICE_NAME = "GATEWAY";
 
   public GlobalErrorWebExceptionHandler(ErrorAttributes g, ApplicationContext applicationContext,
       ServerCodecConfigurer serverCodecConfigurer) {
@@ -74,26 +84,23 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
       GatewayException e = (GatewayException) error;
 
       errorResponseDTO.setResultCode(GatewayExceptionCode.valueOf(e.getMessage()).getCode());
-
-      // 사용자 정의 메시지가 필요할 경우 설정한다.
-      if (!StringUtils.isEmptyParams(e.getArg())) {
-
-        errorResponseDTO.setResultMessage(e.getArg());
-      } else {
-
-        errorResponseDTO.setResultMessage(GatewayExceptionCode.valueOf(e.getMessage()).getMsg());
-      }
+      errorResponseDTO.setResultMessage(GatewayExceptionCode.valueOf(e.getMessage()).getMsg());
 
       // HttpStatus 설정 변경이 필요하다면 설정
       if (e.getHttpStatus() != null) {
 
         status = e.getHttpStatus();
       }
+
+      // 큐에 서비스 로그 전송
+      ServiceLogDTO serviceLog = new ServiceLogDTO(request.headers().asHttpHeaders().toString(),
+          e.getArg(), status.name(), SERVICE_NAME);
+      kafkaTemplate.send(GATEWAY_TOPIC, serviceLog);
     }
     // 그 이외의 정해진 규격이 아닌 Gateway 오류일 경우 아래와 같이 설정한다.
     else {
 
-      errorResponseDTO.setResultCode(GatewayExceptionCode.GWE0001.getCode());
+      errorResponseDTO.setResultCode(GatewayExceptionCode.GWE001.getCode());
       errorResponseDTO.setResultMessage(error.getMessage());
     }
 

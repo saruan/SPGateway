@@ -9,12 +9,14 @@ spring:
           - 'Properties/'
           password: rnrudxo1184018
           username: kookyungte@naver.com
-  rabbitmq:                  
-    host: localhost
-    username: guest
-    password: guest
+    bus:
+      enabled: true
+  kafka:
+    bootstrap-servers:
+    - http://localhost:9092
   application:
     name: config-server
+  
     
 #Actuactor 활성화    
 management:

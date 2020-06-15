@@ -1,4 +1,4 @@
-package com.kbds.gateway.bean;
+package com.kbds.gateway.config;
 
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -42,10 +42,10 @@ import reactor.core.publisher.Mono;
  *
  */
 @Configuration
-public class RoutingBean {
+public class RoutingConfiguration {
 
   // 로그용 변수
-  Logger logger = LoggerFactory.getLogger(RoutingBean.class);
+  Logger logger = LoggerFactory.getLogger(RoutingConfiguration.class);
 
   // Spring Bean을 가져오기 위한 변수
   @Autowired

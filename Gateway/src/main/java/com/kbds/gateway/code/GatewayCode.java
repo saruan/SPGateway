@@ -28,10 +28,11 @@ public enum GatewayCode {
   GATEWAY_FILTER_APPLY("apply", "Gateway Filter 메소드명"),
   TOKEN_PREFIX("Bearer ", "TOKEN 헤더 PREFIX"),
   API_KEY("api_key", "appKey 헤더 정보"),
+  CACHE_REQUEST_BODY("cachedRequestBody", "Request Body Caching 데이터"),
 
   OAUTH_TYPE("1", "OAuth 인증 방식"),
 
-  REUQESTPARAM_SAML("saml", "SAML 토큰"),
+  REQUESTPARAM_SAML("saml", "SAML 토큰"),
 
   DUMMY("", "");
 

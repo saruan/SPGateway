@@ -24,13 +24,18 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum GatewayExceptionCode {
 
-  GWE0001("GWE0001", "사전 검증 실패."),
+  GWE001("GWE0001", "사전 검증 실패."),
+  GWE002("GWE0002", "Invalid Parameters."),
+
+  SAM001("SAM001", "Invalid SAML."),
 
   TOK001("TOK001", "AccessToken 만료"),
   TOK002("TOK002", "AccessToken가 유효하지 않습니다."),
   TOK003("TOK003", "API KEY가 유효하지 않습니다."),
 
   APP001("APP001", "APP이 등록되지 않았습니다."),
+
+  AUTH001("AUTH001", "인증서버 오류 발생"),
 
   DUMMY("", "");
 

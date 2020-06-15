@@ -1,4 +1,4 @@
-package com.kbds.gateway.bean;
+package com.kbds.gateway.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
