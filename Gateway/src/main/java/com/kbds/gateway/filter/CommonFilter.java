@@ -147,5 +147,4 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
     return results != null && results.containsKey(ACTIVE);
   }
-
 }
