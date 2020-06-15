@@ -30,3 +30,5 @@ spring:
   kafka:
     bootstrap-servers:
     - http://localhost:9092
+  webflux:
+    static-path-pattern: /static/*
