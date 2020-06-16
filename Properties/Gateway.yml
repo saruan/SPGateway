@@ -32,3 +32,5 @@ spring:
     - http://localhost:9092
   webflux:
     static-path-pattern: /static/*
+  session:
+    store-type: redis
