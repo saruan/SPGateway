@@ -30,12 +30,3 @@ spring:
   kafka:
     bootstrap-servers:
     - http://localhost:9092
-  webflux:
-    static-path-pattern: /static/*
-  session:
-    store-type: redis
-  redis: 
-    host: localhost
-    port: 6379
-  main:
-    allow-bean-definition-overriding: true

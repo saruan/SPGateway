@@ -16,7 +16,6 @@ spring:
     - http://localhost:9092
   application:
     name: config-server
-  
     
 #Actuactor 활성화    
 management:
