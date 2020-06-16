@@ -19,6 +19,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import com.kbds.gateway.code.GatewayExceptionCode;
 import com.kbds.gateway.dto.ResponseDTO;
 import com.kbds.gateway.dto.ServiceLogDTO;
+import com.kbds.gateway.utils.DateUtils;
 import reactor.core.publisher.Mono;
 
 /**
@@ -92,9 +93,11 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
         status = e.getHttpStatus();
       }
 
+      String currentTime = DateUtils.getCurrentTime();
+
       // 큐에 서비스 로그 전송
       ServiceLogDTO serviceLog = new ServiceLogDTO(request.headers().asHttpHeaders().toString(),
-          e.getArg(), status.name(), SERVICE_NAME);
+          e.getArg(), status.name(), SERVICE_NAME, currentTime, currentTime);
       kafkaTemplate.send(GATEWAY_TOPIC, serviceLog);
     }
     // 그 이외의 정해진 규격이 아닌 Gateway 오류일 경우 아래와 같이 설정한다.

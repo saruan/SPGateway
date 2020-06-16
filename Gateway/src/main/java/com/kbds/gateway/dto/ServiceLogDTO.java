@@ -32,5 +32,7 @@ public class ServiceLogDTO implements Serializable {
   private String requestParams;
   private String response;
   private String service;
+  private String requestDt;
+  private String responseDt;
 
 }

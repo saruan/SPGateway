@@ -80,7 +80,7 @@ public class GwAppService {
   };
 
   /**
-   * App 상세 검색 기능
+   * failed to lazily initialize a collection of role App 상세 검색 기능
    * 
    * @param params
    * @return

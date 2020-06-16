@@ -3,14 +3,18 @@ package com.kbds.gatewaylog.entity
 import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.GeneratedValue
+import javax.validation.constraints.Pattern
 
 @Entity(name = "SERVICE_LOG")
 data class ServiceLog(
-    @Id
+    
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	var id: Int,
 	var requestHeader: String,
 	var requestParams: String,
 	var response: String,
-	var service: String
+	var service: String,
+	var requestDt: String,
+	var responseDt: String
 )

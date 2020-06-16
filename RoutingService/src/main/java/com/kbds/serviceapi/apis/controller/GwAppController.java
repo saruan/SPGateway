@@ -56,7 +56,7 @@ public class GwAppController {
    * 
    * @return
    */
-  @GetMapping(value = "/v1/app/{id}")
+  @GetMapping(value = "/v1/app/{appId}")
   public ResponseEntity<Object> findAppDetail(@PathVariable Long appId) {
 
     Object result = CommonUtils.getResponseEntity(gwAppService.findAppDetail(appId));
@@ -86,7 +86,7 @@ public class GwAppController {
    * @param params
    * @return
    */
-  @PutMapping(value = "/v1/app/{id}")
+  @PutMapping(value = "/v1/app/{appId}")
   public ResponseEntity<Object> updateApp(@RequestBody AppDTO params, @PathVariable Long appId) {
 
     gwAppService.updateApp(params, appId);

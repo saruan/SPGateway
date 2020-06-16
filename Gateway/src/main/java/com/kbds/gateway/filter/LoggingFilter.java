@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import com.kbds.gateway.code.GatewayCode;
 import com.kbds.gateway.dto.ServiceLogDTO;
+import com.kbds.gateway.utils.DateUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -48,6 +49,8 @@ public class LoggingFilter implements GlobalFilter, Ordered {
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
+    String startTime = DateUtils.getCurrentTime();
+
     // Body 추출 이후 임시 저장
     Object attribute = exchange.getAttribute(GatewayCode.CACHE_REQUEST_BODY.getCode());
     StringBuilder body = new StringBuilder();
@@ -61,9 +64,12 @@ public class LoggingFilter implements GlobalFilter, Ordered {
     // POST 필터 호출 시 Kafka를 통해 서비스 로그 전송
     return chain.filter(exchange).then(Mono.fromRunnable(() -> {
 
+      String endTime = DateUtils.getCurrentTime();
+
       // 큐에 서비스 로그 전송
-      ServiceLogDTO serviceLog = new ServiceLogDTO(exchange.getRequest().getHeaders().toString(),
-          body.toString(), exchange.getResponse().getStatusCode().toString(), SERVICE_NAME);
+      ServiceLogDTO serviceLog =
+          new ServiceLogDTO(exchange.getRequest().getHeaders().toString(), body.toString(),
+              exchange.getResponse().getStatusCode().toString(), SERVICE_NAME, startTime, endTime);
       kafkaTemplate.send(GATEWAY_TOPIC, serviceLog);
     }));
   }
@@ -97,13 +103,13 @@ public class LoggingFilter implements GlobalFilter, Ordered {
           // Body Content를 읽어온다.
           byte[] content = new byte[dataBuffer.readableByteCount()];
           dataBuffer.read(content);
-          String bodyContent = new String(content, StandardCharsets.UTF_8);
+          // String bodyContent = new String(content, StandardCharsets.UTF_8);
 
           // 큐에 서비스 로그 전송
-          ServiceLogDTO serviceLog =
-              new ServiceLogDTO(exchange.getRequest().getHeaders().toString(),
-                  queryParam.toString(), bodyContent, SERVICE_NAME);
-          kafkaTemplate.send(GATEWAY_TOPIC, serviceLog);
+          // ServiceLogDTO serviceLog =
+          // new ServiceLogDTO(exchange.getRequest().getHeaders().toString(),
+          // queryParam.toString(), bodyContent, SERVICE_NAME);
+          // kafkaTemplate.send(GATEWAY_TOPIC, serviceLog);
 
           return bufferFactory.wrap(content);
         }));
