@@ -1,13 +1,13 @@
 package com.kbds.serviceapi;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+// @SpringBootTest
+// @AutoConfigureMockMvc
+// @ActiveProfiles("dev")
 class ApiServiceApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+  @Test
+  void contextLoads() {}
 
 }

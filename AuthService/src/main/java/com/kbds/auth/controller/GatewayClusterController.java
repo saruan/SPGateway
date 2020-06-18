@@ -19,7 +19,7 @@ public class GatewayClusterController {
   GatewayClusterService gwClusterService;
 
   /**
-   * 신규 Routing 서비스 등록
+   * SAML 생성 API
    * 
    * @param params
    * @return

@@ -125,7 +125,7 @@ public class GwRoutingService {
    * 
    * @param reqParam
    */
-  public void registService(RoutingDTO reqParam) {
+  public GwService registService(RoutingDTO reqParam) {
 
     // 필수 파라미터 체크
     // 항목 - 서비스명, 서비스 API URL 경로, 사용자
@@ -158,10 +158,12 @@ public class GwRoutingService {
 
     try {
 
-      gwServiceRepository.save(modelMapper.map(reqParam, GwService.class));
+      GwService result = gwServiceRepository.save(modelMapper.map(reqParam, GwService.class));
 
       // 등록 이후 게이트웨이에 해당 정보를 갱신해준다.
       CommonUtils.refreshGatewayRoutes(gatewayRefreshUrl, reqParam.getRegUserNo());
+
+      return result;
 
     } catch (Exception e) {
 

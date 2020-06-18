@@ -87,9 +87,7 @@ public class GwRoutingController {
   @PostMapping(value = "/v1/routes")
   public ResponseEntity<Object> registService(@RequestBody RoutingDTO params) {
 
-    gwRoutingService.registService(params);
-
-    Object result = CommonUtils.getResponseEntity(true);
+    Object result = CommonUtils.getResponseEntity(gwRoutingService.registService(params));
 
     return new ResponseEntity<Object>(result, HttpStatus.CREATED);
   }

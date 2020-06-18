@@ -75,18 +75,14 @@ public class CommonUtils {
               .post()
               .uri(gatewayUrl)
               .header(HttpHeaders.AUTHORIZATION, CommonCode.TOKEN_PREFIX  + builder.sign(algorithm))
-              .exchange().onErrorMap(e -> {
-                
-                  // Webflux 내부는 기존의 Thread 정보를 불러오지 못하므로 새롭게 등록해준다.
-                  CommonUtils.setCommonLog(CommonCode.GATEWAY_REFRESH_SERVICE_NM.getResultCode(),
-                      regUserNo);    
-                  logger.error(e.toString());
-        
-                  return e;
-                })
-              .subscribe();
-    
-    
+              .exchange()
+              .doOnError(e -> {              
+                // Webflux 내부는 기존의 Thread 정보를 불러오지 못하므로 새롭게 등록해준다.
+                CommonUtils.setCommonLog(CommonCode.GATEWAY_REFRESH_SERVICE_NM.getResultCode(),
+                    regUserNo);    
+                logger.error(e.toString());
+              })
+              .subscribe();   
     // @formatter:on
 
   }
