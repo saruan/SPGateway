@@ -1,6 +1,5 @@
 package com.kbds.auth.controller;
 
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +24,7 @@ public class GatewayClusterController {
    * @return
    */
   @GetMapping(value = "v1.0/oauth/saml")
-  public ResponseEntity<Object> generateSAML(HttpServletRequest request) {
+  public ResponseEntity<Object> generateSAML() {
 
     Object result = CommonUtils.getResponseEntity(gwClusterService.generateSAML());
 

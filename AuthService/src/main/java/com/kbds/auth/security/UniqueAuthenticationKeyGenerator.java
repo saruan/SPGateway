@@ -15,7 +15,8 @@ import com.kbds.auth.utils.OAuthUtils;
  *
  * <pre>
  *  Class Name     : UniqueAuthenticationKeyGenerator.java
- *  Description    : OAuth Access Token 생성 커스텀 클래스
+ *  Description    : OAuth Access Token 생성 커스텀 클래스 
+ *                   (Access Token 요청 시마다 새로운 키 발급 - 기본 클래스는 DefaultAuthenticationKeyGenerator)
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
  * 
  * -------------------------------------------------------------------------------

@@ -8,7 +8,6 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.kbds.serviceapi.apis.dto.AppDTO;
 import com.kbds.serviceapi.apis.dto.EmptyJsonBody;
@@ -59,8 +58,6 @@ public class GwAppService {
   @Autowired
   ModelMapper modelMapper;
 
-  @Value("${gateway.cluster.refreshUrl}")
-  String gatewayRefreshUrl;
 
   /**
    * App 검색 기능
@@ -159,7 +156,7 @@ public class GwAppService {
       }
 
       // 등록 이후 게이트웨이에 해당 정보를 갱신해준다.
-      CommonUtils.refreshGatewayRoutes(gatewayRefreshUrl, reqParam.getRegUserNo());
+      CommonUtils.refreshGatewayRoutes(reqParam.getRegUserNo());
 
     } catch (BizException e) {
 
@@ -238,7 +235,7 @@ public class GwAppService {
       }
 
       // 등록 이후 게이트웨이에 해당 정보를 갱신해준다.
-      CommonUtils.refreshGatewayRoutes(gatewayRefreshUrl, reqParam.getRegUserNo());
+      CommonUtils.refreshGatewayRoutes(reqParam.getRegUserNo());
 
     } catch (BizException e) {
 

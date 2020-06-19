@@ -6,7 +6,6 @@ import javax.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.kbds.serviceapi.apis.dto.EmptyJsonBody;
 import com.kbds.serviceapi.apis.dto.RoutingDTO;
@@ -49,10 +48,6 @@ public class GwRoutingService {
 
   @Autowired
   ModelMapper modelMapper;
-
-  @Value("${gateway.cluster.refreshUrl}")
-  String gatewayRefreshUrl;
-
 
   /**
    * G/W Routing Bean으로 등록할 정보들 조회 서비스
@@ -161,7 +156,7 @@ public class GwRoutingService {
       GwService result = gwServiceRepository.save(modelMapper.map(reqParam, GwService.class));
 
       // 등록 이후 게이트웨이에 해당 정보를 갱신해준다.
-      CommonUtils.refreshGatewayRoutes(gatewayRefreshUrl, reqParam.getRegUserNo());
+      CommonUtils.refreshGatewayRoutes(reqParam.getRegUserNo());
 
       return result;
 
@@ -246,7 +241,7 @@ public class GwRoutingService {
       gwServiceRepository.save(gwService);
 
       // 수정 이후 게이트웨이에 해당 정보를 갱신해준다.
-      CommonUtils.refreshGatewayRoutes(gatewayRefreshUrl, reqParam.getUptUserNo());
+      CommonUtils.refreshGatewayRoutes(reqParam.getUptUserNo());
 
     } catch (Exception e) {
 
