@@ -27,10 +27,11 @@ spring:
 logging:
   config: classpath:${spring.profiles.active}/log4j2.yml
 
-# 사용자 정의 설정
-gateway:
-  cluster:
-    refreshUrl: http://localhost:9999/actuator/bus-refresh
+#사용자 정의 속성
+services:
+  bus:
+    host: http://localhost:9999/
+    refresh: /actuator/bus-refresh
 
 #인증 키관리    
 jwt:
