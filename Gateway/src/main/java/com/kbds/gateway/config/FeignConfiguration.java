@@ -11,7 +11,7 @@ import feign.jackson.JacksonEncoder;
  *
  * <pre>
  *  Class Name     : FeignConfiguration.java
- *  Description    : Webflux에서 Feign Decode/Encode를 설정해주기 위한 클래스
+ *  Description    : Feign 관련 추가 설정
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
  * 
  * -------------------------------------------------------------------------------

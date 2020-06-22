@@ -5,10 +5,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.kbds.serviceapi.apis.dto.EmptyJsonBody;
 import com.kbds.serviceapi.common.code.BizExceptionCode;
+import com.kbds.serviceapi.common.code.SystemExceptionCode;
 import com.kbds.serviceapi.framework.dto.ResponseDTO;
 
 /**
@@ -31,6 +35,12 @@ public class ServiceExceptionHandler {
 
   Logger logger = LoggerFactory.getLogger(ServiceExceptionHandler.class);
 
+  /**
+   * BizException 처리용 Handler
+   * 
+   * @param ex
+   * @return
+   */
   @ExceptionHandler(BizException.class)
   public ResponseEntity<ResponseDTO> bizExceptionHandler(BizException ex) {
 
@@ -49,6 +59,51 @@ public class ServiceExceptionHandler {
 
       logger.error(ex.getMsg());
     }
+
+    return new ResponseEntity<ResponseDTO>(responseDTO, HttpStatus.OK);
+  }
+
+  /**
+   * RequestBody로 선언되어 있는 DTO 클래스의 변수 타입과 맞지 않는 정보가 왔을 경우 발생하는 오류 핸들러
+   * 
+   * @param ex
+   * @return
+   */
+  @ExceptionHandler({InvalidFormatException.class, MethodArgumentTypeMismatchException.class})
+  public ResponseEntity<ResponseDTO> parseExceptionHandler(Exception ex) {
+
+    ResponseDTO responseDTO = new ResponseDTO();
+
+    // 서비스 레이어에서 던진 코드와 메시지를 결과 값으로 설정한다.
+    responseDTO.setResultCode(SystemExceptionCode.PAR001.getCode());
+    responseDTO.setResultMessage(SystemExceptionCode.PAR001.getMsg());
+    responseDTO.setResultData(new EmptyJsonBody());
+
+    // 오류 로그 출력
+    logger.error(ex.getMessage());
+
+    return new ResponseEntity<ResponseDTO>(responseDTO, HttpStatus.BAD_REQUEST);
+  }
+
+  /**
+   * DTO 클래스 Validation 오류 핸들러
+   * 
+   * @param ex
+   * @return
+   */
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<ResponseDTO> validationExceptionHandler(
+      MethodArgumentNotValidException ex) {
+
+    ResponseDTO responseDTO = new ResponseDTO();
+
+    // 서비스 레이어에서 던진 코드와 메시지를 결과 값으로 설정한다.
+    responseDTO.setResultCode(BizExceptionCode.COM002.getCode());
+    responseDTO.setResultMessage(BizExceptionCode.COM002.getMsg());
+    responseDTO.setResultData(new EmptyJsonBody());
+
+    // 오류 로그 출력
+    logger.error(ex.getMessage());
 
     return new ResponseEntity<ResponseDTO>(responseDTO, HttpStatus.OK);
   }

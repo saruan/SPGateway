@@ -60,7 +60,7 @@ public class GwAppService {
 
 
   /**
-   * App 검색 기능
+   * APP 리스트 검색 기능
    * 
    * @param params
    * @return
@@ -77,18 +77,13 @@ public class GwAppService {
   };
 
   /**
-   * failed to lazily initialize a collection of role App 상세 검색 기능
+   * APP 상세 검색 기능
    * 
    * @param params
    * @return
    */
   @Transactional
   public Object findAppDetail(Long id) {
-
-    if (id == null) {
-
-      throw new BizException(BizExceptionCode.COM002);
-    }
 
     try {
 
@@ -107,19 +102,19 @@ public class GwAppService {
   };
 
   /**
-   * App 등록
+   * APP 등록
+   * 
+   * <pre>
+   * 1. 파라미터 유효성 체크
+   * 2. 이미 등록된 데이터인지 체크
+   * 3. GwApp에 데이터 등록
+   * 4. GwServiceAppMapping에 데이터 등록
+   * </pre>
    * 
    * @param reqParam
    */
   @Transactional
   public void registApp(AppDTO reqParam) {
-
-
-    // 필수 파라미터 체크(App명)
-    if (StringUtils.isEmptyParams(reqParam.getAppNm())) {
-
-      throw new BizException(BizExceptionCode.COM002);
-    }
 
     try {
 
@@ -135,7 +130,10 @@ public class GwAppService {
 
       // AppKey 생성 후 DB에 APP 등록
       GwApp gwApp = modelMapper.map(reqParam, GwApp.class);
+
       gwApp.setAppKey(StringUtils.generateAppKey());
+
+      // APP 등록 후 등록된 APP_ID를 전달 받는다.
       Long appId = gwAppRepository.save(gwApp).getAppId();
 
       // Mapping 테이블에 데이터 등록
@@ -152,6 +150,7 @@ public class GwAppService {
           params.add(param);
         }
 
+        // MAPPING 테이블에 데이터 등록
         gwServiceAppMappingRepository.saveAll(params);
       }
 
@@ -168,23 +167,18 @@ public class GwAppService {
   }
 
   /**
-   * App 수정
+   * APP 수정
+   * 
+   * <pre>
+   * 1. 파라미터 유효성 체크
+   * 2. GwApp 테이블 수정
+   * 3. GwServiceAppMapping 테이블 수정
+   * </pre>
    * 
    * @param reqParam
    */
   @Transactional
   public void updateApp(AppDTO reqParam, Long id) {
-
-    logger.info("========================");
-    logger.info("Update App Info");
-    logger.info("params [" + reqParam.toString() + "]");
-    logger.info("========================");
-
-    // 필수 파라미터 체크(App명)
-    if (StringUtils.isEmptyParams(reqParam.getAppNm())) {
-
-      throw new BizException(BizExceptionCode.COM002);
-    }
 
     // 필수 파라미터 체크(AppKey)
     if (StringUtils.isEmptyParams(reqParam.getAppKey())) {
@@ -231,12 +225,11 @@ public class GwAppService {
           params.add(param);
         }
 
+        // Mapping 테이블 갱신
         gwServiceAppMappingRepository.saveAll(params);
       }
 
-      // 등록 이후 게이트웨이에 해당 정보를 갱신해준다.
       CommonUtils.refreshGatewayRoutes(reqParam.getRegUserNo());
-
     } catch (BizException e) {
 
       throw new BizException(BizExceptionCode.valueOf(e.getMessage()));
@@ -247,26 +240,22 @@ public class GwAppService {
   }
 
   /**
-   * App 삭제 (등록 되어 있는 API가 있을 경우 App 삭제 금지)
+   * APP 삭제 (등록 되어 있는 API가 있을 경우 APP 삭제 금지)
    * 
    * @param id
    */
   public void deleteApp(Long appId) {
 
-    if (appId == null) {
-
-      throw new BizException(BizExceptionCode.COM002);
-    }
-
     try {
 
-      if (isUseApp(appId)) {
+      if (isUsingApp(appId)) {
 
         throw new BizException(BizExceptionCode.COM006);
       }
 
       gwAppRepository.deleteById(appId);
 
+      CommonUtils.refreshGatewayRoutes("");
     } catch (BizException e) {
 
       throw new BizException(BizExceptionCode.valueOf(e.getMessage()));
@@ -277,7 +266,7 @@ public class GwAppService {
   }
 
   /**
-   * ServiceId 유효성 체크
+   * 입력 받은 서비스ID가 실제 DB에 존재 하는지 체크
    * 
    * @param reqParam
    * @return
@@ -289,7 +278,7 @@ public class GwAppService {
   }
 
   /**
-   * App 등록 시 이름 유효성 체크
+   * APP 이름이 DB에 존재하는지 체크
    * 
    * @param reqParam
    * @return
@@ -300,7 +289,7 @@ public class GwAppService {
   }
 
   /**
-   * App 수정 시 이름 유효성 체크
+   * APP 수정 시 전달 받은 APP 이름이 DB에 존재하는지 체크
    * 
    * @param reqParam
    * @return
@@ -311,12 +300,12 @@ public class GwAppService {
   }
 
   /**
-   * App에 등록 되어 있는 Api가 존재하는지 체크
+   * 현재 사용중인 APP인지 체크
    * 
    * @param appId
    * @return
    */
-  public boolean isUseApp(Long appId) {
+  public boolean isUsingApp(Long appId) {
 
     return gwServiceAppMappingRepository.countByIdAppId(appId) > 0;
   }

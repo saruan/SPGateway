@@ -32,7 +32,7 @@ Configuration:
           isEventTimestamp: true 
         -
           name: GUID
-          Pattern: "%X{GUID}"
+          Pattern: "%uuid{TIME}"
         -
           name: ERR_DESC
           Pattern: "%msg"   

@@ -44,6 +44,6 @@ public class StringUtils {
    */
   public static String generateAppKey() {
 
-    return RandomStringUtils.random(10, true, true);
+    return RandomStringUtils.random(25, true, true);
   }
 }

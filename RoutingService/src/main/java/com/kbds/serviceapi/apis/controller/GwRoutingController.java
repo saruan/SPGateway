@@ -1,5 +1,6 @@
 package com.kbds.serviceapi.apis.controller;
 
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -85,7 +86,7 @@ public class GwRoutingController {
    * @return
    */
   @PostMapping(value = "/v1/routes")
-  public ResponseEntity<Object> registService(@RequestBody RoutingDTO params) {
+  public ResponseEntity<Object> registService(@RequestBody @Valid RoutingDTO params) {
 
     Object result = CommonUtils.getResponseEntity(gwRoutingService.registService(params));
 
@@ -100,7 +101,7 @@ public class GwRoutingController {
    */
   @PutMapping(value = "/v1/routes/{id}")
   public ResponseEntity<Object> updateService(@PathVariable Long id,
-      @RequestBody RoutingDTO params) {
+      @RequestBody @Valid RoutingDTO params) {
 
     gwRoutingService.updateService(params, id);
 

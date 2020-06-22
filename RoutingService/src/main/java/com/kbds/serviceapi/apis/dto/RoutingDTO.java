@@ -1,6 +1,7 @@
 package com.kbds.serviceapi.apis.dto;
 
 import java.util.Date;
+import javax.validation.constraints.NotEmpty;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import lombok.AllArgsConstructor;
@@ -38,18 +39,23 @@ public class RoutingDTO {
 
   private Long filterId;
 
+  @NotEmpty
   private String serviceNm;
 
   private String appKeys;
 
+  @NotEmpty
   private String servicePath;
 
+  @NotEmpty
   private String serviceTargetUrl;
 
   private String serviceDesc;
 
+  @NotEmpty
   private String serviceLoginType;
 
+  @NotEmpty
   private String serviceAuthType;
 
   private String useYn;
@@ -66,10 +72,30 @@ public class RoutingDTO {
 
   private Date uptDt;
 
+  /**
+   * APP KEY 제외한 생성자
+   * 
+   * @param serviceId
+   * @param filterId
+   * @param serviceNm
+   * @param servicePath
+   * @param serviceTargetUrl
+   * @param serviceDesc
+   * @param serviceLoginType
+   * @param serviceAuthType
+   * @param useYn
+   * @param filterBean
+   * @param filterUseYn
+   * @param regUserNo
+   * @param uptUserNo
+   * @param regDt
+   * @param uptDt
+   */
   public RoutingDTO(Long serviceId, Long filterId, String serviceNm, String servicePath,
       String serviceTargetUrl, String serviceDesc, String serviceLoginType, String serviceAuthType,
       String useYn, String filterBean, String filterUseYn, String regUserNo, String uptUserNo,
       Date regDt, Date uptDt) {
+
     super();
     this.serviceId = serviceId;
     this.filterId = filterId;
@@ -87,5 +113,4 @@ public class RoutingDTO {
     this.regDt = regDt;
     this.uptDt = uptDt;
   }
-
 }

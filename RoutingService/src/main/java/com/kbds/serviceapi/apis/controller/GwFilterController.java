@@ -1,5 +1,6 @@
 package com.kbds.serviceapi.apis.controller;
 
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,7 +59,7 @@ public class GwFilterController {
    * @return
    */
   @PostMapping(value = "/v1/filter")
-  public ResponseEntity<Object> registFilter(@RequestBody FilterDTO params) {
+  public ResponseEntity<Object> registFilter(@RequestBody @Valid FilterDTO params) {
 
     gwFilterService.registFilter(params);
 
@@ -74,7 +75,8 @@ public class GwFilterController {
    * @return
    */
   @PutMapping(value = "/v1/filter/{id}")
-  public ResponseEntity<Object> updateFilter(@RequestBody FilterDTO params, @PathVariable Long id) {
+  public ResponseEntity<Object> updateFilter(@RequestBody @Valid FilterDTO params,
+      @PathVariable Long id) {
 
     gwFilterService.updateFilter(params, id);
 

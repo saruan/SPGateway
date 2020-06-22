@@ -138,7 +138,7 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
   }
 
   /**
-   * AccessToken 체크
+   * AccessToken 유효성 체크
    * 
    * @param results
    * @return

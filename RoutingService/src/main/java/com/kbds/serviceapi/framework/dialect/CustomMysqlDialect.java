@@ -24,7 +24,7 @@ public class CustomMysqlDialect extends MySQL5Dialect {
   public CustomMysqlDialect() {
 
     super();
-    // register custom/inner function here
+
     this.registerFunction("group_concat",
         new SQLFunctionTemplate(StandardBasicTypes.STRING, "group_concat(?1)"));
   }

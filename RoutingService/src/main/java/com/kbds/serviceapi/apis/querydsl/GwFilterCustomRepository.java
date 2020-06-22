@@ -30,7 +30,7 @@ public interface GwFilterCustomRepository {
   public List<FilterDTO> findbyConditions(FilterDTO param);
 
   /**
-   * 필터 등록 전 필수 파라미터 중복 체크
+   * 필터 등록데이터 중 중복이 불가능한 내용이 DB에 적재 되어 있는지 확인
    * 
    * @param param
    * @return
@@ -38,7 +38,7 @@ public interface GwFilterCustomRepository {
   public boolean checkRegistValidation(FilterDTO param);
 
   /**
-   * 필터 수정 전 필수 파라미터 중복 체크
+   * 필터 수정데이터 중 중복이 불가능한 내용이 DB에 적재 되어 있는지 확인
    * 
    * @param param
    * @return

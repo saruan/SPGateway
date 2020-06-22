@@ -1,5 +1,6 @@
 package com.kbds.serviceapi.apis.controller;
 
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,7 +72,7 @@ public class GwAppController {
    * @return
    */
   @PostMapping(value = "/v1/app")
-  public ResponseEntity<Object> registApp(@RequestBody AppDTO params) {
+  public ResponseEntity<Object> registApp(@RequestBody @Valid AppDTO params) {
 
     gwAppService.registApp(params);
 
@@ -87,7 +88,8 @@ public class GwAppController {
    * @return
    */
   @PutMapping(value = "/v1/app/{appId}")
-  public ResponseEntity<Object> updateApp(@RequestBody AppDTO params, @PathVariable Long appId) {
+  public ResponseEntity<Object> updateApp(@RequestBody @Valid AppDTO params,
+      @PathVariable Long appId) {
 
     gwAppService.updateApp(params, appId);
 

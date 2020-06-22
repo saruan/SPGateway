@@ -100,14 +100,8 @@ public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
 
     QGwService gwService = QGwService.gwService;
 
-    System.out.println(param.toString());
-
     // 검색 조건문 등록
     BooleanBuilder builder = new BooleanBuilder();
-
-    if (param.getServiceId() != null) {
-      builder.and(gwService.serviceId.eq(param.getServiceId()));
-    }
 
     // 서비스명 검색
     if (!StringUtils.isEmpty(param.getServiceNm())) {

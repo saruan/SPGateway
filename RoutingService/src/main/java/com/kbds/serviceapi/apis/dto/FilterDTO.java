@@ -1,6 +1,7 @@
 package com.kbds.serviceapi.apis.dto;
 
 import java.util.Date;
+import javax.validation.constraints.NotEmpty;
 import com.kbds.serviceapi.apis.entity.AuditLog;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,10 +32,12 @@ public class FilterDTO extends AuditLog {
 
   private Long filterId;
 
+  @NotEmpty
   private String filterNm;
 
   private String filterDesc;
 
+  @NotEmpty
   private String filterBean;
 
   private String useYn;

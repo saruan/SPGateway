@@ -23,9 +23,28 @@ import com.kbds.serviceapi.apis.entity.GwApp;
 @Repository
 public interface GwAppRepository extends CrudRepository<GwApp, Long> {
 
+  /**
+   * APP ID로 단건 검색
+   * 
+   * @param appId
+   * @return
+   */
   public GwApp findByAppId(Long appId);
 
+  /**
+   * APP 이름으로 검색
+   * 
+   * @param appNm
+   * @return
+   */
   public List<GwApp> findByAppNm(String appNm);
 
+  /**
+   * 변경하려는 APP 이름이 DB상에서 사용중인지 검색
+   * 
+   * @param appNm
+   * @param appId
+   * @return
+   */
   public List<GwApp> findByAppNmAndAppIdNot(String appNm, Long appId);
 }

@@ -26,6 +26,6 @@ public interface GatewayClient {
 
   @Async
   @PostMapping(value = "${services.bus.refresh}")
-  public Map<String, Object> checkAccessToken(@RequestHeader Map<String, String> headers);
+  public Map<String, Object> callRefreshGateway(@RequestHeader Map<String, String> headers);
 
 }

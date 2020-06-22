@@ -2,7 +2,6 @@ package com.kbds.serviceapi.common.utils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import org.apache.logging.log4j.ThreadContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +70,7 @@ public class CommonUtils {
   }
 
   /**
-   * Gateway Routing 갱신 메소드
+   * RoutingService의 최신 데이터를 Gateway에 변경 요청한다.
    */
   public static void refreshGatewayRoutes(String regUserNo) {
 
@@ -84,7 +83,7 @@ public class CommonUtils {
 
     try {
 
-      gatewayClient.checkAccessToken(headers);
+      gatewayClient.callRefreshGateway(headers);
 
     } catch (Exception e) {
 
@@ -102,7 +101,6 @@ public class CommonUtils {
    */
   public static void setCommonLog(String serviceDesc, String regUserNo) {
 
-    ThreadContext.put("GUID", UUID.randomUUID().toString());
     ThreadContext.put("SERVICE_DESC", serviceDesc);
     ThreadContext.put("REG_USER_NO", regUserNo);
   }

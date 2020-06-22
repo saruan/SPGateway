@@ -3,7 +3,7 @@ package com.kbds.serviceapi.apis.service;
 import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
-import org.apache.commons.lang3.StringUtils;
+import javax.validation.Validator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,6 +49,9 @@ public class GwRoutingService {
   @Autowired
   ModelMapper modelMapper;
 
+  @Autowired
+  Validator validator;
+
   /**
    * G/W Routing Bean으로 등록할 정보들 조회 서비스
    * 
@@ -65,7 +68,6 @@ public class GwRoutingService {
       throw new BizException(BizExceptionCode.COM001, e.toString());
     }
   };
-
 
   /**
    * 서비스 검색 기능
@@ -93,15 +95,11 @@ public class GwRoutingService {
   @Transactional
   public Object findServiceDetail(Long id) {
 
-    if (id == null) {
-
-      throw new BizException(BizExceptionCode.COM002);
-    }
-
     try {
 
       Optional<GwService> gwService = gwServiceRepository.findById(id);
 
+      // 검색 결과가 없으면 빈 결과 값을 리턴
       if (!gwService.isPresent()) {
 
         return new EmptyJsonBody();
@@ -114,7 +112,6 @@ public class GwRoutingService {
     }
   };
 
-
   /**
    * 서비스 등록
    * 
@@ -122,31 +119,8 @@ public class GwRoutingService {
    */
   public GwService registService(RoutingDTO reqParam) {
 
-    // 필수 파라미터 체크
-    // 항목 - 서비스명, 서비스 API URL 경로, 사용자
-    if (StringUtils.isEmpty(reqParam.getServiceNm())) {
-
-      throw new BizException(BizExceptionCode.COM002);
-    }
-
-    if (StringUtils.isEmpty(reqParam.getServicePath())) {
-
-      throw new BizException(BizExceptionCode.COM002);
-    }
-
-    if (StringUtils.isEmpty(reqParam.getRegUserNo())) {
-
-      throw new BizException(BizExceptionCode.COM002);
-    }
-
-    RoutingDTO checkParam = new RoutingDTO();
-
-    checkParam.setServiceNm(reqParam.getServiceNm());
-    checkParam.setServicePath(reqParam.getServicePath());
-    checkParam.setFilterId(reqParam.getFilterId());
-
-    // 서비스 등록 여부 체크
-    if (gwServiceCustomRepository.checkRegistValidation(checkParam)) {
+    // 이미 등록된 서비스인지 체크
+    if (gwServiceCustomRepository.checkRegistValidation(reqParam)) {
 
       throw new BizException(BizExceptionCode.COM003);
     }
@@ -159,7 +133,6 @@ public class GwRoutingService {
       CommonUtils.refreshGatewayRoutes(reqParam.getRegUserNo());
 
       return result;
-
     } catch (Exception e) {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
@@ -175,23 +148,6 @@ public class GwRoutingService {
   public void updateService(RoutingDTO reqParam, Long id) {
 
     GwService gwService = null;
-
-    // 필수 파라미터 체크
-    // 항목 - 서비스 ID, 수정자, 타겟 URL
-    if (id == null) {
-
-      throw new BizException(BizExceptionCode.COM002);
-    }
-
-    if (reqParam.getUptUserNo() == null) {
-
-      throw new BizException(BizExceptionCode.COM002);
-    }
-
-    if (reqParam.getServiceTargetUrl() == null) {
-
-      throw new BizException(BizExceptionCode.COM002);
-    }
 
     try {
 
@@ -210,15 +166,7 @@ public class GwRoutingService {
     }
 
     // 수정하고자 하는 내용 중 중복이 허용되지 않는 데이터가 DB상에 등록되어 있는지 체크한다.
-    // 항목 - 서비스명, 서비스 API URL 경로
-    RoutingDTO checkParam = new RoutingDTO();
-
-    checkParam.setServiceNm(reqParam.getServiceNm());
-    checkParam.setServicePath(reqParam.getServicePath());
-    checkParam.setFilterId(reqParam.getFilterId());
-    checkParam.setServiceId(reqParam.getServiceId());
-
-    if (gwServiceCustomRepository.checkUpdateValidation(checkParam, id)) {
+    if (gwServiceCustomRepository.checkUpdateValidation(reqParam, id)) {
 
       throw new BizException(BizExceptionCode.COM003);
     }
@@ -242,7 +190,6 @@ public class GwRoutingService {
 
       // 수정 이후 게이트웨이에 해당 정보를 갱신해준다.
       CommonUtils.refreshGatewayRoutes(reqParam.getUptUserNo());
-
     } catch (Exception e) {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());

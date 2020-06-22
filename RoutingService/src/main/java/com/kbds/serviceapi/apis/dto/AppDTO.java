@@ -2,6 +2,7 @@ package com.kbds.serviceapi.apis.dto;
 
 import java.util.Date;
 import java.util.List;
+import javax.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,6 +33,7 @@ public class AppDTO {
 
   private Long appId;
 
+  @NotEmpty
   private String appNm;
 
   private String appKey;

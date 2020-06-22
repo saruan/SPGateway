@@ -25,7 +25,7 @@ import com.kbds.serviceapi.apis.entity.GwServiceAppMapping;
 public interface GwServiceAppMappingRepository extends CrudRepository<GwServiceAppMapping, Long> {
 
   /**
-   * AppId와 일치하지 않는 데이터 조회
+   * 전달받은 APP 정보 중 변경할 ServiceId의 목록에 없는 데이터는 삭제한다. (ServiceId 갱신)
    * 
    * @param appId
    * @return
