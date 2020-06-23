@@ -28,10 +28,10 @@ import lombok.NoArgsConstructor;
  *
  */
 @Data
+@Builder
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @JsonInclude(value = Include.NON_NULL)
 public class RoutingDTO {
 

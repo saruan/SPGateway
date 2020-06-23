@@ -203,7 +203,7 @@ public class GwRoutingService {
    * @param id
    */
   @Transactional
-  public void deleteService(Long[] serviceId) {
+  public long deleteService(Long[] serviceId) {
 
     long deletedCnt = -1;
 
@@ -228,5 +228,7 @@ public class GwRoutingService {
 
       throw new BizException(BizExceptionCode.COM005);
     }
+
+    return deletedCnt;
   }
 }

@@ -24,6 +24,12 @@ import org.springframework.web.bind.annotation.RequestHeader;
 @FeignClient(value = "gateway", url = "${services.bus.host}")
 public interface GatewayClient {
 
+  /**
+   * Gateway Refresh 호출
+   * 
+   * @param headers
+   * @return
+   */
   @Async
   @PostMapping(value = "${services.bus.refresh}")
   public Map<String, Object> callRefreshGateway(@RequestHeader Map<String, String> headers);

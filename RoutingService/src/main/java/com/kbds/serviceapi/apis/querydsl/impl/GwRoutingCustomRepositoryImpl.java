@@ -211,9 +211,10 @@ public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
     // 논리적으로 삭제 처리할 데이터들을 IN 조건에 등록한다.
     builder.and(gwService.serviceId.in(serviceId));
 
-    // USE_YN 값을 N으로 변경하는 쿼리를 수행한다.
-    return update(gwService).where(builder).set(gwService.useYn, CommonCode.N.getResultCode())
-        .execute();
+    // FLAG만 변경할지 실제 물리 데이터를 삭제할지 백업정책 미정의
+    // return update(gwService).where(builder).set(gwService.useYn, CommonCode.N.getResultCode())
+    // .execute();
+    return delete(gwService).where(builder).execute();
   }
 
   /**

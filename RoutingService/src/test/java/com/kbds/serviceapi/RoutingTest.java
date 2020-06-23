@@ -1,10 +1,17 @@
 package com.kbds.serviceapi;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
@@ -17,20 +24,28 @@ import com.kbds.serviceapi.framework.exception.BizException;
 @SpringBootTest
 @ActiveProfiles("dev")
 @Transactional
+@TestMethodOrder(OrderAnnotation.class)
 public class RoutingTest extends ApiServiceApplicationTests {
 
   @Autowired
-  GwRoutingService gwRoutingService;
+  private GwRoutingService gwRoutingService;
+
+  static RoutingDTO routingDTO;
+
+  static Long testRegistedServiceId;
+
+  @BeforeAll
+  public static void init() {
+
+    routingDTO = RoutingDTO.builder().serviceNm("Routing Mocking").servicePath("/api/mock/")
+        .serviceTargetUrl("http://localhost:8080/").serviceDesc("Routing Mocking Test")
+        .serviceLoginType("1").serviceAuthType("1").filterId(new Long(1)).regUserNo("1").build();
+  }
 
   @Test
-  @Rollback(true)
-  public void API등록_및_중복_데이터_테스트() throws Exception {
-
-    final RoutingDTO routingDTO = RoutingDTO.builder().serviceNm("Routing Mocking")
-        .servicePath("/api/mock/").serviceTargetUrl("http://localhost:8080/")
-        .serviceDesc("Routing Mocking Test").serviceLoginType("1").serviceAuthType("1")
-        .filterId(new Long(1)).regUserNo("1").build();
-
+  @Order(1)
+  @Rollback(false)
+  public void API등록_테스트() throws Exception {
 
     GwService result = gwRoutingService.registService(routingDTO);
 
@@ -46,35 +61,90 @@ public class RoutingTest extends ApiServiceApplicationTests {
     assertEquals(routingDTO.getFilterId(), result.getFilter().getFilterId());
     assertEquals(routingDTO.getRegUserNo(), result.getRegUserNo());
 
-    // 이미 등록이 되어 있는 경우 오류 확인
-    Assertions.assertThrows(BizException.class, () -> {
+    testRegistedServiceId = result.getServiceId();
+  }
+
+  @Test
+  @Order(2)
+  public void API등록_중복_테스트() throws Exception {
+
+    assertThrows(BizException.class, () -> {
 
       gwRoutingService.registService(routingDTO);
     });
   }
 
   @Test
-  @Rollback(true)
-  public void API등록_테스트_필수_파라미터_누락() throws Exception {
+  @Order(3)
+  public void API조회_리스트_테스트() throws Exception {
 
-    // 서비스 Path 누락
-    Assertions.assertThrows(BizException.class, () -> {
+    // 전체 리스트 조회
+    List<RoutingDTO> result = gwRoutingService.findServices(new RoutingDTO());
 
-      final RoutingDTO routingDTO = RoutingDTO.builder().serviceNm("Routing Mocking")
-          .serviceTargetUrl("http://localhost:8080/").serviceDesc("Routing Mocking Test")
-          .serviceLoginType("1").serviceAuthType("1").filterId(new Long(1)).regUserNo("1").build();
+    assertFalse(result.isEmpty());
 
-      gwRoutingService.registService(routingDTO);
+    // 등록한 정보 조회
+    result = gwRoutingService.findServices(routingDTO);
+
+    assertEquals(testRegistedServiceId, result.get(0).getServiceId());
+    assertEquals(routingDTO.getServicePath(), result.get(0).getServicePath());
+    assertEquals(routingDTO.getServiceTargetUrl(), result.get(0).getServiceTargetUrl());
+    assertEquals(routingDTO.getServiceDesc(), result.get(0).getServiceDesc());
+    assertEquals(routingDTO.getServiceLoginType(), result.get(0).getServiceLoginType());
+    assertEquals(routingDTO.getServiceAuthType(), result.get(0).getServiceAuthType());
+    assertEquals(routingDTO.getFilterId(), result.get(0).getFilterId());
+  }
+
+  @Test
+  @Order(4)
+  public void API조회_상세_테스트() throws Exception {
+
+    RoutingDTO result = (RoutingDTO) gwRoutingService.findServiceDetail(testRegistedServiceId);
+
+    assertEquals(testRegistedServiceId, result.getServiceId());
+    assertEquals(routingDTO.getServicePath(), result.getServicePath());
+    assertEquals(routingDTO.getServiceTargetUrl(), result.getServiceTargetUrl());
+    assertEquals(routingDTO.getServiceDesc(), result.getServiceDesc());
+    assertEquals(routingDTO.getServiceLoginType(), result.getServiceLoginType());
+    assertEquals(routingDTO.getServiceAuthType(), result.getServiceAuthType());
+    assertEquals(routingDTO.getFilterId(), result.getFilterId());
+  }
+
+  @Test
+  @Order(5)
+  public void API수정_테스트() throws Exception {
+
+    routingDTO.setServiceDesc("서비스 설명 수정");
+    routingDTO.setServiceNm("서비스 명칭 수정");
+    routingDTO.setUptUserNo("2");
+    routingDTO.setUseYn("N");
+
+    gwRoutingService.updateService(routingDTO, testRegistedServiceId);
+  }
+
+  @Test
+  @Order(6)
+  public void API수정_기등록_테스트() throws Exception {
+
+    RoutingDTO result = gwRoutingService.findServices(new RoutingDTO()).stream()
+        .filter(data -> data.getServiceId() != testRegistedServiceId).collect(Collectors.toList())
+        .get(0);
+
+    routingDTO.setServicePath(result.getServicePath());
+
+    assertThrows(BizException.class, () -> {
+
+      gwRoutingService.updateService(routingDTO, testRegistedServiceId);
     });
+  }
 
-    // 서비스 Target URL 누락
-    Assertions.assertThrows(BizException.class, () -> {
+  @Test
+  @Order(7)
+  @Rollback(false)
+  public void API삭제_테스트() throws Exception {
 
-      final RoutingDTO routingDTO = RoutingDTO.builder().serviceNm("Routing Mocking")
-          .servicePath("/api/mock/").serviceDesc("Routing Mocking Test").serviceLoginType("1")
-          .serviceAuthType("1").filterId(new Long(1)).regUserNo("1").build();
+    Long[] data = {testRegistedServiceId};
 
-      gwRoutingService.registService(routingDTO);
-    });
+    assertEquals(1, gwRoutingService.deleteService(data));
   }
 }
