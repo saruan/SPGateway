@@ -25,7 +25,7 @@ import com.kbds.serviceapi.framework.exception.BizException;
 @ActiveProfiles("dev")
 @Transactional
 @TestMethodOrder(OrderAnnotation.class)
-public class RoutingTest extends ApiServiceApplicationTests {
+public class RoutingTest {
 
   @Autowired
   private GwRoutingService gwRoutingService;

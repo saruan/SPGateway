@@ -12,10 +12,10 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableAspectJAutoProxy
 @EnableFeignClients
 @EnableAsync
-public class ApiServiceApplication {
+public class RoutingServiceApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(ApiServiceApplication.class, args);
+    SpringApplication.run(RoutingServiceApplication.class, args);
   }
 
 }

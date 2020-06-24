@@ -4,7 +4,7 @@ import java.util.Date;
 import javax.validation.constraints.NotEmpty;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import lombok.AllArgsConstructor;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -30,7 +30,6 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @EqualsAndHashCode(callSuper = false)
-@AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(value = Include.NON_NULL)
 public class RoutingDTO {
@@ -72,6 +71,33 @@ public class RoutingDTO {
 
   private Date uptDt;
 
+  @QueryProjection
+  public RoutingDTO(Long serviceId, Long filterId, @NotEmpty String serviceNm, String appKeys,
+      @NotEmpty String servicePath, @NotEmpty String serviceTargetUrl, String serviceDesc,
+      @NotEmpty String serviceLoginType, @NotEmpty String serviceAuthType, String useYn,
+      String filterBean, String filterUseYn, String regUserNo, String uptUserNo, Date regDt,
+      Date uptDt) {
+
+    super();
+    this.serviceId = serviceId;
+    this.filterId = filterId;
+    this.serviceNm = serviceNm;
+    this.appKeys = appKeys;
+    this.servicePath = servicePath;
+    this.serviceTargetUrl = serviceTargetUrl;
+    this.serviceDesc = serviceDesc;
+    this.serviceLoginType = serviceLoginType;
+    this.serviceAuthType = serviceAuthType;
+    this.useYn = useYn;
+    this.filterBean = filterBean;
+    this.filterUseYn = filterUseYn;
+    this.regUserNo = regUserNo;
+    this.uptUserNo = uptUserNo;
+    this.regDt = regDt;
+    this.uptDt = uptDt;
+  }
+
+
   /**
    * APP KEY 제외한 생성자
    * 
@@ -91,12 +117,12 @@ public class RoutingDTO {
    * @param regDt
    * @param uptDt
    */
+  @QueryProjection
   public RoutingDTO(Long serviceId, Long filterId, String serviceNm, String servicePath,
       String serviceTargetUrl, String serviceDesc, String serviceLoginType, String serviceAuthType,
       String useYn, String filterBean, String filterUseYn, String regUserNo, String uptUserNo,
       Date regDt, Date uptDt) {
 
-    super();
     this.serviceId = serviceId;
     this.filterId = filterId;
     this.serviceNm = serviceNm;
