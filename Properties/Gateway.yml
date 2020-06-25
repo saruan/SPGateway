@@ -1,7 +1,7 @@
 # 서버 포트
 server:
   port: 8888
-  
+
 # 로그 레벨 설정
 logging:
   level:
@@ -10,7 +10,8 @@ logging:
 #사용자 정의 속성
 services:
   api:
-    route-url: http://localhost:8080/api/service/v1/routes/app/
+    host: http://localhost:8080
+    api-uri: /api/service/v1/routes/app/
   auth:
     host: http://localhost:7777
     check_token-uri: /oauth/check_token
@@ -18,7 +19,7 @@ services:
 # 인증 키관리
 jwt:
   secret-key: 1EB87004BBEA8377C5F584DAE670AA293E6A856C2B4B4708E63B713EBDABBEF8
-  issuer: saruan  
+  issuer: saruan
 oauth:
   client-id: Basic Y2xpZW50MjpwYXNzd29yZA==
 
@@ -29,4 +30,4 @@ spring:
       enabled: true
   kafka:
     bootstrap-servers:
-    - http://localhost:9092
+      - http://localhost:9092
