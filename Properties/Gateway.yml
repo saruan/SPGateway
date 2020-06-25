@@ -9,9 +9,8 @@ logging:
 
 #사용자 정의 속성
 services:
-  routing:
-    host: http://localhost:8080
-    api-uri: /api/service/v1/routes/app/
+  api:
+    route-url: http://localhost:8080/api/service/v1/routes/app/
   auth:
     host: http://localhost:7777
     check_token-uri: /oauth/check_token
