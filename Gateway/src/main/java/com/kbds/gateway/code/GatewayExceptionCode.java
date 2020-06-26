@@ -21,9 +21,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum GatewayExceptionCode {
 
-  GWE001("GWE0001", "사전 검증 실패."),
-  GWE002("GWE0002", "Invalid Parameters."),
-  GWE003("GWE0003", "Gateway 기본 Routing 주소 등록 중 오류 발생"),
+  GWE001("GWE001", "사전 검증 실패."),
+  GWE002("GWE002", "Invalid Parameters."),
+  GWE003("GWE003", "Gateway 기본 Routing 주소 등록 중 오류 발생"),
 
   SAM001("SAM001", "Invalid SAML."),
 

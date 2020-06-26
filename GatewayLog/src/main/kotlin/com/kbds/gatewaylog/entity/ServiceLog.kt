@@ -23,12 +23,12 @@ data class ServiceLog(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         var id: Int,
-        var requestHeader: String,
-        var requestParams: String,
-        var response: String,
-        var appKey: String?,
-        val serviceNm: String,
-        val clientService: String,
+        var requestHeader: String = "",
+        var requestParams: String = "",
+        var response: String = "",
+        var appKey: String = "",
+        val serviceNm: String = "",
+        val clientService: String = "",
         var requestDt: String,
         var responseDt: String
 )

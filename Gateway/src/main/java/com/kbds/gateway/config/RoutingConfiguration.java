@@ -8,7 +8,6 @@ import com.kbds.gateway.dto.ResponseDTO;
 import com.kbds.gateway.dto.RoutingDTO;
 import com.kbds.gateway.exception.GatewayException;
 import com.kbds.gateway.filter.CachingRequestBodyFilter;
-import com.kbds.gateway.filter.GlobalLoggingFilter;
 import com.kbds.gateway.utils.StringUtils;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -54,7 +53,6 @@ public class RoutingConfiguration {
   private final Logger logger = LoggerFactory.getLogger(RoutingConfiguration.class);
   private ApplicationContext appContext;
   private CachingRequestBodyFilter cachingRequestBodyFilter;
-  private GlobalLoggingFilter globalLoggingFilter;
   private ObjectMapper objectMapper;
 
   // Routes,Filter 관리 서버 주소
@@ -64,23 +62,22 @@ public class RoutingConfiguration {
   private Map<String, Object> service;
   private final String PATH = "path";
   private final String URL = "url";
+  private final String FILTER = "filter";
 
   /**
    * Constructor Injection
    *
    * @param appContext
    * @param cachingRequestBodyFilter
-   * @param globalLoggingFilter
    * @param objectMapper
    */
   @Autowired
   RoutingConfiguration(ApplicationContext appContext,
-      CachingRequestBodyFilter cachingRequestBodyFilter, GlobalLoggingFilter globalLoggingFilter,
+      CachingRequestBodyFilter cachingRequestBodyFilter,
       ObjectMapper objectMapper) {
 
     this.appContext = appContext;
     this.cachingRequestBodyFilter = cachingRequestBodyFilter;
-    this.globalLoggingFilter = globalLoggingFilter;
     this.objectMapper = objectMapper;
   }
 
@@ -131,12 +128,7 @@ public class RoutingConfiguration {
         // 필터 유무에 따라 필터 적용을 설정 한다.
         if (!StringUtils.isEmptyParams(routingDTO.getFilterBean())) {
 
-          // ApplicationContext 에 저장 되어 있는 Filter 메소드를 실행한다.
-          Object c = appContext.getBean(routingDTO.getFilterBean());
-          Class<?> cl = c.getClass();
-          Method method =
-              cl.getDeclaredMethod(GatewayCode.GATEWAY_FILTER_APPLY.getCode(), Object.class);
-          GatewayFilter mainFilter = (GatewayFilter) method.invoke(c, routingDTO);
+          GatewayFilter mainFilter = getFilterSpec(routingDTO.getFilterBean(), routingDTO);
 
         /*
           최종 Routing 서비스를 G/W에 등록한다.
@@ -147,7 +139,7 @@ public class RoutingConfiguration {
                   String.format("%s(?<segment>.*)", routingDTO.getServicePath()),
                   String.format("%s${segment}", targetPath))
                   .filters(cachingRequestBodyFilter.apply(new CachingRequestBodyFilter.Config()),
-                      mainFilter, globalLoggingFilter.apply(routingDTO)))
+                      mainFilter))
               .uri(routingDTO.getServiceTargetUrl()));
         } else {
 
@@ -211,17 +203,48 @@ public class RoutingConfiguration {
         final String originUrl = defaultPath.get(URL);
         final String targetPath = new URL(originUrl).getPath();
 
-        routeLocator.route(r -> r.path(originPath + "**")
-            .filters(f -> f.rewritePath(
-                String.format("%s(?<segment>.*)", originPath),
-                String.format("%s${segment}", targetPath)))
-            .uri(originUrl));
-      } catch (MalformedURLException e) {
+        if (defaultPath.containsKey(FILTER)) {
+
+          final String filter = defaultPath.get(FILTER);
+          GatewayFilter mainFilter = getFilterSpec(filter, new RoutingDTO());
+
+          routeLocator.route(r -> r.path(originPath + "**")
+              .filters(f -> f.rewritePath(
+                  String.format("%s(?<segment>.*)", originPath),
+                  String.format("%s${segment}", targetPath)).filter(mainFilter))
+              .uri(originUrl));
+        } else {
+
+          routeLocator.route(r -> r.path(originPath + "**")
+              .filters(f -> f.rewritePath(
+                  String.format("%s(?<segment>.*)", originPath),
+                  String.format("%s${segment}", targetPath)))
+              .uri(originUrl));
+        }
+      } catch (Exception e) {
 
         throw new GatewayException(GatewayExceptionCode.GWE003, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     });
 
     return routeLocator;
+  }
+
+  /**
+   * Spring Application Conetext에 등록된 Filter Bean 호출
+   *
+   * @param filterNm
+   * @param params
+   * @return
+   * @throws Exception
+   */
+  private GatewayFilter getFilterSpec(String filterNm, RoutingDTO params) throws Exception {
+
+    // ApplicationContext 에 저장 되어 있는 Filter 메소드를 실행한다.
+    Object c = appContext.getBean(filterNm);
+    Class<?> cl = c.getClass();
+    Method method =
+        cl.getDeclaredMethod(GatewayCode.GATEWAY_FILTER_APPLY.getCode(), Object.class);
+    return (GatewayFilter) method.invoke(c, params);
   }
 }
