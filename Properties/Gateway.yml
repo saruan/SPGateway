@@ -27,6 +27,14 @@ gateway:
     filter:
       path: /gateway/filters/
       url:  http://localhost:8080/api/service/v1/filter/
+    saml:
+      path: /gateway/saml/
+      url:  http://localhost:7777/auth/v1.0/oauth/saml
+      filter: SAMLFilter
+    token:
+      path: /gateway/token/
+      url:  http://localhost:7777/oauth/token
+      filter: TokenFilter
 
 # 인증 키관리
 jwt:
