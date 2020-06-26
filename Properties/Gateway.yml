@@ -19,13 +19,13 @@ services:
 gateway:
   service:
     routing:
-      path: /gateway/routes/**
+      path: /gateway/routes/
       url:  http://localhost:8080/api/service/v1/routes/
     app:
-      path: /gateway/apps/**
+      path: /gateway/apps/
       url:  http://localhost:8080/api/service/v1/app/
     filter:
-      path: /gateway/filters/**
+      path: /gateway/filters/
       url:  http://localhost:8080/api/service/v1/filter/
 
 # 인증 키관리
