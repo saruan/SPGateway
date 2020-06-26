@@ -1,12 +1,5 @@
 package com.kbds.serviceapi.apis.service;
 
-import java.util.List;
-import java.util.Optional;
-import javax.transaction.Transactional;
-import javax.validation.Validator;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import com.kbds.serviceapi.apis.dto.EmptyJsonBody;
 import com.kbds.serviceapi.apis.dto.RoutingDTO;
 import com.kbds.serviceapi.apis.entity.GwService;
@@ -17,26 +10,30 @@ import com.kbds.serviceapi.apis.repository.GwRoutingRepository;
 import com.kbds.serviceapi.common.code.BizExceptionCode;
 import com.kbds.serviceapi.common.utils.CommonUtils;
 import com.kbds.serviceapi.framework.exception.BizException;
+import java.util.List;
+import java.util.Optional;
+import javax.transaction.Transactional;
+import javax.validation.Validator;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
- *
  * <pre>
  *  Class Name     : GwRoutingService.java
  *  Description    : 라우팅 서비스 클래스
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
- * 
+ *
  * -------------------------------------------------------------------------------
  *     변경No        변경일자                변경자          Description
  * -------------------------------------------------------------------------------
  *     Ver 1.0      2020-04-14     구경태          Initialized
  * -------------------------------------------------------------------------------
  * </pre>
- *
  */
 @Service
 public class GwRoutingService {
 
-  // QueryDsl용 커스텀 레파지토리
   @Autowired
   GwRoutingCustomRepository gwServiceCustomRepository;
 
@@ -54,8 +51,7 @@ public class GwRoutingService {
 
   /**
    * G/W Routing Bean으로 등록할 정보들 조회 서비스
-   * 
-   * @param params
+   *
    * @return
    */
   public List<RoutingDTO> findGwServices() {
@@ -67,11 +63,13 @@ public class GwRoutingService {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
     }
-  };
+  }
+
+  ;
 
   /**
    * 서비스 검색 기능
-   * 
+   *
    * @param params
    * @return
    */
@@ -84,12 +82,13 @@ public class GwRoutingService {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
     }
-  };
+  }
+
+  ;
 
   /**
    * 서비스 상세 검색 기능
-   * 
-   * @param params
+   *
    * @return
    */
   @Transactional
@@ -110,16 +109,17 @@ public class GwRoutingService {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
     }
-  };
+  }
+
+  ;
 
   /**
    * 서비스 등록
-   * 
+   *
    * @param reqParam
    */
   public GwService registService(RoutingDTO reqParam) {
 
-    // 이미 등록된 서비스인지 체크
     if (gwServiceCustomRepository.checkRegistValidation(reqParam)) {
 
       throw new BizException(BizExceptionCode.COM003);
@@ -137,11 +137,13 @@ public class GwRoutingService {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
     }
-  };
+  }
+
+  ;
 
   /**
    * 서비스 수정
-   * 
+   *
    * @param reqParam
    */
   @Transactional
@@ -199,8 +201,8 @@ public class GwRoutingService {
 
   /**
    * 서비스 삭제
-   * 
-   * @param id
+   *
+   * @param serviceId
    */
   @Transactional
   public long deleteService(Long[] serviceId) {

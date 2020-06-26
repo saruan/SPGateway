@@ -1,9 +1,5 @@
 package com.kbds.serviceapi.apis.querydsl.impl;
 
-import java.util.List;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import org.springframework.stereotype.Service;
 import com.kbds.serviceapi.apis.dto.QRoutingDTO;
 import com.kbds.serviceapi.apis.dto.RoutingDTO;
 import com.kbds.serviceapi.apis.entity.GwService;
@@ -15,22 +11,23 @@ import com.kbds.serviceapi.apis.querydsl.GwRoutingCustomRepository;
 import com.kbds.serviceapi.common.code.CommonCode;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.Expressions;
+import java.util.List;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.stereotype.Service;
 
 /**
- * 
- *
  * <pre>
  *  Class Name     : GwServiceCustomRepositoryImpl.java
  *  Description    : 사용자 정의 Querydsl 클래스
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
- * 
+ *
  * -------------------------------------------------------------------------------
  *     변경No        변경일자        	       변경자          Description
  * -------------------------------------------------------------------------------
  *     Ver 1.0      2020-04-14     구경태          Initialized
  * -------------------------------------------------------------------------------
  * </pre>
- *
  */
 @Service
 public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
@@ -38,8 +35,6 @@ public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
 
   /**
    * 생성자
-   * 
-   * @param domainClass
    */
   public GwRoutingCustomRepositoryImpl() {
 
@@ -55,38 +50,35 @@ public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
     QGwService gwService = QGwService.gwService;
     QGwServiceAppMapping gwServiceAppMapping = QGwServiceAppMapping.gwServiceAppMapping;
     QGwApp gwApp = QGwApp.gwApp;
-
-    // 검색 조건문 등록
     BooleanBuilder builder = new BooleanBuilder();
 
     builder.and(gwService.useYn.eq(CommonCode.Y.getResultCode()));
-    // builder.and(gwApp.useYn.eq(CommonCode.Y.getResultCode()));
 
     // @formatter:off
     // GwService, GwApp, Mapping 테이블과 조인 후 appKey를 , 로 합쳐 전달한다.    
     return from(gwService)
-          .leftJoin(gwServiceAppMapping)
-             .on(gwService.serviceId.eq(gwServiceAppMapping.gwService.serviceId))
-          .leftJoin(gwApp)
-             .on(gwApp.appId.eq(gwServiceAppMapping.gwApp.appId))
-          .select(new QRoutingDTO( 
-                 gwService.serviceId,
-                 gwService.filter.filterId, 
-                 gwService.serviceNm,
-                 Expressions.stringTemplate("group_concat({0}, ',')", gwApp.appKey),
-                 gwService.servicePath, 
-                 gwService.serviceTargetUrl, 
-                 gwService.serviceDesc,
-                 gwService.serviceLoginType, 
-                 gwService.serviceAuthType, 
-                 gwService.useYn,
-                 gwService.filter.filterBean, 
-                 gwService.filter.useYn, 
-                 gwService.regUserNo,
-                 gwService.uptUserNo, 
-                 gwService.regDt, 
-                 gwService.uptDt))
-          .where(builder).groupBy(gwService.serviceId).fetch();   
+        .leftJoin(gwServiceAppMapping)
+        .on(gwService.serviceId.eq(gwServiceAppMapping.gwService.serviceId))
+        .leftJoin(gwApp)
+        .on(gwApp.appId.eq(gwServiceAppMapping.gwApp.appId))
+        .select(new QRoutingDTO(
+            gwService.serviceId,
+            gwService.filter.filterId,
+            gwService.serviceNm,
+            Expressions.stringTemplate("group_concat({0}, ',')", gwApp.appKey),
+            gwService.servicePath,
+            gwService.serviceTargetUrl,
+            gwService.serviceDesc,
+            gwService.serviceLoginType,
+            gwService.serviceAuthType,
+            gwService.useYn,
+            gwService.filter.filterBean,
+            gwService.filter.useYn,
+            gwService.regUserNo,
+            gwService.uptUserNo,
+            gwService.regDt,
+            gwService.uptDt))
+        .where(builder).groupBy(gwService.serviceId).fetch();
     // @formatter:on
 
   }
@@ -130,22 +122,22 @@ public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
 
     // @formatter:off
     // GW_SERVICE에서 검색 조건문으로 등록한 조건에 맞게 검색한 후 RoutingServiceDTO로 결과 값을 매핑시킨다.
-    return from(gwService).select(new QRoutingDTO( 
+    return from(gwService).select(new QRoutingDTO(
         gwService.serviceId,
-        gwService.filter.filterId, 
+        gwService.filter.filterId,
         gwService.serviceNm,
-        gwService.servicePath, 
-        gwService.serviceTargetUrl, 
+        gwService.servicePath,
+        gwService.serviceTargetUrl,
         gwService.serviceDesc,
-        gwService.serviceLoginType, 
-        gwService.serviceAuthType, 
+        gwService.serviceLoginType,
+        gwService.serviceAuthType,
         gwService.useYn,
-        gwService.filter.filterBean, 
-        gwService.filter.useYn, 
+        gwService.filter.filterBean,
+        gwService.filter.useYn,
         gwService.regUserNo,
-        gwService.uptUserNo, 
-        gwService.regDt, 
-        gwService.uptDt)).where(builder).fetch(); 
+        gwService.uptUserNo,
+        gwService.regDt,
+        gwService.uptDt)).where(builder).fetch();
     // @formatter:on
   }
 

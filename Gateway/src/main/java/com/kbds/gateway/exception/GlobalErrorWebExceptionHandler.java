@@ -1,5 +1,9 @@
 package com.kbds.gateway.exception;
 
+import com.kbds.gateway.code.GatewayExceptionCode;
+import com.kbds.gateway.dto.ResponseDTO;
+import com.kbds.gateway.dto.ServiceLogDTO;
+import com.kbds.gateway.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ResourceProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler;
@@ -16,10 +20,6 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import com.kbds.gateway.code.GatewayExceptionCode;
-import com.kbds.gateway.dto.ResponseDTO;
-import com.kbds.gateway.dto.ServiceLogDTO;
-import com.kbds.gateway.utils.DateUtils;
 import reactor.core.publisher.Mono;
 
 /**
@@ -43,10 +43,9 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
   @Autowired
   private KafkaTemplate<String, ServiceLogDTO> kafkaTemplate;
 
-  // kafka 토픽
   private final String GATEWAY_TOPIC = "GATEWAY_LOG";
-
   private final String SERVICE_NAME = "GATEWAY";
+  private final String BLANK = "";
 
   public GlobalErrorWebExceptionHandler(ErrorAttributes g, ApplicationContext applicationContext,
       ServerCodecConfigurer serverCodecConfigurer) {
@@ -97,7 +96,7 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
 
       // 큐에 서비스 로그 전송
       ServiceLogDTO serviceLog = new ServiceLogDTO(request.headers().asHttpHeaders().toString(),
-          e.getArg(), status.name(), SERVICE_NAME, currentTime, currentTime);
+          e.getArg(), status.name(), BLANK, BLANK, SERVICE_NAME, currentTime, currentTime);
       kafkaTemplate.send(GATEWAY_TOPIC, serviceLog);
     }
     // 그 이외의 정해진 규격이 아닌 Gateway 오류일 경우 아래와 같이 설정한다.
@@ -110,5 +109,4 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
     return ServerResponse.status(status).contentType(MediaType.APPLICATION_JSON)
         .body(BodyInserters.fromValue(errorResponseDTO));
   }
-
 }

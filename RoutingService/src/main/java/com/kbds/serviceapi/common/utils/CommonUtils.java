@@ -1,5 +1,10 @@
 package com.kbds.serviceapi.common.utils;
 
+import com.auth0.jwt.JWTCreator;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.kbds.serviceapi.common.code.CommonCode;
+import com.kbds.serviceapi.common.feign.GatewayClient;
+import com.kbds.serviceapi.framework.dto.ResponseDTO;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.logging.log4j.ThreadContext;
@@ -9,26 +14,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
-import com.auth0.jwt.JWTCreator;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.kbds.serviceapi.common.code.CommonCode;
-import com.kbds.serviceapi.common.feign.GatewayClient;
-import com.kbds.serviceapi.framework.dto.ResponseDTO;
 
 /**
- * 
  * <pre>
  *  Class Name     : CommonUtils.java
  *  Description    : 일반 공통 유틸 클래스
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
- * 
+ *
  * -------------------------------------------------------------------------------
  *     변경No        변경일자        	       변경자          Description
  * -------------------------------------------------------------------------------
  *     Ver 1.0      2020-04-16     구경태          Initialized
  * -------------------------------------------------------------------------------
  * </pre>
- *
  */
 @Component
 public class CommonUtils {
@@ -51,10 +49,9 @@ public class CommonUtils {
     CommonUtils.gatewayClient = gatewayClient;
   }
 
-
   /**
    * 공통 Response Model 생성 유틸 메소드
-   * 
+   *
    * @param params
    * @return
    */
@@ -95,9 +92,9 @@ public class CommonUtils {
 
   /**
    * Log4j2 공통 로그 필드 설정 메소드
-   * 
+   *
    * @param serviceDesc
-   * @param rstrUserNo
+   * @param regUserNo
    */
   public static void setCommonLog(String serviceDesc, String regUserNo) {
 

@@ -4,20 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 
- *
  * <pre>
  *  Class Name     : BizExceptionCode.java
  *  Description    : 비지니스 실패 처리용 코드
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
- * 
+ *
  * -------------------------------------------------------------------------------
  *     변경No        변경일자        	       변경자          Description
  * -------------------------------------------------------------------------------
  *     Ver 1.0      2020-04-16     구경태          Initialized
  * -------------------------------------------------------------------------------
  * </pre>
- *
  */
 
 @Getter
@@ -26,6 +23,7 @@ public enum GatewayExceptionCode {
 
   GWE001("GWE0001", "사전 검증 실패."),
   GWE002("GWE0002", "Invalid Parameters."),
+  GWE003("GWE0003", "Gateway 기본 Routing 주소 등록 중 오류 발생"),
 
   SAM001("SAM001", "Invalid SAML."),
 

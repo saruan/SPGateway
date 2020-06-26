@@ -1,5 +1,11 @@
 package com.kbds.gateway.filter;
 
+import com.kbds.gateway.code.GatewayCode;
+import com.kbds.gateway.code.GatewayExceptionCode;
+import com.kbds.gateway.dto.RoutingDTO;
+import com.kbds.gateway.exception.GatewayException;
+import com.kbds.gateway.feign.AuthClient;
+import com.kbds.gateway.utils.StringUtils;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,38 +17,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Service;
-import com.kbds.gateway.code.GatewayCode;
-import com.kbds.gateway.code.GatewayExceptionCode;
-import com.kbds.gateway.dto.RoutingDTO;
-import com.kbds.gateway.exception.GatewayException;
-import com.kbds.gateway.feign.AuthClient;
-import com.kbds.gateway.utils.StringUtils;
 
 /**
- * 
- *
  * <pre>
  *  Class Name     : CommonFilter.java
  *  Description    : 일반 공통 필터 템플릿
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
- * 
+ *
  * -------------------------------------------------------------------------------
  *     변경No        변경일자        	       변경자          Description
  * -------------------------------------------------------------------------------
  *     Ver 1.0      2020-04-20     구경태          Initialized
  * -------------------------------------------------------------------------------
  * </pre>
- *
  */
 @Service("CommonFilter")
 public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
+  @Lazy
   @Autowired
   AuthClient authClient;
 
@@ -65,7 +64,7 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
       Map<String, Object> results = null;
       Map<String, String> headers = new HashMap<String, String>();
 
-      // 인증타입, APP Key
+      // 인증 타입, APP Key
       String serviceLoginType = routingDTO.getServiceLoginType();
       String appKey = request.getHeaders().getFirst(GatewayCode.API_KEY.getCode());
 
@@ -96,7 +95,7 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
           throw new GatewayException(GatewayExceptionCode.APP001, HttpStatus.UNAUTHORIZED);
         }
 
-        // OAuth 인증일 경우 인증 서버에서 토큰값이 유효한지 체크한다.
+        // OAuth 인증일 경우 인증 서버에서 토큰 값이 유효 한지 체크 한다.
         if (GatewayCode.OAUTH_TYPE.getCode().equals(serviceLoginType)) {
 
           String accessToken = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
@@ -139,7 +138,7 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
   /**
    * AccessToken 유효성 체크
-   * 
+   *
    * @param results
    * @return
    */
