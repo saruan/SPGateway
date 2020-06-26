@@ -15,6 +15,18 @@ services:
     host: http://localhost:7777
     check_token-uri: /oauth/check_token
 
+# 기본 서비스
+gateway:
+  routing:
+    path: /gateway/routes/
+    url:  http://localhost:8080/api/service/v1/routes/
+  app:
+    path: /gateway/apps/
+    url:  http://localhost:8080/api/service/v1/app/
+  filter:
+    path: /gateway/filters/
+    url:  http://localhost:8080/api/service/v1/filter/
+
 # 인증 키관리
 jwt:
   secret-key: 1EB87004BBEA8377C5F584DAE670AA293E6A856C2B4B4708E63B713EBDABBEF8
