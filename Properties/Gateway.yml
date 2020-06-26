@@ -48,14 +48,6 @@ spring:
   cloud:
     bus:
       enabled: true
-    gateway:
-      plugin:
-        config:
-          log-request: true
-          read-request-data: true # this setting will read all request data
-          read-response-data: true
   kafka:
     bootstrap-servers:
       - http://localhost:9092
-  main:
-    allow-bean-definition-overriding: true
