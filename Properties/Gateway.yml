@@ -17,15 +17,16 @@ services:
 
 # 기본 서비스
 gateway:
-  routing:
-    path: /gateway/routes/
-    url:  http://localhost:8080/api/service/v1/routes/
-  app:
-    path: /gateway/apps/
-    url:  http://localhost:8080/api/service/v1/app/
-  filter:
-    path: /gateway/filters/
-    url:  http://localhost:8080/api/service/v1/filter/
+  service:
+    routing:
+      path: /gateway/routes/
+      url:  http://localhost:8080/api/service/v1/routes/
+    app:
+      path: /gateway/apps/
+      url:  http://localhost:8080/api/service/v1/app/
+    filter:
+      path: /gateway/filters/
+      url:  http://localhost:8080/api/service/v1/filter/
 
 # 인증 키관리
 jwt:
