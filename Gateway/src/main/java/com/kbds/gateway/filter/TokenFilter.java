@@ -49,7 +49,8 @@ public class TokenFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
       // 필수 파라미터 체크
       if (buffer == null) {
 
-        throw new GatewayException(GatewayExceptionCode.GWE002, HttpStatus.UNAUTHORIZED, "");
+        throw new GatewayException(GatewayExceptionCode.GWE002, HttpStatus.UNAUTHORIZED,
+            GatewayCode.EMPTY.getCode());
       }
 
       Map<String, String> queryParam = StringUtils.queryToMap(buffer);

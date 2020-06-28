@@ -50,6 +50,8 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
   // AccessToken 유효 코드
   private final String ACTIVE = "active";
+  // APP-KEY 구분자
+  private final String APP_KEY_PREFIX = ",";
 
   // 로그용 변수
   Logger logger = LoggerFactory.getLogger(CommonFilter.class);
@@ -84,7 +86,7 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
         // AppKey 검증
         if (!StringUtils.isEmptyParams(routingDTO.getAppKeys())) {
 
-          List<String> appKeys = Arrays.asList(routingDTO.getAppKeys().split(","));
+          List<String> appKeys = Arrays.asList(routingDTO.getAppKeys().split(APP_KEY_PREFIX));
 
           if (StringUtils.isEmptyParams(appKey) || !appKeys.contains(appKey)) {
 

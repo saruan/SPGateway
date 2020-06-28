@@ -37,6 +37,7 @@ public class LoggingFilter implements GlobalFilter, Ordered {
 
   @Autowired
   private KafkaTemplate<String, ServiceLogDTO> kafkaTemplate;
+
   private final String GATEWAY_TOPIC = "GATEWAY_LOG";
   private final String CLIENT_NAME = "GATEWAY";
 
@@ -51,13 +52,15 @@ public class LoggingFilter implements GlobalFilter, Ordered {
 
   @Override
   public int getOrder() {
+
     return Integer.MIN_VALUE;
   }
 
   /**
-   * Response 시 서비스 로깅을 위해 Body값을 읽어오는 <메소드 현재 사용 안함>
+   * Service Logging 수행
    *
    * @param exchange
+   * @param startTime
    * @return
    */
   ServerHttpResponseDecorator logResponse(ServerWebExchange exchange, String startTime) {
@@ -68,6 +71,11 @@ public class LoggingFilter implements GlobalFilter, Ordered {
     return new ServerHttpResponseDecorator(origResponse) {
       @Override
       public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
+
+        String endTime = DateUtils.getCurrentTime();
+        String headerInfo = exchange.getRequest().getHeaders().toSingleValueMap().toString();
+        String appKey = exchange.getRequest().getHeaders()
+            .getFirst(GatewayCode.API_KEY.getCode());
 
         Flux<? extends DataBuffer> fluxBody = (Flux<? extends DataBuffer>) body;
         return super.writeWith(fluxBody.map(dataBuffer -> {
@@ -86,12 +94,6 @@ public class LoggingFilter implements GlobalFilter, Ordered {
             DataBuffer buffer = (DataBuffer) attribute;
             requestBody.append(StandardCharsets.UTF_8.decode(buffer.asByteBuffer()).toString());
           }
-
-          String endTime = DateUtils.getCurrentTime();
-          String headerInfo = exchange.getRequest().getHeaders().toSingleValueMap().toString();
-          String httpStatusCode = exchange.getResponse().getStatusCode().name();
-          String appKey = exchange.getRequest().getHeaders()
-              .getFirst(GatewayCode.API_KEY.getCode());
 
           // 큐에 서비스 로그 전송
           ServiceLogDTO serviceLog =

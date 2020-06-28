@@ -23,19 +23,17 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 /**
- *
  * <pre>
  *  Class Name     : GlobalErrorWebExceptionHandler.java
  *  Description    : ExceptionHandler
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
- * 
+ *
  * -------------------------------------------------------------------------------
  *     변경No        변경일자        	       변경자          Description
  * -------------------------------------------------------------------------------
  *     Ver 1.0      2020-05-22    	   구경태          Initialized
  * -------------------------------------------------------------------------------
  * </pre>
- *
  */
 @Component
 public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHandler {
@@ -64,9 +62,9 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
 
   /**
    * 오류 Response 설정
-   * 
+   *
    * @param request
-   * @return
+   * @request
    */
   private Mono<ServerResponse> renderErrorResponse(final ServerRequest request) {
 
@@ -96,7 +94,8 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
 
       // 큐에 서비스 로그 전송
       ServiceLogDTO serviceLog = new ServiceLogDTO(request.headers().asHttpHeaders().toString(),
-          e.getArg(), status.name(), BLANK, BLANK, SERVICE_NAME, currentTime, currentTime);
+          e.getArg(), errorResponseDTO.toString(), BLANK, BLANK, SERVICE_NAME, currentTime,
+          currentTime);
       kafkaTemplate.send(GATEWAY_TOPIC, serviceLog);
     }
     // 그 이외의 정해진 규격이 아닌 Gateway 오류일 경우 아래와 같이 설정한다.
