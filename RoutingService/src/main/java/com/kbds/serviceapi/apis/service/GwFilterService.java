@@ -65,8 +65,6 @@ public class GwFilterService {
     }
   }
 
-  ;
-
   /**
    * 필터 상세 검색 기능
    *
@@ -93,9 +91,6 @@ public class GwFilterService {
       throw new BizException(BizExceptionCode.COM001, e.toString());
     }
   }
-
-  ;
-
 
   /**
    * 필터링 서비스 등록
@@ -138,7 +133,7 @@ public class GwFilterService {
   @Transactional
   public void updateFilter(FilterDTO reqParam, Long filterId) {
 
-    GwServiceFilter gwServiceFilter = null;
+    GwServiceFilter gwServiceFilter;
 
     // 파라미터 체크(수정자)
     if (reqParam.getUptUserNo() == null) {
@@ -149,7 +144,7 @@ public class GwFilterService {
     try {
 
       // DB 상에서 해당 serviceId를 가진 Entity를 불러온다.
-      gwServiceFilter = gwFilterRepository.findById(filterId).get();
+      gwServiceFilter = gwFilterRepository.findByFilterId(filterId);
     } catch (Exception e) {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
