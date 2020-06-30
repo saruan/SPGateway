@@ -25,9 +25,11 @@ public enum GatewayCode {
   EMPTY("", "공백"),
   ROLE_ADMIN("ROLE_ADMIN", "관리자 권한"),
   GATEWAY_FILTER_APPLY("apply", "Gateway Filter 메소드명"),
-  TOKEN_PREFIX("Bearer ", "TOKEN 헤더 PREFIX"),
   API_KEY("api_key", "appKey 헤더 정보"),
   CACHE_REQUEST_BODY("cachedRequestBody", "Request Body Caching 데이터"),
+
+  TOKEN_PREFIX("Bearer ", "TOKEN 헤더 PREFIX"),
+  APP_KEY_PREFIX(",", "APP-KEY 구분자"),
 
   OAUTH_TYPE("1", "OAuth 인증 방식"),
 

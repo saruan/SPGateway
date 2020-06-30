@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -41,20 +40,15 @@ import org.springframework.stereotype.Service;
 @Service("CommonFilter")
 public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
-  @Lazy
+  private final Logger logger = LoggerFactory.getLogger(CommonFilter.class);
+
   @Autowired
   AuthClient authClient;
 
   @Value("${oauth.client-id}")
   String clientId;
 
-  // AccessToken 유효 코드
-  private final String ACTIVE = "active";
-  // APP-KEY 구분자
-  private final String APP_KEY_PREFIX = ",";
-
-  // 로그용 변수
-  Logger logger = LoggerFactory.getLogger(CommonFilter.class);
+  private final String TOKEN_VALID_CODE = "active";
 
   @Override
   public GatewayFilter apply(RoutingDTO routingDTO) {
@@ -64,7 +58,7 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
       ServerHttpRequest request = exchange.getRequest();
 
       Map<String, Object> results = null;
-      Map<String, String> headers = new HashMap<String, String>();
+      Map<String, String> headers = new HashMap<>();
 
       // 인증 타입, APP Key
       String serviceLoginType = routingDTO.getServiceLoginType();
@@ -83,59 +77,82 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
       try {
 
-        // AppKey 검증
-        if (!StringUtils.isEmptyParams(routingDTO.getAppKeys())) {
-
-          List<String> appKeys = Arrays.asList(routingDTO.getAppKeys().split(APP_KEY_PREFIX));
-
-          if (StringUtils.isEmptyParams(appKey) || !appKeys.contains(appKey)) {
-
-            throw new GatewayException(GatewayExceptionCode.TOK003, HttpStatus.UNAUTHORIZED);
-          }
-        } else {
+        if (!isValidAppKey(routingDTO, appKey)) {
 
           throw new GatewayException(GatewayExceptionCode.APP001, HttpStatus.UNAUTHORIZED);
         }
 
-        // OAuth 인증일 경우 인증 서버에서 토큰 값이 유효 한지 체크 한다.
+        // API가 OAuth Type 일 경우 추가적으로 AccessToken 검증을 수행 한다.
         if (GatewayCode.OAUTH_TYPE.getCode().equals(serviceLoginType)) {
 
           String accessToken = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
-          if (StringUtils.isEmptyParams(accessToken)) {
-
-            throw new GatewayException(GatewayExceptionCode.TOK001, HttpStatus.UNAUTHORIZED);
-          }
-
-          accessToken = accessToken.replace(GatewayCode.TOKEN_PREFIX.getCode(), "");
-
-          headers.put(HttpHeaders.AUTHORIZATION, clientId);
-          headers.put(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
-
-          try {
-
-            // AuthServer에서 토큰 유효성 체크를 수행한다.
-            results = authClient.checkAccessToken(accessToken, headers);
-
-          } catch (Exception e) {
-
-            throw new GatewayException(GatewayExceptionCode.AUTH001, HttpStatus.BAD_REQUEST);
-          }
-
-          if (!isValidToken(results)) {
-
-            throw new GatewayException(GatewayExceptionCode.TOK001, HttpStatus.UNAUTHORIZED);
-          }
+          checkValidAccessToken(accessToken);
         }
       } catch (GatewayException e) {
 
-        // GatewayException일 경우 입력 파라미터를 Handler에 전달하여 서비스 로그를 저장할 수 있게 한다.
         throw new GatewayException(GatewayExceptionCode.valueOf(e.getMessage()), e.getHttpStatus(),
             requestBody.toString());
       }
 
       return chain.filter(exchange);
     };
+  }
+
+  /**
+   * AppKey 검증
+   *
+   * @param routingDTO Routing 정보
+   * @param appKey     Header AppKey
+   * @return
+   */
+  public boolean isValidAppKey(RoutingDTO routingDTO, String appKey) {
+
+    // Header에 있는 AppKey와 해당 Routing URL이 가지고 있는 Appkey 목록과 비교한다.
+    if (!StringUtils.isEmptyParams(routingDTO.getAppKeys())) {
+
+      List<String> appKeys = Arrays
+          .asList(routingDTO.getAppKeys().split(GatewayCode.APP_KEY_PREFIX.getCode()));
+
+      return !StringUtils.isEmptyParams(appKey) && appKeys.contains(appKey);
+    }
+    return true;
+  }
+
+  /**
+   * AccessToken 검증
+   *
+   * @param accessToken
+   */
+  public void checkValidAccessToken(String accessToken) {
+
+    Map<String, Object> results;
+    Map<String, String> headers = new HashMap<>();
+
+    if (StringUtils.isEmptyParams(accessToken)) {
+
+      throw new GatewayException(GatewayExceptionCode.TOK001, HttpStatus.UNAUTHORIZED);
+    }
+
+    accessToken = accessToken.replace(GatewayCode.TOKEN_PREFIX.getCode(), "");
+
+    headers.put(HttpHeaders.AUTHORIZATION, clientId);
+    headers.put(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
+
+    try {
+
+      // AuthServer에서 토큰 유효성 체크를 수행한다.
+      results = authClient.checkAccessToken(accessToken, headers);
+
+    } catch (Exception e) {
+
+      throw new GatewayException(GatewayExceptionCode.AUTH001, HttpStatus.BAD_REQUEST);
+    }
+
+    if (!isValidToken(results)) {
+
+      throw new GatewayException(GatewayExceptionCode.TOK001, HttpStatus.UNAUTHORIZED);
+    }
   }
 
   /**
@@ -146,6 +163,6 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
    */
   public boolean isValidToken(Map<String, Object> results) {
 
-    return results != null && results.containsKey(ACTIVE);
+    return results != null && results.containsKey(TOKEN_VALID_CODE);
   }
 }

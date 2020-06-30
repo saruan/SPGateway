@@ -1,33 +1,36 @@
 package com.kbds.serviceapi.apis.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.kbds.serviceapi.apis.entity.AuditLog;
 import java.util.Date;
 import javax.validation.constraints.NotEmpty;
-import com.kbds.serviceapi.apis.entity.AuditLog;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 
 /**
- *
  * <pre>
  *  Class Name     : FilterServiceDTO.java
  *  Description    : 필터링 서비스 빈 관리 DTO
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
- * 
+ *
  * -------------------------------------------------------------------------------
  *     변경No        변경일자        	       변경자          Description
  * -------------------------------------------------------------------------------
  *     Ver 1.0      2020-04-16     구경태          Initialized
  * -------------------------------------------------------------------------------
  * </pre>
- *
  */
 @Data
+@Builder
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(value = Include.NON_NULL)
 public class FilterDTO extends AuditLog {
 
   private Long filterId;
