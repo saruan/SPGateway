@@ -211,8 +211,11 @@ public class RoutingConfiguration {
           routeLocator.route(r -> r.path(originPath + "**")
               .filters(f -> f.rewritePath(
                   String.format("%s(?<segment>.*)", originPath),
-                  String.format("%s${segment}", targetPath)).filter(mainFilter))
+                  String.format("%s${segment}", targetPath))
+                  .filters(cachingRequestBodyFilter.apply(new CachingRequestBodyFilter.Config()),
+                      mainFilter))
               .uri(originUrl));
+
         } else {
 
           routeLocator.route(r -> r.path(originPath + "**")
@@ -244,7 +247,7 @@ public class RoutingConfiguration {
     Object c = appContext.getBean(filterNm);
     Class<?> cl = c.getClass();
     Method method =
-        cl.getDeclaredMethod(GatewayCode.GATEWAY_FILTER_APPLY.getCode(), Object.class);
+        cl.getDeclaredMethod(GatewayCode.GATEWAY_FILTER_APPLY.getCode(), RoutingDTO.class);
     return (GatewayFilter) method.invoke(c, params);
   }
 }

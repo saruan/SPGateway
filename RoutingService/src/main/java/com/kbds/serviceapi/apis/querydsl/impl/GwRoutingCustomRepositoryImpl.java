@@ -58,9 +58,9 @@ public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
     // GwService, GwApp, Mapping 테이블과 조인 후 appKey를 , 로 합쳐 전달한다.    
     return from(gwService)
         .leftJoin(gwServiceAppMapping)
-        .on(gwService.serviceId.eq(gwServiceAppMapping.gwService.serviceId))
+          .on(gwService.serviceId.eq(gwServiceAppMapping.gwService.serviceId))
         .leftJoin(gwApp)
-        .on(gwApp.appId.eq(gwServiceAppMapping.gwApp.appId))
+          .on(gwApp.appId.eq(gwServiceAppMapping.gwApp.appId))
         .select(new QRoutingDTO(
             gwService.serviceId,
             gwService.filter.filterId,

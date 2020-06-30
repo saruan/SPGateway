@@ -1,6 +1,6 @@
 package com.kbds.serviceapi.apis.service;
 
-import com.kbds.serviceapi.apis.dto.EmptyJsonBody;
+import com.kbds.serviceapi.apis.dto.EmptyDataDTO;
 import com.kbds.serviceapi.apis.dto.RoutingDTO;
 import com.kbds.serviceapi.apis.entity.GwService;
 import com.kbds.serviceapi.apis.entity.GwServiceFilter;
@@ -101,7 +101,7 @@ public class GwRoutingService {
       // 검색 결과가 없으면 빈 결과 값을 리턴
       if (!gwService.isPresent()) {
 
-        return new EmptyJsonBody();
+        return new EmptyDataDTO();
       }
 
       return modelMapper.map(gwService.get(), RoutingDTO.class);

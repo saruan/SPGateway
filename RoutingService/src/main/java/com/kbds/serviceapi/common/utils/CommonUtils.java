@@ -68,13 +68,15 @@ public class CommonUtils {
 
   /**
    * RoutingService의 최신 데이터를 Gateway에 변경 요청한다.
+   *
+   * @param regUserNo
    */
   public static void refreshGatewayRoutes(String regUserNo) {
 
     JWTCreator.Builder builder = com.auth0.jwt.JWT.create();
     Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
-    Map<String, String> headers = new HashMap<String, String>();
+    Map<String, String> headers = new HashMap<>();
 
     headers.put(HttpHeaders.AUTHORIZATION, CommonCode.TOKEN_PREFIX + builder.sign(algorithm));
 

@@ -97,7 +97,8 @@ public class LoggingFilter implements GlobalFilter, Ordered {
 
           // 큐에 서비스 로그 전송
           ServiceLogDTO serviceLog =
-              new ServiceLogDTO(headerInfo, requestBody.toString(), responseBody, appKey,
+              new ServiceLogDTO(headerInfo, requestBody.toString(), responseBody,
+                  appKey == null ? "" : appKey,
                   exchange.getRequest().getURI().getPath(), CLIENT_NAME, startTime,
                   endTime);
           kafkaTemplate.send(GATEWAY_TOPIC, serviceLog);

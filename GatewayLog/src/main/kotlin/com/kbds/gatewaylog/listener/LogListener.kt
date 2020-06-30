@@ -29,8 +29,7 @@ class LogListener {
     @Autowired
     lateinit var serviceLogRepository: ServiceLogRepository
 
-    @KafkaListener(topics = ["GATEWAY_LOG"], groupId = "GATEW" +
-            "AY_LOG_GROUP")
+    @KafkaListener(topics = ["GATEWAY_LOG"], groupId = "GATEWAY_LOG_GROUP")
     fun receive(serviceLog: String) {
 
         val mapper = jacksonObjectMapper()

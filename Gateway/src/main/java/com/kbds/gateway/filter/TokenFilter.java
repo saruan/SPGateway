@@ -8,10 +8,13 @@ import com.kbds.gateway.utils.StringUtils;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Service;
 
 /**
@@ -32,6 +35,9 @@ public class TokenFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
   // 로그용 변수
   Logger logger = LoggerFactory.getLogger(TokenFilter.class);
+
+  @Value("${oauth.client-id}")
+  String oAuthKey;
 
   public TokenFilter() {
     super();
@@ -62,7 +68,13 @@ public class TokenFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
             queryParam.toString());
       }
 
-      return chain.filter(exchange);
+      // 인증 서버 헤더 변경
+      ServerHttpRequest request = exchange.getRequest()
+          .mutate()
+          .header(HttpHeaders.AUTHORIZATION, oAuthKey)
+          .build();
+
+      return chain.filter(exchange.mutate().request(request).build());
     };
   }
 }

@@ -1,16 +1,7 @@
 package com.kbds.serviceapi.apis.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import javax.transaction.Transactional;
-import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import com.kbds.serviceapi.apis.dto.AppDTO;
-import com.kbds.serviceapi.apis.dto.EmptyJsonBody;
+import com.kbds.serviceapi.apis.dto.EmptyDataDTO;
 import com.kbds.serviceapi.apis.entity.GwApp;
 import com.kbds.serviceapi.apis.entity.GwServiceAppMapping;
 import com.kbds.serviceapi.apis.entity.key.GwServiceAppMappingKey;
@@ -22,21 +13,28 @@ import com.kbds.serviceapi.common.code.BizExceptionCode;
 import com.kbds.serviceapi.common.utils.CommonUtils;
 import com.kbds.serviceapi.common.utils.StringUtils;
 import com.kbds.serviceapi.framework.exception.BizException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import javax.transaction.Transactional;
+import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
- *
  * <pre>
  *  Class Name     : GwAppService.java
  *  Description    : App 관리 서비스
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
- * 
+ *
  * -------------------------------------------------------------------------------
  *     변경No        변경일자        	       변경자          Description
  * -------------------------------------------------------------------------------
  *     Ver 1.0      2020-05-25    	   구경태          Initialized
  * -------------------------------------------------------------------------------
  * </pre>
- *
  */
 @Service
 public class GwAppService {
@@ -61,25 +59,26 @@ public class GwAppService {
 
   /**
    * APP 리스트 검색 기능
-   * 
+   *
    * @param params
    * @return
    */
+  @Transactional
   public List<AppDTO> findApps(AppDTO params) {
 
     try {
 
-      return null;// gwAppCustomRepository.findbyConditions(params);
+      return gwAppCustomRepository.findbyConditions(params);
     } catch (Exception e) {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
     }
-  };
+  }
 
   /**
    * APP 상세 검색 기능
-   * 
-   * @param params
+   *
+   * @param id
    * @return
    */
   @Transactional
@@ -91,7 +90,7 @@ public class GwAppService {
 
       if (!gwApp.isPresent()) {
 
-        return new EmptyJsonBody();
+        return new EmptyDataDTO();
       }
 
       return modelMapper.map(gwApp.get(), AppDTO.class);
@@ -99,18 +98,20 @@ public class GwAppService {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
     }
-  };
+  }
+
+  ;
 
   /**
    * APP 등록
-   * 
+   *
    * <pre>
    * 1. 파라미터 유효성 체크
    * 2. 이미 등록된 데이터인지 체크
    * 3. GwApp에 데이터 등록
    * 4. GwServiceAppMapping에 데이터 등록
    * </pre>
-   * 
+   *
    * @param reqParam
    */
   @Transactional
@@ -168,13 +169,13 @@ public class GwAppService {
 
   /**
    * APP 수정
-   * 
+   *
    * <pre>
    * 1. 파라미터 유효성 체크
    * 2. GwApp 테이블 수정
    * 3. GwServiceAppMapping 테이블 수정
    * </pre>
-   * 
+   *
    * @param reqParam
    */
   @Transactional
@@ -241,8 +242,8 @@ public class GwAppService {
 
   /**
    * APP 삭제 (등록 되어 있는 API가 있을 경우 APP 삭제 금지)
-   * 
-   * @param id
+   *
+   * @param appId
    */
   public void deleteApp(Long appId) {
 
@@ -267,7 +268,7 @@ public class GwAppService {
 
   /**
    * 입력 받은 서비스ID가 실제 DB에 존재 하는지 체크
-   * 
+   *
    * @param reqParam
    * @return
    */
@@ -279,7 +280,7 @@ public class GwAppService {
 
   /**
    * APP 이름이 DB에 존재하는지 체크
-   * 
+   *
    * @param reqParam
    * @return
    */
@@ -290,7 +291,7 @@ public class GwAppService {
 
   /**
    * APP 수정 시 전달 받은 APP 이름이 DB에 존재하는지 체크
-   * 
+   *
    * @param reqParam
    * @return
    */
@@ -301,7 +302,7 @@ public class GwAppService {
 
   /**
    * 현재 사용중인 APP인지 체크
-   * 
+   *
    * @param appId
    * @return
    */

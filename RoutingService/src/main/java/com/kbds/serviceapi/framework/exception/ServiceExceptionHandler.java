@@ -1,5 +1,10 @@
 package com.kbds.serviceapi.framework.exception;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.kbds.serviceapi.apis.dto.EmptyDataDTO;
+import com.kbds.serviceapi.common.code.BizExceptionCode;
+import com.kbds.serviceapi.common.code.SystemExceptionCode;
+import com.kbds.serviceapi.framework.dto.ResponseDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,26 +14,19 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import com.kbds.serviceapi.apis.dto.EmptyJsonBody;
-import com.kbds.serviceapi.common.code.BizExceptionCode;
-import com.kbds.serviceapi.common.code.SystemExceptionCode;
-import com.kbds.serviceapi.framework.dto.ResponseDTO;
 
 /**
- *
  * <pre>
  *  Class Name     : ServiceExceptionHandler.java
  *  Description    : 공통 Exception 처리 클래스
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
- * 
+ *
  * -------------------------------------------------------------------------------
  *     변경No        변경일자        	       변경자          Description
  * -------------------------------------------------------------------------------
  *     Ver 1.0      2020-04-16     구경태          Initialized
  * -------------------------------------------------------------------------------
  * </pre>
- *
  */
 @ControllerAdvice
 public class ServiceExceptionHandler {
@@ -37,7 +35,7 @@ public class ServiceExceptionHandler {
 
   /**
    * BizException 처리용 Handler
-   * 
+   *
    * @param ex
    * @return
    */
@@ -49,7 +47,7 @@ public class ServiceExceptionHandler {
     // 서비스 레이어에서 던진 코드와 메시지를 결과 값으로 설정한다.
     responseDTO.setResultCode(BizExceptionCode.valueOf(ex.getMessage()).getCode());
     responseDTO.setResultMessage(BizExceptionCode.valueOf(ex.getMessage()).getMsg());
-    responseDTO.setResultData(new EmptyJsonBody());
+    responseDTO.setResultData(new EmptyDataDTO());
 
     // 오류 로그 출력
     if (StringUtils.isEmpty(ex.getMsg())) {
@@ -65,7 +63,7 @@ public class ServiceExceptionHandler {
 
   /**
    * RequestBody로 선언되어 있는 DTO 클래스의 변수 타입과 맞지 않는 정보가 왔을 경우 발생하는 오류 핸들러
-   * 
+   *
    * @param ex
    * @return
    */
@@ -77,7 +75,7 @@ public class ServiceExceptionHandler {
     // 서비스 레이어에서 던진 코드와 메시지를 결과 값으로 설정한다.
     responseDTO.setResultCode(SystemExceptionCode.PAR001.getCode());
     responseDTO.setResultMessage(SystemExceptionCode.PAR001.getMsg());
-    responseDTO.setResultData(new EmptyJsonBody());
+    responseDTO.setResultData(new EmptyDataDTO());
 
     // 오류 로그 출력
     logger.error(ex.getMessage());
@@ -87,7 +85,7 @@ public class ServiceExceptionHandler {
 
   /**
    * DTO 클래스 Validation 오류 핸들러
-   * 
+   *
    * @param ex
    * @return
    */
@@ -100,7 +98,7 @@ public class ServiceExceptionHandler {
     // 서비스 레이어에서 던진 코드와 메시지를 결과 값으로 설정한다.
     responseDTO.setResultCode(BizExceptionCode.COM002.getCode());
     responseDTO.setResultMessage(BizExceptionCode.COM002.getMsg());
-    responseDTO.setResultData(new EmptyJsonBody());
+    responseDTO.setResultData(new EmptyDataDTO());
 
     // 오류 로그 출력
     logger.error(ex.getMessage());

@@ -1,16 +1,15 @@
 package com.kbds.auth.controller;
 
+import com.kbds.auth.service.GatewayClusterService;
+import com.kbds.auth.utils.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.kbds.auth.service.GatewayClusterService;
-import com.kbds.auth.utils.CommonUtils;
 
 /**
- *
  * <pre>
  *  Class Name     : GatewayClusterController.java
  *  Description    : Gateway 클러스터 관련 API 컨트롤러
@@ -22,7 +21,6 @@ import com.kbds.auth.utils.CommonUtils;
  *     Ver 1.0      2020-05-04     구경태          Initialized
  * -------------------------------------------------------------------------------
  * </pre>
- *
  */
 @RestController
 @RequestMapping("/auth/")
@@ -33,8 +31,7 @@ public class GatewayClusterController {
 
   /**
    * SAML 생성 API
-   * 
-   * @param params
+   *
    * @return
    */
   @GetMapping(value = "v1.0/oauth/saml")

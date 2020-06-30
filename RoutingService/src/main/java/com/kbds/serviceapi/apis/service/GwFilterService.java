@@ -1,13 +1,6 @@
 package com.kbds.serviceapi.apis.service;
 
-import java.util.List;
-import java.util.Optional;
-import javax.transaction.Transactional;
-import org.apache.commons.lang3.StringUtils;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import com.kbds.serviceapi.apis.dto.EmptyJsonBody;
+import com.kbds.serviceapi.apis.dto.EmptyDataDTO;
 import com.kbds.serviceapi.apis.dto.FilterDTO;
 import com.kbds.serviceapi.apis.entity.GwServiceFilter;
 import com.kbds.serviceapi.apis.querydsl.GwFilterCustomRepository;
@@ -16,21 +9,26 @@ import com.kbds.serviceapi.apis.repository.GwFilterRepository;
 import com.kbds.serviceapi.apis.repository.GwRoutingRepository;
 import com.kbds.serviceapi.common.code.BizExceptionCode;
 import com.kbds.serviceapi.framework.exception.BizException;
+import java.util.List;
+import java.util.Optional;
+import javax.transaction.Transactional;
+import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
- *
  * <pre>
  *  Class Name     : GwRoutingService.java
  *  Description    : 필터 관리 서비스 클래스
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
- * 
+ *
  * -------------------------------------------------------------------------------
  *     변경No        변경일자        	       변경자          Description
  * -------------------------------------------------------------------------------
  *     Ver 1.0      2020-04-14     구경태          Initialized
  * -------------------------------------------------------------------------------
  * </pre>
- *
  */
 @Service
 public class GwFilterService {
@@ -52,7 +50,7 @@ public class GwFilterService {
 
   /**
    * 필터 검색 기능
-   * 
+   *
    * @param params
    * @return
    */
@@ -65,12 +63,14 @@ public class GwFilterService {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
     }
-  };
+  }
+
+  ;
 
   /**
    * 필터 상세 검색 기능
-   * 
-   * @param params
+   *
+   * @param filterId
    * @return
    */
   @Transactional
@@ -83,7 +83,7 @@ public class GwFilterService {
 
       if (!gwServiceFilter.isPresent()) {
 
-        return new EmptyJsonBody();
+        return new EmptyDataDTO();
       }
 
       // 결과 값으로 전달할 FilterDTO로 변환한 후 리턴한다.
@@ -92,12 +92,14 @@ public class GwFilterService {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
     }
-  };
+  }
+
+  ;
 
 
   /**
    * 필터링 서비스 등록
-   * 
+   *
    * @param reqParam
    */
 
@@ -130,7 +132,7 @@ public class GwFilterService {
 
   /**
    * 필터 수정
-   * 
+   *
    * @param reqParam
    */
   @Transactional
@@ -186,8 +188,8 @@ public class GwFilterService {
 
   /**
    * 필터 삭제
-   * 
-   * @param reqParam
+   *
+   * @param filterId
    */
   @Transactional
   public void deleteFilter(Long filterId) {
@@ -212,7 +214,7 @@ public class GwFilterService {
 
   /**
    * FilterId를 사용중인 서비스가 존재하는지 체크
-   * 
+   *
    * @param filterId
    * @return
    */
