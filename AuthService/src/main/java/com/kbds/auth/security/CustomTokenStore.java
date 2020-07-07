@@ -1,5 +1,15 @@
 package com.kbds.auth.security;
 
+import com.kbds.auth.code.AuthCode;
+import com.kbds.auth.code.BizExceptionCode;
+import com.kbds.auth.entity.OAuthAccessToken;
+import com.kbds.auth.entity.OAuthRefreshToken;
+import com.kbds.auth.exception.CustomOAuthException;
+import com.kbds.auth.repository.OAuthAccessTokenRepository;
+import com.kbds.auth.repository.OAuthRefreshTokenRepository;
+import com.kbds.auth.service.GatewayClusterService;
+import com.kbds.auth.utils.OAuthUtils;
+import com.kbds.auth.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -13,31 +23,19 @@ import org.springframework.security.oauth2.common.util.SerializationUtils;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.AuthenticationKeyGenerator;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import com.kbds.auth.code.AuthCode;
-import com.kbds.auth.code.BizExceptionCode;
-import com.kbds.auth.entity.OAuthAccessToken;
-import com.kbds.auth.entity.OAuthRefreshToken;
-import com.kbds.auth.exception.CustomOAuthException;
-import com.kbds.auth.repository.OAuthAccessTokenRepository;
-import com.kbds.auth.repository.OAuthRefreshTokenRepository;
-import com.kbds.auth.service.GatewayClusterService;
-import com.kbds.auth.utils.OAuthUtils;
-import com.kbds.auth.utils.StringUtils;
 
 /**
- *
  * <pre>
  *  Class Name     : CustomTokenStore.java
  *  Description    : TokenStore 커스터마이징 클래스
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
- * 
+ *
  * -------------------------------------------------------------------------------
  *     변경No        변경일자        	       변경자          Description
  * -------------------------------------------------------------------------------
  *     Ver 1.0      2020-05-19    	   구경태          Initialized
  * -------------------------------------------------------------------------------
  * </pre>
- *
  */
 public class CustomTokenStore implements TokenStore {
 
@@ -174,7 +172,7 @@ public class CustomTokenStore implements TokenStore {
 
     return oAuthRefreshToken.isPresent()
         ? (OAuth2Authentication) SerializationUtils
-            .deserialize(oAuthRefreshToken.get().getAuthentication())
+        .deserialize(oAuthRefreshToken.get().getAuthentication())
         : null;
   }
 
@@ -213,18 +211,22 @@ public class CustomTokenStore implements TokenStore {
     String keySAML = oAuthAuthentication.getOAuth2Request().getRequestParameters()
         .get(AuthCode.PARAMTER_SAML.getCode());
 
-    if (StringUtils.isEmptyParams(keySAML) || !gatewayClusterService.isValidSAML(keySAML)) {
+    if (StringUtils.isEmptyParams(keySAML)) {
 
-      throw new CustomOAuthException(BizExceptionCode.SAML001);
+      throw new CustomOAuthException(BizExceptionCode.SAML002);
+    } else if (!gatewayClusterService.isValidSAML(keySAML)) {
+
+      throw new CustomOAuthException(BizExceptionCode.SAML003);
     }
 
+    // Access Token 발급
     Optional<OAuthAccessToken> oAuthAccessToken =
         oAuthAccessTokenRepository.findByAuthenticationId(authenticationId);
 
     if (oAuthAccessToken.isPresent()) {
 
       oAuth2AccessToken =
-          (OAuth2AccessToken) SerializationUtils.deserialize(oAuthAccessToken.get().getToken());
+          SerializationUtils.deserialize(oAuthAccessToken.get().getToken());
 
       if (oAuth2AccessToken != null && !authenticationId.equals(
           this.authenticationKeyGenerator.extractKey(this.readAuthentication(oAuth2AccessToken)))) {
@@ -246,7 +248,7 @@ public class CustomTokenStore implements TokenStore {
         oAuthAccessTokenRepository.findByClientIdAndUserName(clientId, userName);
 
     result
-        .forEach(e -> tokens.add((OAuth2AccessToken) SerializationUtils.deserialize(e.getToken())));
+        .forEach(e -> tokens.add(SerializationUtils.deserialize(e.getToken())));
 
     return tokens;
   }
@@ -259,7 +261,7 @@ public class CustomTokenStore implements TokenStore {
     List<OAuthAccessToken> result = oAuthAccessTokenRepository.findByClientId(clientId);
 
     result
-        .forEach(e -> tokens.add((OAuth2AccessToken) SerializationUtils.deserialize(e.getToken())));
+        .forEach(e -> tokens.add(SerializationUtils.deserialize(e.getToken())));
 
     return tokens;
   }

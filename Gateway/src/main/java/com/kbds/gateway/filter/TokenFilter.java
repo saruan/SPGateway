@@ -39,9 +39,10 @@ public class TokenFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
   @Value("${oauth.client-id}")
   String oAuthKey;
 
-  public TokenFilter() {
-    super();
-  }
+  private final String CONST_REFRESH_TOKEN_TYPE = "refresh_token";
+  private final String CONST_PASSWORD_TYPE = "password";
+  private final String CONST_GRANT_TYPE = "grant_type";
+  private final String CONST_SAML = "saml";
 
   @Override
   public GatewayFilter apply(RoutingDTO routingDTO) {
@@ -59,14 +60,7 @@ public class TokenFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
             GatewayCode.EMPTY.getCode());
       }
 
-      Map<String, String> queryParam = StringUtils.queryToMap(buffer);
-
-      // SAML 체크
-      if (!queryParam.containsKey(GatewayCode.REQUESTPARAM_SAML.getCode())) {
-
-        throw new GatewayException(GatewayExceptionCode.SAM001, HttpStatus.UNAUTHORIZED,
-            queryParam.toString());
-      }
+      validateParams(buffer);
 
       // 인증 서버 헤더 변경
       ServerHttpRequest request = exchange.getRequest()
@@ -76,5 +70,36 @@ public class TokenFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
       return chain.filter(exchange.mutate().request(request).build());
     };
+  }
+
+  /**
+   * Grant_Type, Saml 등 검증
+   *
+   * @param buffer
+   */
+  private void validateParams(DataBuffer buffer) {
+
+    Map<String, String> queryParam = StringUtils.queryToMap(buffer);
+
+    // Params 체크
+    if (queryParam == null || !queryParam.containsKey(CONST_GRANT_TYPE)) {
+
+      throw new GatewayException(GatewayExceptionCode.GWE002, HttpStatus.UNAUTHORIZED);
+    }
+
+    // Grant_Type이 Refresh Token일 경우 파라미터 사전 체크
+    if (CONST_REFRESH_TOKEN_TYPE.equals(queryParam.get(CONST_GRANT_TYPE)) && !queryParam
+        .containsKey(CONST_REFRESH_TOKEN_TYPE)) {
+
+      throw new GatewayException(GatewayExceptionCode.TOK004, HttpStatus.UNAUTHORIZED,
+          queryParam.toString());
+    }
+    // Grant_Type이 password일 경우 SAML 체크
+    else if (CONST_PASSWORD_TYPE.equals(queryParam.get(CONST_GRANT_TYPE)) && !queryParam
+        .containsKey(CONST_SAML)) {
+
+      throw new GatewayException(GatewayExceptionCode.SAM001, HttpStatus.UNAUTHORIZED,
+          queryParam.toString());
+    }
   }
 }

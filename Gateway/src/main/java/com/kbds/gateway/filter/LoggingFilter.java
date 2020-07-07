@@ -38,8 +38,8 @@ public class LoggingFilter implements GlobalFilter, Ordered {
   @Autowired
   private KafkaTemplate<String, ServiceLogDTO> kafkaTemplate;
 
-  private final String GATEWAY_TOPIC = "GATEWAY_LOG";
-  private final String CLIENT_NAME = "GATEWAY";
+  private final String CONST_GATEWAY_TOPIC = "GATEWAY_LOG";
+  private final String CONST_CLIENT_NAME = "GATEWAY";
 
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -76,6 +76,7 @@ public class LoggingFilter implements GlobalFilter, Ordered {
         String headerInfo = exchange.getRequest().getHeaders().toSingleValueMap().toString();
         String appKey = exchange.getRequest().getHeaders()
             .getFirst(GatewayCode.API_KEY.getCode());
+        String servicePath = exchange.getRequest().getURI().getPath();
 
         Flux<? extends DataBuffer> fluxBody = (Flux<? extends DataBuffer>) body;
         return super.writeWith(fluxBody.map(dataBuffer -> {
@@ -98,10 +99,8 @@ public class LoggingFilter implements GlobalFilter, Ordered {
           // 큐에 서비스 로그 전송
           ServiceLogDTO serviceLog =
               new ServiceLogDTO(headerInfo, requestBody.toString(), responseBody,
-                  appKey == null ? "" : appKey,
-                  exchange.getRequest().getURI().getPath(), CLIENT_NAME, startTime,
-                  endTime);
-          kafkaTemplate.send(GATEWAY_TOPIC, serviceLog);
+                  appKey == null ? "" : appKey, servicePath, CONST_CLIENT_NAME, startTime, endTime);
+          kafkaTemplate.send(CONST_GATEWAY_TOPIC, serviceLog);
 
           return bufferFactory.wrap(content);
         }));

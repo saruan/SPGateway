@@ -1,9 +1,14 @@
-package com.kbds.serviceapi;
+package com.kbds.serviceapi.api.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import com.kbds.serviceapi.apis.dto.RoutingDTO;
+import com.kbds.serviceapi.apis.entity.GwService;
+import com.kbds.serviceapi.apis.service.GwRoutingService;
+import com.kbds.serviceapi.framework.exception.BizException;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
@@ -16,16 +21,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
-import com.kbds.serviceapi.apis.dto.RoutingDTO;
-import com.kbds.serviceapi.apis.entity.GwService;
-import com.kbds.serviceapi.apis.service.GwRoutingService;
-import com.kbds.serviceapi.framework.exception.BizException;
 
 @SpringBootTest
 @ActiveProfiles("dev")
 @Transactional
 @TestMethodOrder(OrderAnnotation.class)
-public class RoutingTest {
+public class RoutingServiceTest {
 
   @Autowired
   private GwRoutingService gwRoutingService;

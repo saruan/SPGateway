@@ -33,8 +33,6 @@ public enum GatewayCode {
 
   OAUTH_TYPE("1", "OAuth 인증 방식"),
 
-  REQUESTPARAM_SAML("saml", "SAML 토큰"),
-
   DUMMY("", "");
 
   private String code;

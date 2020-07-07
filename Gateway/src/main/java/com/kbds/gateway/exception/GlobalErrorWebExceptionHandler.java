@@ -92,7 +92,7 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
 
       String currentTime = DateUtils.getCurrentTime();
 
-      // 큐에 서비스 로그 전송
+      // 큐에 오류 로그 전송
       ServiceLogDTO serviceLog = new ServiceLogDTO(request.headers().asHttpHeaders().toString(),
           e.getArg(), errorResponseDTO.toString(), BLANK, BLANK, SERVICE_NAME, currentTime,
           currentTime);

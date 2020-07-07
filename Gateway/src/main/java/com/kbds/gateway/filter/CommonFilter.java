@@ -116,7 +116,8 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
       return !StringUtils.isEmptyParams(appKey) && appKeys.contains(appKey);
     }
-    return true;
+
+    return false;
   }
 
   /**
