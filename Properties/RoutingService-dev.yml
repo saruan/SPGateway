@@ -2,7 +2,7 @@
 server:
   port: 8080
 
-spring:  
+spring:
   # Datasource 설정
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -19,9 +19,12 @@ spring:
   cloud:
     bus:
       enabled: true
-  kafka:
-    bootstrap-servers:
-    - http://localhost:9092
+  # RabbitMQ 설정
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
 
 # 로그 설정
 logging:

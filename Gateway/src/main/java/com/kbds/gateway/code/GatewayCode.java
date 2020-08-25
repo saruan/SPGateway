@@ -33,6 +33,8 @@ public enum GatewayCode {
 
   OAUTH_TYPE("1", "OAuth 인증 방식"),
 
+  MQ_ROUTING_KEY("gateway.routing.all", "RabbitMQ 라우팅 키"),
+
   DUMMY("", "");
 
   private String code;

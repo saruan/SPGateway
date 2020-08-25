@@ -43,11 +43,13 @@ jwt:
 oauth:
   client-id: Basic Y2xpZW50MjpwYXNzd29yZA==
 
-#KAFKA 연동
 spring:
   cloud:
     bus:
       enabled: true
-  kafka:
-    bootstrap-servers:
-      - http://localhost:9092
+  # RabbitMQ 설정
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest

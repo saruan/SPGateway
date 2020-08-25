@@ -1,9 +1,11 @@
 package com.kbds.gateway.exception;
 
+import com.kbds.gateway.code.GatewayCode;
 import com.kbds.gateway.code.GatewayExceptionCode;
 import com.kbds.gateway.dto.ResponseDTO;
 import com.kbds.gateway.dto.ServiceLogDTO;
 import com.kbds.gateway.utils.DateUtils;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ResourceProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler;
@@ -12,7 +14,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.ServerCodecConfigurer;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.RequestPredicates;
@@ -39,9 +40,8 @@ import reactor.core.publisher.Mono;
 public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHandler {
 
   @Autowired
-  private KafkaTemplate<String, ServiceLogDTO> kafkaTemplate;
+  private RabbitTemplate rabbitTemplate;
 
-  private final String GATEWAY_TOPIC = "GATEWAY_LOG";
   private final String SERVICE_NAME = "GATEWAY";
   private final String BLANK = "";
 
@@ -96,7 +96,7 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
       ServiceLogDTO serviceLog = new ServiceLogDTO(request.headers().asHttpHeaders().toString(),
           e.getArg(), errorResponseDTO.toString(), BLANK, BLANK, SERVICE_NAME, currentTime,
           currentTime);
-      kafkaTemplate.send(GATEWAY_TOPIC, serviceLog);
+      rabbitTemplate.convertAndSend(GatewayCode.MQ_ROUTING_KEY.getCode(), serviceLog);
     }
     // 그 이외의 정해진 규격이 아닌 Gateway 오류일 경우 아래와 같이 설정한다.
     else {
