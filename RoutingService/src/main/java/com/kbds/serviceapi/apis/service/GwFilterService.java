@@ -12,7 +12,6 @@ import com.kbds.serviceapi.framework.exception.BizException;
 import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
-import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -101,12 +100,6 @@ public class GwFilterService {
   @Transactional
   public void registFilter(FilterDTO reqParam) {
 
-    // 파라미터 체크(사용자명)
-    if (StringUtils.isEmpty(reqParam.getRegUserNo())) {
-
-      throw new BizException(BizExceptionCode.COM002);
-    }
-
     if (gwFilterCustomRepository.checkRegistValidation(reqParam)) {
 
       throw new BizException(BizExceptionCode.COM003);
@@ -129,17 +122,12 @@ public class GwFilterService {
    * 필터 수정
    *
    * @param reqParam
+   * @return
    */
   @Transactional
-  public void updateFilter(FilterDTO reqParam, Long filterId) {
+  public GwServiceFilter updateFilter(FilterDTO reqParam, Long filterId) {
 
     GwServiceFilter gwServiceFilter;
-
-    // 파라미터 체크(수정자)
-    if (reqParam.getUptUserNo() == null) {
-
-      throw new BizException(BizExceptionCode.COM002);
-    }
 
     try {
 
@@ -159,7 +147,7 @@ public class GwFilterService {
 
       reqParam.setFilterId(filterId);
 
-      if (gwFilterCustomRepository.checkUpdateValidation(reqParam)) {
+      if (!gwFilterCustomRepository.checkUpdateValidation(reqParam)) {
 
         throw new BizException(BizExceptionCode.COM003);
       }
@@ -170,8 +158,9 @@ public class GwFilterService {
       gwServiceFilter.setFilterBean(reqParam.getFilterBean());
       gwServiceFilter.setUptUserNo(reqParam.getUptUserNo());
 
-      gwFilterRepository.save(gwServiceFilter);
+      GwServiceFilter result = gwFilterRepository.save(gwServiceFilter);
 
+      return result;
     } catch (BizException e) {
 
       throw new BizException(BizExceptionCode.valueOf(e.getMessage()));

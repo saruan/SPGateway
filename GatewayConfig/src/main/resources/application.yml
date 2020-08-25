@@ -6,17 +6,20 @@ spring:
         git:
           uri: https://github.com/saruan/SPGateway.git
           search-paths:
-          - 'Properties/'
+            - 'Properties/'
           password: rnrudxo1184018
           username: kookyungte@naver.com
     bus:
       enabled: true
-  kafka:
-    bootstrap-servers:
-    - http://localhost:9092
+  # RabbitMQ 설정
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
   application:
     name: config-server
-    
+
 #Actuactor 활성화    
 management:
   endpoints:
@@ -24,6 +27,6 @@ management:
       base-path: /actuator
       exposure:
         include: ['bus-refresh']
-             
+
 server:
   port: 9999

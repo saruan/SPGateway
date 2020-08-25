@@ -1,12 +1,10 @@
 package com.kbds.gatewaylog
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import com.kbds.gatewaylog.entity.ServiceLog
 import com.kbds.gatewaylog.repository.ServiceLogRepository
 import com.kbds.gatewaylog.utils.DateUtils
+import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
 import java.text.ParseException
 
@@ -29,16 +27,13 @@ class LogListener {
     @Autowired
     lateinit var serviceLogRepository: ServiceLogRepository
 
-    @KafkaListener(topics = ["GATEWAY_LOG"], groupId = "GATEWAY_LOG_GROUP")
-    fun receive(serviceLog: String) {
-
-        val mapper = jacksonObjectMapper()
-        val logData = mapper.readValue<ServiceLog>(serviceLog)
+    @RabbitListener(queues = ["GATEWAY_LOG"])
+    fun receive(serviceLog: ServiceLog) {
 
         try {
 
-            DateUtils.validateDateFormat(logData.requestDt, logData.responseDt)
-            serviceLogRepository.save(logData)
+            DateUtils.validateDateFormat(serviceLog.requestDt, serviceLog.responseDt)
+            serviceLogRepository.save(serviceLog)
         } catch (e: ParseException) {
 
             print("Invalid Date Format")

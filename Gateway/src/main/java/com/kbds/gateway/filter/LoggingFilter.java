@@ -5,6 +5,7 @@ import com.kbds.gateway.dto.ServiceLogDTO;
 import com.kbds.gateway.utils.DateUtils;
 import java.nio.charset.StandardCharsets;
 import org.reactivestreams.Publisher;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -13,7 +14,6 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
@@ -28,7 +28,7 @@ import reactor.core.publisher.Mono;
  * -------------------------------------------------------------------------------
  *     변경No        변경일자        	       변경자          Description
  * -------------------------------------------------------------------------------
- *     Ver 1.0      2020-06-15    	   구경태          Initialized
+ *     Ver 1.0      2020-06-15    	       구경태          Initialized
  * -------------------------------------------------------------------------------
  * </pre>
  */
@@ -36,10 +36,9 @@ import reactor.core.publisher.Mono;
 public class LoggingFilter implements GlobalFilter, Ordered {
 
   @Autowired
-  private KafkaTemplate<String, ServiceLogDTO> kafkaTemplate;
+  private RabbitTemplate rabbitTemplate;
 
-  private final String CONST_GATEWAY_TOPIC = "GATEWAY_LOG";
-  private final String CONST_CLIENT_NAME = "GATEWAY";
+  private final String CLIENT_NAME = "GATEWAY";
 
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -99,8 +98,9 @@ public class LoggingFilter implements GlobalFilter, Ordered {
           // 큐에 서비스 로그 전송
           ServiceLogDTO serviceLog =
               new ServiceLogDTO(headerInfo, requestBody.toString(), responseBody,
-                  appKey == null ? "" : appKey, servicePath, CONST_CLIENT_NAME, startTime, endTime);
-          kafkaTemplate.send(CONST_GATEWAY_TOPIC, serviceLog);
+                  appKey == null ? "" : appKey, servicePath, CLIENT_NAME, startTime, endTime);
+          rabbitTemplate
+              .convertAndSend(GatewayCode.MQ_ROUTING_KEY.getCode(), serviceLog);
 
           return bufferFactory.wrap(content);
         }));

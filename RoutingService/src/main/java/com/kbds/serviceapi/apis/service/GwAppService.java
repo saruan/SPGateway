@@ -115,7 +115,7 @@ public class GwAppService {
    * @param reqParam
    */
   @Transactional
-  public void registApp(AppDTO reqParam) {
+  public Long registApp(AppDTO reqParam) {
 
     try {
 
@@ -129,10 +129,7 @@ public class GwAppService {
         throw new BizException(BizExceptionCode.COM003);
       }
 
-      // AppKey 생성 후 DB에 APP 등록
-      GwApp gwApp = modelMapper.map(reqParam, GwApp.class);
-
-      gwApp.setAppKey(StringUtils.generateAppKey());
+      GwApp gwApp = setGwAppWithAppKey(reqParam);
 
       // APP 등록 후 등록된 APP_ID를 전달 받는다.
       Long appId = gwAppRepository.save(gwApp).getAppId();
@@ -158,6 +155,7 @@ public class GwAppService {
       // 등록 이후 게이트웨이에 해당 정보를 갱신해준다.
       CommonUtils.refreshGatewayRoutes(reqParam.getRegUserNo());
 
+      return appId;
     } catch (BizException e) {
 
       throw new BizException(BizExceptionCode.valueOf(e.getMessage()));
@@ -182,7 +180,7 @@ public class GwAppService {
   public void updateApp(AppDTO reqParam, Long id) {
 
     // 필수 파라미터 체크(AppKey)
-    if (StringUtils.isEmptyParams(reqParam.getAppKey())) {
+    if (isEmptyAppKey(reqParam.getAppKey())) {
 
       throw new BizException(BizExceptionCode.COM002);
     }
@@ -309,5 +307,30 @@ public class GwAppService {
   public boolean isUsingApp(Long appId) {
 
     return gwServiceAppMappingRepository.countByIdAppId(appId) > 0;
+  }
+
+  /**
+   * APP DTO -> 엔티티 변환 후 APP_KEY 설정
+   *
+   * @param reqParam
+   * @return
+   */
+  public GwApp setGwAppWithAppKey(AppDTO reqParam) {
+
+    GwApp gwApp = modelMapper.map(reqParam, GwApp.class);
+    gwApp.setAppKey(StringUtils.generateAppKey());
+
+    return gwApp;
+  }
+
+  /**
+   * AppKey 유효성 체크
+   *
+   * @param appKey
+   * @return
+   */
+  public boolean isEmptyAppKey(String appKey) {
+
+    return StringUtils.isEmptyParams(appKey);
   }
 }
