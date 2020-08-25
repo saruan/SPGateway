@@ -39,7 +39,7 @@ public interface GwRoutingCustomRepository {
    * @param param
    * @return
    */
-  public boolean checkRegistValidation(RoutingDTO param);
+  public boolean isRegistService(RoutingDTO param);
 
   /**
    * 해당 데이터가 수정이 가능한 데이터인지 검증
@@ -47,7 +47,7 @@ public interface GwRoutingCustomRepository {
    * @param param
    * @return
    */
-  public boolean checkUpdateValidation(RoutingDTO param, Long serviceId);
+  public boolean isValidUpdateData(RoutingDTO param, Long serviceId);
 
 
   /**

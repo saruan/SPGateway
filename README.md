@@ -8,6 +8,7 @@
      - GatewayLog     - Log 수집용 서버
      - GatewayConfig  - Spring-Cloud-Config-Bus 연동 서버
      - Properties     - Properties 관리 
+     - ETC            - Redis (캐싱), Kafka,  
 
 ## 2. 프로젝트 구성도
 <img src = "https://user-images.githubusercontent.com/6766147/86095971-9f3fde80-baed-11ea-9bb5-7e8af3e6864a.PNG"/>

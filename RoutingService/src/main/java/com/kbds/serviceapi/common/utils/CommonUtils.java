@@ -31,7 +31,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommonUtils {
 
-
   // 로그용 변수
   private static Logger logger = LoggerFactory.getLogger(CommonUtils.class);
 
@@ -41,6 +40,7 @@ public class CommonUtils {
 
   @Value("${jwt.secret-key}")
   public void setSecretKey(String secretKey) {
+    
     CommonUtils.secretKey = secretKey;
   }
 

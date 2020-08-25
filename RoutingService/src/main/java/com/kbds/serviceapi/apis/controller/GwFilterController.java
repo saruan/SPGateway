@@ -1,5 +1,9 @@
 package com.kbds.serviceapi.apis.controller;
 
+import com.kbds.serviceapi.apis.dto.FilterDTO;
+import com.kbds.serviceapi.apis.entity.GwServiceFilter;
+import com.kbds.serviceapi.apis.service.GwFilterService;
+import com.kbds.serviceapi.common.utils.CommonUtils;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,9 +17,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.kbds.serviceapi.apis.dto.FilterDTO;
-import com.kbds.serviceapi.apis.service.GwFilterService;
-import com.kbds.serviceapi.common.utils.CommonUtils;
 
 @RestController
 @RequestMapping("/api/service")
@@ -27,7 +28,7 @@ public class GwFilterController {
 
   /**
    * 전체 Filter 서비스 목록 조회 API
-   * 
+   *
    * @return
    */
   @GetMapping(value = "/v1/filter")
@@ -40,8 +41,8 @@ public class GwFilterController {
 
   /**
    * 필터 등록 컨트롤러
-   * 
-   * @param params
+   *
+   * @param id
    * @return
    */
   @GetMapping(value = "/v1/filter/{id}")
@@ -54,7 +55,7 @@ public class GwFilterController {
 
   /**
    * 필터 등록 컨트롤러
-   * 
+   *
    * @param params
    * @return
    */
@@ -70,7 +71,7 @@ public class GwFilterController {
 
   /**
    * 필터 수정 컨트롤러
-   * 
+   *
    * @param params
    * @return
    */
@@ -78,17 +79,17 @@ public class GwFilterController {
   public ResponseEntity<Object> updateFilter(@RequestBody @Valid FilterDTO params,
       @PathVariable Long id) {
 
-    gwFilterService.updateFilter(params, id);
+    GwServiceFilter updateData = gwFilterService.updateFilter(params, id);
 
-    Object result = CommonUtils.getResponseEntity(true);
+    Object result = CommonUtils.getResponseEntity(updateData);
 
     return new ResponseEntity<Object>(result, HttpStatus.OK);
   }
 
   /**
    * 필터 삭제
-   * 
-   * @param params
+   *
+   * @param id
    * @return
    */
   @DeleteMapping(value = "/v1/filter/{id}")

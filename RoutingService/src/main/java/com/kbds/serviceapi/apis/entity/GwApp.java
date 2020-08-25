@@ -12,20 +12,17 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * 
- *
  * <pre>
  *  Class Name     : GWApp.java
  *  Description    : Gateway APP 관리 정보를 저장하는 엔티티
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
- * 
+ *
  * -------------------------------------------------------------------------------
  *     변경No        변경일자        	       변경자          Description
  * -------------------------------------------------------------------------------
  *     Ver 1.0      2020-05-25    	   구경태          Initialized
  * -------------------------------------------------------------------------------
  * </pre>
- *
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

@@ -1,151 +1,171 @@
 package com.kbds.serviceapi.api.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 import com.kbds.serviceapi.apis.dto.RoutingDTO;
 import com.kbds.serviceapi.apis.entity.GwService;
+import com.kbds.serviceapi.apis.querydsl.GwRoutingCustomRepository;
+import com.kbds.serviceapi.apis.repository.GwRoutingRepository;
 import com.kbds.serviceapi.apis.service.GwRoutingService;
+import com.kbds.serviceapi.common.code.BizExceptionCode;
+import com.kbds.serviceapi.common.utils.CommonUtils;
 import com.kbds.serviceapi.framework.exception.BizException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import javax.transaction.Transactional;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
-import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ActiveProfiles;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
+import org.springframework.test.util.ReflectionTestUtils;
 
-@SpringBootTest
-@ActiveProfiles("dev")
-@Transactional
-@TestMethodOrder(OrderAnnotation.class)
+@ExtendWith(MockitoExtension.class)
 public class RoutingServiceTest {
 
-  @Autowired
-  private GwRoutingService gwRoutingService;
+  @Spy
+  @InjectMocks
+  GwRoutingService gwRoutingService;
 
-  static RoutingDTO routingDTO;
+  @Mock
+  GwRoutingRepository gwRoutingRepository;
 
-  static Long testRegistedServiceId;
+  @Mock
+  GwRoutingCustomRepository gwRoutingCustomRepository;
 
-  @BeforeAll
-  public static void init() {
+  @Mock
+  CommonUtils commonUtils;
 
-    routingDTO = RoutingDTO.builder().serviceNm("Routing Mocking").servicePath("/api/mock/")
-        .serviceTargetUrl("http://localhost:8080/").serviceDesc("Routing Mocking Test")
-        .serviceLoginType("1").serviceAuthType("1").filterId(new Long(1)).regUserNo("1").build();
+  @Spy
+  @InjectMocks
+  ModelMapper modelMapper;
+
+  RoutingDTO searchConditions;
+  RoutingDTO registRoutingDTO;
+  RoutingDTO updateRoutingDTO;
+  List<RoutingDTO> routingListDTO;
+  Long serviceId;
+
+  /**
+   * 기초 데이터 적재
+   */
+  @BeforeEach
+  void initData() {
+
+    serviceId = 1L;
+
+    searchConditions = RoutingDTO.builder().serviceId(1L).serviceNm("검색").servicePath("/test")
+        .serviceDesc("Desc").build();
+
+    registRoutingDTO = RoutingDTO.builder().serviceId(1L).serviceNm("등록").servicePath("/regist")
+        .serviceDesc("Desc").serviceLoginType("1").serviceAuthType("1").regUserNo("1").build();
+
+    updateRoutingDTO = RoutingDTO.builder().serviceId(1L).serviceNm("수정").servicePath("/update")
+        .serviceDesc("Desc").serviceLoginType("2").serviceAuthType("2").uptUserNo("1").build();
+
+    routingListDTO = new ArrayList<>();
+    routingListDTO.add(registRoutingDTO);
+
+    ReflectionTestUtils.setField(CommonUtils.class, "secretKey", "secretKey");
+    ReflectionTestUtils.setField(gwRoutingService, "modelMapper", new ModelMapper());
   }
 
   @Test
-  @Order(1)
-  @Rollback(false)
-  public void API등록_테스트() throws Exception {
+  void API등록_테스트() {
 
-    GwService result = gwRoutingService.registService(routingDTO);
+    GwService gwService = modelMapper.map(registRoutingDTO, GwService.class);
 
-    assertNotNull(result, "등록 실패");
-    assertNotNull(result.getServiceId(), "서비스 아이디 미존재");
+    doReturn(false).when(gwRoutingCustomRepository).isRegistService(registRoutingDTO);
+    doReturn(gwService).when(gwRoutingRepository).save(gwService);
 
-    assertEquals(routingDTO.getServiceNm(), result.getServiceNm());
-    assertEquals(routingDTO.getServicePath(), result.getServicePath());
-    assertEquals(routingDTO.getServiceTargetUrl(), result.getServiceTargetUrl());
-    assertEquals(routingDTO.getServiceDesc(), result.getServiceDesc());
-    assertEquals(routingDTO.getServiceLoginType(), result.getServiceLoginType());
-    assertEquals(routingDTO.getServiceAuthType(), result.getServiceAuthType());
-    assertEquals(routingDTO.getFilterId(), result.getFilter().getFilterId());
-    assertEquals(routingDTO.getRegUserNo(), result.getRegUserNo());
-
-    testRegistedServiceId = result.getServiceId();
+    gwRoutingService.registService(registRoutingDTO);
   }
 
   @Test
-  @Order(2)
-  public void API등록_중복_테스트() throws Exception {
+  void API등록_중복_테스트() {
 
-    assertThrows(BizException.class, () -> {
+    GwService gwService = modelMapper.map(registRoutingDTO, GwService.class);
 
-      gwRoutingService.registService(routingDTO);
+    doReturn(true).when(gwRoutingCustomRepository).isRegistService(registRoutingDTO);
+
+    BizException ex = assertThrows(BizException.class, () -> {
+
+      gwRoutingService.registService(registRoutingDTO);
     });
+
+    assertEquals(ex.getMessage(), BizExceptionCode.COM003.getCode());
   }
 
   @Test
-  @Order(3)
-  public void API조회_리스트_테스트() throws Exception {
+  void API수정_테스트() {
 
-    // 전체 리스트 조회
-    List<RoutingDTO> result = gwRoutingService.findServices(new RoutingDTO());
+    GwService gwService = modelMapper.map(updateRoutingDTO, GwService.class);
 
-    assertFalse(result.isEmpty());
+    doReturn(gwService).when(gwRoutingRepository).findByServiceId(serviceId);
+    doReturn(true).when(gwRoutingCustomRepository).isValidUpdateData(updateRoutingDTO, serviceId);
 
-    // 등록한 정보 조회
-    result = gwRoutingService.findServices(routingDTO);
-
-    assertEquals(testRegistedServiceId, result.get(0).getServiceId());
-    assertEquals(routingDTO.getServicePath(), result.get(0).getServicePath());
-    assertEquals(routingDTO.getServiceTargetUrl(), result.get(0).getServiceTargetUrl());
-    assertEquals(routingDTO.getServiceDesc(), result.get(0).getServiceDesc());
-    assertEquals(routingDTO.getServiceLoginType(), result.get(0).getServiceLoginType());
-    assertEquals(routingDTO.getServiceAuthType(), result.get(0).getServiceAuthType());
-    assertEquals(routingDTO.getFilterId(), result.get(0).getFilterId());
+    gwRoutingService.updateService(updateRoutingDTO, serviceId);
   }
 
   @Test
-  @Order(4)
-  public void API조회_상세_테스트() throws Exception {
+  void API수정_중복데이터_테스트() {
 
-    RoutingDTO result = (RoutingDTO) gwRoutingService.findServiceDetail(testRegistedServiceId);
+    GwService gwService = modelMapper.map(updateRoutingDTO, GwService.class);
 
-    assertEquals(testRegistedServiceId, result.getServiceId());
-    assertEquals(routingDTO.getServicePath(), result.getServicePath());
-    assertEquals(routingDTO.getServiceTargetUrl(), result.getServiceTargetUrl());
-    assertEquals(routingDTO.getServiceDesc(), result.getServiceDesc());
-    assertEquals(routingDTO.getServiceLoginType(), result.getServiceLoginType());
-    assertEquals(routingDTO.getServiceAuthType(), result.getServiceAuthType());
-    assertEquals(routingDTO.getFilterId(), result.getFilterId());
-  }
+    doReturn(gwService).when(gwRoutingRepository).findByServiceId(serviceId);
+    doReturn(false).when(gwRoutingCustomRepository).isValidUpdateData(updateRoutingDTO, serviceId);
 
-  @Test
-  @Order(5)
-  public void API수정_테스트() throws Exception {
+    BizException ex = assertThrows(BizException.class, () -> {
 
-    routingDTO.setServiceDesc("서비스 설명 수정");
-    routingDTO.setServiceNm("서비스 명칭 수정");
-    routingDTO.setUptUserNo("2");
-    routingDTO.setUseYn("N");
-
-    gwRoutingService.updateService(routingDTO, testRegistedServiceId);
-  }
-
-  @Test
-  @Order(6)
-  public void API수정_기등록_테스트() throws Exception {
-
-    RoutingDTO result = gwRoutingService.findServices(new RoutingDTO()).stream()
-        .filter(data -> data.getServiceId() != testRegistedServiceId).collect(Collectors.toList())
-        .get(0);
-
-    routingDTO.setServicePath(result.getServicePath());
-
-    assertThrows(BizException.class, () -> {
-
-      gwRoutingService.updateService(routingDTO, testRegistedServiceId);
+      gwRoutingService.updateService(updateRoutingDTO, serviceId);
     });
+
+    assertEquals(ex.getMessage(), BizExceptionCode.COM003.getCode());
   }
 
   @Test
-  @Order(7)
-  @Rollback(false)
-  public void API삭제_테스트() throws Exception {
+  void API수정_데이터없음_테스트() {
 
-    Long[] data = {testRegistedServiceId};
+    doReturn(null).when(gwRoutingRepository).findByServiceId(serviceId);
 
-    assertEquals(1, gwRoutingService.deleteService(data));
+    BizException ex = assertThrows(BizException.class, () -> {
+
+      gwRoutingService.updateService(updateRoutingDTO, serviceId);
+    });
+
+    assertEquals(ex.getMessage(), BizExceptionCode.COM004.getCode());
+  }
+
+  @Test
+  void API수정_DB오류_테스트() {
+
+    GwService gwService = modelMapper.map(updateRoutingDTO, GwService.class);
+
+    doReturn(gwService).when(gwRoutingRepository).findByServiceId(serviceId);
+    doReturn(true).when(gwRoutingCustomRepository).isValidUpdateData(updateRoutingDTO, serviceId);
+    when(gwRoutingRepository.save(gwService))
+        .thenThrow(new RuntimeException("Exception"));
+
+    BizException ex = assertThrows(BizException.class, () -> {
+
+      gwRoutingService.updateService(updateRoutingDTO, serviceId);
+    });
+
+    assertEquals(ex.getMessage(), BizExceptionCode.COM001.getCode());
+  }
+
+  @Test
+  void API삭제_테스트() {
+
+    Long[] serviceIdList = {1L, 2L};
+
+    doReturn(2L).when(gwRoutingCustomRepository).deleteService(serviceIdList);
+
+    gwRoutingService.deleteService(serviceIdList);
   }
 }

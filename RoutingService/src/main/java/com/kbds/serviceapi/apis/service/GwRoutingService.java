@@ -120,7 +120,7 @@ public class GwRoutingService {
    */
   public GwService registService(RoutingDTO reqParam) {
 
-    if (gwServiceCustomRepository.checkRegistValidation(reqParam)) {
+    if (gwServiceCustomRepository.isRegistService(reqParam)) {
 
       throw new BizException(BizExceptionCode.COM003);
     }
@@ -168,7 +168,7 @@ public class GwRoutingService {
     }
 
     // 수정하고자 하는 내용 중 중복이 허용되지 않는 데이터가 DB상에 등록되어 있는지 체크한다.
-    if (gwServiceCustomRepository.checkUpdateValidation(reqParam, id)) {
+    if (!gwServiceCustomRepository.isValidUpdateData(reqParam, id)) {
 
       throw new BizException(BizExceptionCode.COM003);
     }
@@ -226,11 +226,23 @@ public class GwRoutingService {
     }
 
     // 실제 삭제 건수와 요청 건수가 일치하지 않으면 전체 롤백한다.
-    if (deletedCnt != serviceId.length) {
+    if (!isValidResultCnt(deletedCnt, serviceId.length)) {
 
       throw new BizException(BizExceptionCode.COM005);
     }
 
     return deletedCnt;
+  }
+
+  /**
+   * DB 작업 성공 건수와 유입 건수를 비교한다.
+   *
+   * @param deletedCnt
+   * @param serviceIdCnt
+   * @return
+   */
+  private boolean isValidResultCnt(long deletedCnt, long serviceIdCnt) {
+
+    return deletedCnt == serviceIdCnt;
   }
 }

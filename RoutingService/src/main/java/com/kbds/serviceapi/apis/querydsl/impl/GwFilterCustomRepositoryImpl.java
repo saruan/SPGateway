@@ -1,31 +1,28 @@
 package com.kbds.serviceapi.apis.querydsl.impl;
 
-import java.util.List;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import org.springframework.stereotype.Service;
 import com.kbds.serviceapi.apis.dto.FilterDTO;
 import com.kbds.serviceapi.apis.entity.GwService;
 import com.kbds.serviceapi.apis.entity.QGwServiceFilter;
 import com.kbds.serviceapi.apis.querydsl.GwFilterCustomRepository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
+import java.util.List;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.stereotype.Service;
 
 /**
- * 
- *
  * <pre>
  *  Class Name     : GwServiceCustomRepositoryImpl.java
  *  Description    : 사용자 정의 Querydsl 클래스
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
- * 
+ *
  * -------------------------------------------------------------------------------
  *     변경No        변경일자        	       변경자          Description
  * -------------------------------------------------------------------------------
  *     Ver 1.0      2020-04-14     구경태          Initialized
  * -------------------------------------------------------------------------------
  * </pre>
- *
  */
 @Service
 public class GwFilterCustomRepositoryImpl extends QuerydslRepositorySupport
@@ -33,8 +30,6 @@ public class GwFilterCustomRepositoryImpl extends QuerydslRepositorySupport
 
   /**
    * 생성자
-   * 
-   * @param domainClass
    */
   public GwFilterCustomRepositoryImpl() {
 
@@ -118,9 +113,9 @@ public class GwFilterCustomRepositoryImpl extends QuerydslRepositorySupport
           .or(gwServiceFilter.filterBean.eq(param.getFilterBean())));
     }
 
-    // 이미 등록되어 있는 데이터가 있다면 true 없다면 false를 리턴한다.
-    return from(gwServiceFilter).fetchJoin().select().where(builder).fetchCount() > 0 ? true
-        : false;
+    // 이미 등록되어 있는 데이터가 있다면 false 없다면 true를 리턴한다.
+    return from(gwServiceFilter).fetchJoin().select().where(builder).fetchCount() > 0 ? false
+        : true;
   }
 
 }

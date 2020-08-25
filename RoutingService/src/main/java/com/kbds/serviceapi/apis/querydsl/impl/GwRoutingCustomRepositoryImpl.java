@@ -145,7 +145,7 @@ public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
    * 서비스 등록 전 중복 서비스 여부 체크
    */
   @Override
-  public boolean checkRegistValidation(RoutingDTO param) {
+  public boolean isRegistService(RoutingDTO param) {
 
     QGwService gwService = QGwService.gwService;
     QGwServiceFilter gwServiceFilter = QGwServiceFilter.gwServiceFilter;
@@ -173,7 +173,7 @@ public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
    * 서비스 수정 전 중복 서비스 체크
    */
   @Override
-  public boolean checkUpdateValidation(RoutingDTO param, Long serviceId) {
+  public boolean isValidUpdateData(RoutingDTO param, Long serviceId) {
 
     QGwService gwService = QGwService.gwService;
     QGwServiceFilter gwServiceFilter = QGwServiceFilter.gwServiceFilter;
@@ -197,7 +197,7 @@ public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
 
     // 이미 등록되어 있는 데이터가 있다면 true 없다면 false를 리턴한다.
     return from(gwService).innerJoin(gwServiceFilter).on(builder).fetchJoin().select()
-        .fetchCount() > 0 ? true : false;
+        .fetchCount() > 0 ? false : true;
   }
 
 
