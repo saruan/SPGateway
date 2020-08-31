@@ -4,6 +4,7 @@ import com.kbds.serviceapi.apis.dto.FilterDTO;
 import com.kbds.serviceapi.apis.entity.GwServiceFilter;
 import com.kbds.serviceapi.apis.service.GwFilterService;
 import com.kbds.serviceapi.common.utils.CommonUtils;
+import com.kbds.serviceapi.framework.dto.SearchDTO;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,11 +33,11 @@ public class GwFilterController {
    * @return
    */
   @GetMapping(value = "/v1/filter")
-  public ResponseEntity<Object> findFilters(@ModelAttribute FilterDTO params) {
+  public ResponseEntity<Object> findFilters(@ModelAttribute SearchDTO searchDTO) {
 
-    Object result = CommonUtils.getResponseEntity(gwFilterService.findFilters(params));
+    Object result = CommonUtils.getResponseEntity(gwFilterService.findFilters(searchDTO));
 
-    return new ResponseEntity<Object>(result, HttpStatus.OK);
+    return new ResponseEntity<>(result, HttpStatus.OK);
   }
 
   /**
@@ -50,7 +51,7 @@ public class GwFilterController {
 
     Object result = CommonUtils.getResponseEntity(gwFilterService.findFilterDetail(id));
 
-    return new ResponseEntity<Object>(result, HttpStatus.OK);
+    return new ResponseEntity<>(result, HttpStatus.OK);
   }
 
   /**
@@ -60,13 +61,13 @@ public class GwFilterController {
    * @return
    */
   @PostMapping(value = "/v1/filter")
-  public ResponseEntity<Object> registFilter(@RequestBody @Valid FilterDTO params) {
+  public ResponseEntity<Object> registerFilter(@RequestBody @Valid FilterDTO params) {
 
-    gwFilterService.registFilter(params);
+    gwFilterService.registerFilter(params);
 
     Object result = CommonUtils.getResponseEntity(true);
 
-    return new ResponseEntity<Object>(result, HttpStatus.OK);
+    return new ResponseEntity<>(result, HttpStatus.OK);
   }
 
   /**
@@ -83,7 +84,7 @@ public class GwFilterController {
 
     Object result = CommonUtils.getResponseEntity(updateData);
 
-    return new ResponseEntity<Object>(result, HttpStatus.OK);
+    return new ResponseEntity<>(result, HttpStatus.OK);
   }
 
   /**
@@ -99,7 +100,6 @@ public class GwFilterController {
 
     Object result = CommonUtils.getResponseEntity(true);
 
-    return new ResponseEntity<Object>(result, HttpStatus.OK);
+    return new ResponseEntity<>(result, HttpStatus.OK);
   }
-
 }

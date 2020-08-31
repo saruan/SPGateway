@@ -3,6 +3,7 @@ package com.kbds.serviceapi.apis.controller;
 import com.kbds.serviceapi.apis.dto.AppDTO;
 import com.kbds.serviceapi.apis.service.GwAppService;
 import com.kbds.serviceapi.common.utils.CommonUtils;
+import com.kbds.serviceapi.framework.dto.SearchDTO;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,9 +44,9 @@ public class GwAppController {
    * @return
    */
   @GetMapping(value = "/v1/app/")
-  public ResponseEntity<Object> findApps(@ModelAttribute AppDTO params) {
+  public ResponseEntity<Object> findApps(@ModelAttribute SearchDTO searchDTO) {
 
-    Object result = CommonUtils.getResponseEntity(gwAppService.findApps(params));
+    Object result = CommonUtils.getResponseEntity(gwAppService.findApps(searchDTO));
 
     return new ResponseEntity<>(result, HttpStatus.OK);
   }
@@ -70,9 +71,9 @@ public class GwAppController {
    * @return
    */
   @PostMapping(value = "/v1/app")
-  public ResponseEntity<Object> registApp(@RequestBody @Valid AppDTO params) {
+  public ResponseEntity<Object> registerApp(@RequestBody @Valid AppDTO params) {
 
-    gwAppService.registApp(params);
+    gwAppService.registerApp(params);
 
     Object result = CommonUtils.getResponseEntity(true);
 

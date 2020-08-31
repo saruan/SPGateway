@@ -9,11 +9,11 @@ import com.kbds.serviceapi.apis.repository.GwFilterRepository;
 import com.kbds.serviceapi.apis.repository.GwRoutingRepository;
 import com.kbds.serviceapi.common.code.BizExceptionCode;
 import com.kbds.serviceapi.common.utils.CommonUtils;
+import com.kbds.serviceapi.framework.dto.SearchDTO;
 import com.kbds.serviceapi.framework.exception.BizException;
 import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
-import javax.validation.Validator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,9 +46,6 @@ public class GwRoutingService {
   @Autowired
   ModelMapper modelMapper;
 
-  @Autowired
-  Validator validator;
-
   /**
    * G/W Routing Bean으로 등록할 정보들 조회 서비스
    *
@@ -58,33 +55,29 @@ public class GwRoutingService {
 
     try {
 
-      return gwServiceCustomRepository.findbyGwConditions();
+      return gwServiceCustomRepository.findByGwConditions();
     } catch (Exception e) {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
     }
   }
-
-  ;
 
   /**
    * 서비스 검색 기능
    *
-   * @param params
+   * @param searchDTO
    * @return
    */
-  public List<RoutingDTO> findServices(RoutingDTO params) {
+  public List<RoutingDTO> findServices(SearchDTO searchDTO) {
 
     try {
 
-      return gwServiceCustomRepository.findbyConditions(params);
+      return gwServiceCustomRepository.findByConditions(searchDTO);
     } catch (Exception e) {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
     }
   }
-
-  ;
 
   /**
    * 서비스 상세 검색 기능
@@ -111,16 +104,14 @@ public class GwRoutingService {
     }
   }
 
-  ;
-
   /**
    * 서비스 등록
    *
    * @param reqParam
    */
-  public GwService registService(RoutingDTO reqParam) {
+  public GwService registerService(RoutingDTO reqParam) {
 
-    if (gwServiceCustomRepository.isRegistService(reqParam)) {
+    if (gwServiceCustomRepository.isRegisteredService(reqParam)) {
 
       throw new BizException(BizExceptionCode.COM003);
     }
@@ -138,8 +129,6 @@ public class GwRoutingService {
       throw new BizException(BizExceptionCode.COM001, e.toString());
     }
   }
-
-  ;
 
   /**
    * 서비스 수정
@@ -197,7 +186,6 @@ public class GwRoutingService {
       throw new BizException(BizExceptionCode.COM001, e.toString());
     }
   }
-
 
   /**
    * 서비스 삭제

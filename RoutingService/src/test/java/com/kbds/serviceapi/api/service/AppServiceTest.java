@@ -17,6 +17,7 @@ import com.kbds.serviceapi.apis.repository.GwServiceAppMappingRepository;
 import com.kbds.serviceapi.apis.service.GwAppService;
 import com.kbds.serviceapi.common.code.BizExceptionCode;
 import com.kbds.serviceapi.common.utils.CommonUtils;
+import com.kbds.serviceapi.framework.dto.SearchDTO;
 import com.kbds.serviceapi.framework.exception.BizException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -73,7 +74,7 @@ public class AppServiceTest {
   @InjectMocks
   ModelMapper modelMapper;
 
-  AppDTO searchConditions;
+  SearchDTO searchConditions;
   AppDTO registAppDTO;
   AppDTO updateAppDTO;
   List<AppDTO> appListDTO;
@@ -95,7 +96,7 @@ public class AppServiceTest {
     registAppDTO = new AppDTO(appId, "APP_등록", "", "APP_설명",
         "Y", serviceIdList, "1", "1", new Date(), new Date());
 
-    searchConditions = registAppDTO;
+    searchConditions = SearchDTO.builder().name("APP_등록").build();
 
     updateAppDTO = new AppDTO(appId, "APP_수정", "APP_KEY_MODIFY", "APP_수정",
         "N", serviceIdList, "1", "1", new Date(), new Date());
@@ -111,7 +112,7 @@ public class AppServiceTest {
   @Test
   void APP_리스트_조회_테스트() {
 
-    when(gwAppCustomRepository.findbyConditions(searchConditions)).thenReturn(appListDTO);
+    when(gwAppCustomRepository.findByConditions(searchConditions)).thenReturn(appListDTO);
 
     gwAppService.findApps(searchConditions);
   }
@@ -140,7 +141,7 @@ public class AppServiceTest {
 
     when(gwServiceAppMappingRepository.saveAll(params)).thenReturn(params);
 
-    gwAppService.registApp(registAppDTO);
+    gwAppService.registerApp(registAppDTO);
   }
 
   @Test
@@ -150,7 +151,7 @@ public class AppServiceTest {
 
     BizException ex = assertThrows(BizException.class, () -> {
 
-      gwAppService.registApp(registAppDTO);
+      gwAppService.registerApp(registAppDTO);
     });
 
     assertEquals(ex.getMessage(), BizExceptionCode.COM005.getCode());
@@ -164,7 +165,7 @@ public class AppServiceTest {
 
     BizException ex = assertThrows(BizException.class, () -> {
 
-      gwAppService.registApp(registAppDTO);
+      gwAppService.registerApp(registAppDTO);
     });
 
     assertEquals(ex.getMessage(), BizExceptionCode.COM003.getCode());

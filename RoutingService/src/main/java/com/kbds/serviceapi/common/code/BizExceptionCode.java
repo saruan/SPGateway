@@ -38,8 +38,10 @@ public enum BizExceptionCode {
 
   COM007("COM007", "Filter가 현재 사용 중입니다. Api 정보를 수정한 후 삭제해 주세요."),
 
+  USR001("USR001", "사용자 정보가 없거나 잘못 되었습니다."),
+
   DUMMY("", "");
 
-  private String code;
-  private String msg;
+  private final String code;
+  private final String msg;
 }

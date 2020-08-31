@@ -1,5 +1,6 @@
 package com.kbds.serviceapi.apis.controller;
 
+import com.kbds.serviceapi.framework.dto.SearchDTO;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,11 +46,11 @@ public class GwRoutingController {
    * @return
    */
   @GetMapping(value = "/v1/routes/")
-  public ResponseEntity<Object> findServices(@ModelAttribute RoutingDTO params) {
+  public ResponseEntity<Object> findServices(@ModelAttribute SearchDTO searchDTO) {
 
-    Object result = CommonUtils.getResponseEntity(gwRoutingService.findServices(params));
+    Object result = CommonUtils.getResponseEntity(gwRoutingService.findServices(searchDTO));
 
-    return new ResponseEntity<Object>(result, HttpStatus.OK);
+    return new ResponseEntity<>(result, HttpStatus.OK);
   }
 
   /**
@@ -57,12 +58,12 @@ public class GwRoutingController {
    * 
    * @return
    */
-  @GetMapping(value = "/v1/routes/app/")
+  @GetMapping(value = "/v1/routes/gateway/")
   public ResponseEntity<Object> findGwServices() {
 
     Object result = CommonUtils.getResponseEntity(gwRoutingService.findGwServices());
 
-    return new ResponseEntity<Object>(result, HttpStatus.OK);
+    return new ResponseEntity<>(result, HttpStatus.OK);
   }
 
 
@@ -76,7 +77,7 @@ public class GwRoutingController {
 
     Object result = CommonUtils.getResponseEntity(gwRoutingService.findServiceDetail(id));
 
-    return new ResponseEntity<Object>(result, HttpStatus.OK);
+    return new ResponseEntity<>(result, HttpStatus.OK);
   }
 
   /**
@@ -86,11 +87,11 @@ public class GwRoutingController {
    * @return
    */
   @PostMapping(value = "/v1/routes")
-  public ResponseEntity<Object> registService(@RequestBody @Valid RoutingDTO params) {
+  public ResponseEntity<Object> registerService(@RequestBody @Valid RoutingDTO params) {
 
-    Object result = CommonUtils.getResponseEntity(gwRoutingService.registService(params));
+    Object result = CommonUtils.getResponseEntity(gwRoutingService.registerService(params));
 
-    return new ResponseEntity<Object>(result, HttpStatus.CREATED);
+    return new ResponseEntity<>(result, HttpStatus.CREATED);
   }
 
   /**
@@ -107,13 +108,13 @@ public class GwRoutingController {
 
     Object result = CommonUtils.getResponseEntity(true);
 
-    return new ResponseEntity<Object>(result, HttpStatus.OK);
+    return new ResponseEntity<>(result, HttpStatus.OK);
   }
 
   /**
    * Routing 서비스 삭제
    * 
-   * @param params
+   * @param id
    * @return
    */
   @DeleteMapping(value = "/v1/routes/{id}")
@@ -123,6 +124,6 @@ public class GwRoutingController {
 
     Object result = CommonUtils.getResponseEntity(true);
 
-    return new ResponseEntity<Object>(result, HttpStatus.OK);
+    return new ResponseEntity<>(result, HttpStatus.OK);
   }
 }

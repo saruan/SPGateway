@@ -12,6 +12,7 @@ import com.kbds.serviceapi.apis.repository.GwRoutingRepository;
 import com.kbds.serviceapi.apis.service.GwRoutingService;
 import com.kbds.serviceapi.common.code.BizExceptionCode;
 import com.kbds.serviceapi.common.utils.CommonUtils;
+import com.kbds.serviceapi.framework.dto.SearchDTO;
 import com.kbds.serviceapi.framework.exception.BizException;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +46,7 @@ public class RoutingServiceTest {
   @InjectMocks
   ModelMapper modelMapper;
 
-  RoutingDTO searchConditions;
+  SearchDTO searchConditions;
   RoutingDTO registRoutingDTO;
   RoutingDTO updateRoutingDTO;
   List<RoutingDTO> routingListDTO;
@@ -59,8 +60,7 @@ public class RoutingServiceTest {
 
     serviceId = 1L;
 
-    searchConditions = RoutingDTO.builder().serviceId(1L).serviceNm("검색").servicePath("/test")
-        .serviceDesc("Desc").build();
+    searchConditions = SearchDTO.builder().name("검색").servicePath("/test").build();
 
     registRoutingDTO = RoutingDTO.builder().serviceId(1L).serviceNm("등록").servicePath("/regist")
         .serviceDesc("Desc").serviceLoginType("1").serviceAuthType("1").regUserNo("1").build();
@@ -76,14 +76,24 @@ public class RoutingServiceTest {
   }
 
   @Test
+  void API목록_조회_테스트(){
+
+    doReturn(routingListDTO).when(gwRoutingCustomRepository).findByConditions(searchConditions);
+
+    List<RoutingDTO> result = gwRoutingService.findServices(searchConditions);
+
+    assertEquals(registRoutingDTO, result.get(0));
+  }
+
+  @Test
   void API등록_테스트() {
 
     GwService gwService = modelMapper.map(registRoutingDTO, GwService.class);
 
-    doReturn(false).when(gwRoutingCustomRepository).isRegistService(registRoutingDTO);
+    doReturn(false).when(gwRoutingCustomRepository).isRegisteredService(registRoutingDTO);
     doReturn(gwService).when(gwRoutingRepository).save(gwService);
 
-    gwRoutingService.registService(registRoutingDTO);
+    gwRoutingService.registerService(registRoutingDTO);
   }
 
   @Test
@@ -91,11 +101,11 @@ public class RoutingServiceTest {
 
     GwService gwService = modelMapper.map(registRoutingDTO, GwService.class);
 
-    doReturn(true).when(gwRoutingCustomRepository).isRegistService(registRoutingDTO);
+    doReturn(true).when(gwRoutingCustomRepository).isRegisteredService(registRoutingDTO);
 
     BizException ex = assertThrows(BizException.class, () -> {
 
-      gwRoutingService.registService(registRoutingDTO);
+      gwRoutingService.registerService(registRoutingDTO);
     });
 
     assertEquals(ex.getMessage(), BizExceptionCode.COM003.getCode());

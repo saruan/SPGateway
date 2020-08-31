@@ -8,11 +8,10 @@ import static org.mockito.Mockito.when;
 import com.kbds.serviceapi.apis.dto.FilterDTO;
 import com.kbds.serviceapi.apis.entity.GwServiceFilter;
 import com.kbds.serviceapi.apis.querydsl.GwFilterCustomRepository;
-import com.kbds.serviceapi.apis.querydsl.GwRoutingCustomRepository;
 import com.kbds.serviceapi.apis.repository.GwFilterRepository;
-import com.kbds.serviceapi.apis.repository.GwRoutingRepository;
 import com.kbds.serviceapi.apis.service.GwFilterService;
 import com.kbds.serviceapi.common.code.BizExceptionCode;
+import com.kbds.serviceapi.framework.dto.SearchDTO;
 import com.kbds.serviceapi.framework.exception.BizException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -54,19 +53,13 @@ public class FilterServiceTest {
   @Mock
   GwFilterCustomRepository gwFilterCustomRepository;
 
-  @Mock
-  GwRoutingRepository gwRoutingRepository;
-
-  @Mock
-  GwRoutingCustomRepository gwRoutingCustomRepository;
-
   @InjectMocks
   ModelMapper modelMapper;
 
   Long filterId;
   GwServiceFilter filterDetailEntity;
   List<FilterDTO> filterList;
-  FilterDTO searchConditions;
+  SearchDTO searchConditions;
   FilterDTO filterDetailDTO;
   FilterDTO filterUpdateDetailDTO;
 
@@ -83,15 +76,17 @@ public class FilterServiceTest {
     filterDetailEntity.setUptDt(new Date());
 
     filterDetailDTO = new FilterDTO(filterId, "기본 공통 필터",
-        "인증 처리용 필터", "CommonFilter", "Y", "1", "1", new Date(), new Date());
+        "인증 처리용 필터", "CommonFilter", "Y",
+        "1", "1", new Date(), new Date());
 
     filterUpdateDetailDTO = new FilterDTO(filterId, "수정 필터",
-        "수정 필터", "UpdateFilter", "Y", "1", "1", new Date(), new Date());
+        "수정 필터", "UpdateFilter",
+        "Y", "1", "1", new Date(), new Date());
 
     filterList = new ArrayList<>();
     filterList.add(filterDetailDTO);
 
-    searchConditions = new FilterDTO();
+    searchConditions = new SearchDTO();
 
     ReflectionTestUtils.setField(gwFilterService, "modelMapper", new ModelMapper());
   }
@@ -112,7 +107,7 @@ public class FilterServiceTest {
   @Test
   void 필터_리스트_조회_테스트() {
 
-    when(gwFilterCustomRepository.findbyConditions(searchConditions)).thenReturn(filterList);
+    when(gwFilterCustomRepository.findByConditions(searchConditions)).thenReturn(filterList);
 
     List<FilterDTO> serviceFilterList = gwFilterService.findFilters(searchConditions);
 
@@ -125,21 +120,19 @@ public class FilterServiceTest {
   @Test
   void 필터_등록_테스트() {
 
-    when(gwFilterCustomRepository.checkRegistValidation(filterDetailDTO)).thenReturn(false);
+    when(gwFilterCustomRepository.isValidData(filterDetailDTO)).thenReturn(false);
     when(gwFilterRepository.save(filterDetailEntity)).thenReturn(filterDetailEntity);
 
-    gwFilterService.registFilter(filterDetailDTO);
+    gwFilterService.registerFilter(filterDetailDTO);
   }
 
   @Test
   void 필터_등록_중복_테스트() {
 
-    when(gwFilterCustomRepository.checkRegistValidation(filterDetailDTO)).thenReturn(true);
+    when(gwFilterCustomRepository.isValidData(filterDetailDTO)).thenReturn(true);
 
-    BizException ex = assertThrows(BizException.class, () -> {
-
-      gwFilterService.registFilter(filterDetailDTO);
-    });
+    BizException ex = assertThrows(BizException.class,
+        () -> gwFilterService.registerFilter(filterDetailDTO));
 
     assertEquals(ex.getMessage(), BizExceptionCode.COM003.getCode());
 
@@ -160,10 +153,8 @@ public class FilterServiceTest {
 
     when(gwFilterRepository.findByFilterId(filterId)).thenReturn(null);
 
-    BizException ex = assertThrows(BizException.class, () -> {
-
-      gwFilterService.updateFilter(filterUpdateDetailDTO, filterId);
-    });
+    BizException ex = assertThrows(BizException.class, ()
+        -> gwFilterService.updateFilter(filterUpdateDetailDTO, filterId));
 
     assertEquals(ex.getMessage(), BizExceptionCode.COM004.getCode());
   }
@@ -174,10 +165,8 @@ public class FilterServiceTest {
     when(gwFilterCustomRepository.checkUpdateValidation(filterUpdateDetailDTO)).thenReturn(false);
     when(gwFilterRepository.findByFilterId(filterId)).thenReturn(filterDetailEntity);
 
-    BizException ex = assertThrows(BizException.class, () -> {
-
-      gwFilterService.updateFilter(filterUpdateDetailDTO, filterId);
-    });
+    BizException ex = assertThrows(BizException.class,
+        () -> gwFilterService.updateFilter(filterUpdateDetailDTO, filterId));
 
     assertEquals(ex.getMessage(), BizExceptionCode.COM003.getCode());
   }

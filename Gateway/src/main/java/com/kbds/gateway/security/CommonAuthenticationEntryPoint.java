@@ -47,7 +47,4 @@ public class CommonAuthenticationEntryPoint implements ServerAuthenticationEntry
 
     return exchange.getResponse().writeWith(Flux.just(buffer));
   }
-
-
-
 }

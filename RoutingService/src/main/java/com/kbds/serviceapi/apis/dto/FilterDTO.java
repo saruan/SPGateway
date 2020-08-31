@@ -3,6 +3,7 @@ package com.kbds.serviceapi.apis.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kbds.serviceapi.apis.entity.AuditLog;
+import com.querydsl.core.annotations.QueryProjection;
 import java.util.Date;
 import javax.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.repository.Query;
 
 
 /**
@@ -28,7 +30,6 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @EqualsAndHashCode(callSuper = false)
-@AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(value = Include.NON_NULL)
 public class FilterDTO extends AuditLog {
@@ -52,4 +53,19 @@ public class FilterDTO extends AuditLog {
   private Date regDt;
 
   private Date uptDt;
+
+  @QueryProjection
+  public FilterDTO(Long filterId, @NotEmpty String filterNm, String filterDesc,
+      @NotEmpty String filterBean, String useYn, String regUserNo, String uptUserNo,
+      Date regDt, Date uptDt) {
+    this.filterId = filterId;
+    this.filterNm = filterNm;
+    this.filterDesc = filterDesc;
+    this.filterBean = filterBean;
+    this.useYn = useYn;
+    this.regUserNo = regUserNo;
+    this.uptUserNo = uptUserNo;
+    this.regDt = regDt;
+    this.uptDt = uptDt;
+  }
 }

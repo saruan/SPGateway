@@ -3,8 +3,6 @@ package com.kbds.serviceapi.apis.service;
 import com.kbds.serviceapi.apis.dto.AppDTO;
 import com.kbds.serviceapi.apis.dto.EmptyDataDTO;
 import com.kbds.serviceapi.apis.entity.GwApp;
-import com.kbds.serviceapi.apis.entity.GwServiceAppMapping;
-import com.kbds.serviceapi.apis.entity.key.GwServiceAppMappingKey;
 import com.kbds.serviceapi.apis.querydsl.GwAppCustomRepository;
 import com.kbds.serviceapi.apis.repository.GwAppRepository;
 import com.kbds.serviceapi.apis.repository.GwRoutingRepository;
@@ -12,14 +10,12 @@ import com.kbds.serviceapi.apis.repository.GwServiceAppMappingRepository;
 import com.kbds.serviceapi.common.code.BizExceptionCode;
 import com.kbds.serviceapi.common.utils.CommonUtils;
 import com.kbds.serviceapi.common.utils.StringUtils;
+import com.kbds.serviceapi.framework.dto.SearchDTO;
 import com.kbds.serviceapi.framework.exception.BizException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,8 +35,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class GwAppService {
 
-  Logger logger = LoggerFactory.getLogger(GwAppService.class);
-
   @Autowired
   GwAppRepository gwAppRepository;
 
@@ -54,23 +48,24 @@ public class GwAppService {
   GwRoutingRepository gwRoutingRepository;
 
   @Autowired
+  GwServiceAppMappingService gwServiceAppMappingService;
+
+  @Autowired
   ModelMapper modelMapper;
 
 
   /**
    * APP 리스트 검색 기능
    *
-   * @param params
+   * @param searchDTO
    * @return
    */
   @Transactional
-  public List<AppDTO> findApps(AppDTO params) {
+  public List<AppDTO> findApps(SearchDTO searchDTO) {
 
     try {
 
-      modelMapper.map(gwAppRepository.findAll(), AppDTO.class);
-
-      return gwAppCustomRepository.findbyConditions(params);
+      return gwAppCustomRepository.findByConditions(searchDTO);
     } catch (Exception e) {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
@@ -102,8 +97,6 @@ public class GwAppService {
     }
   }
 
-  ;
-
   /**
    * APP 등록
    *
@@ -117,7 +110,7 @@ public class GwAppService {
    * @param reqParam
    */
   @Transactional
-  public Long registApp(AppDTO reqParam) {
+  public void registerApp(AppDTO reqParam) {
 
     try {
 
@@ -136,28 +129,11 @@ public class GwAppService {
       // APP 등록 후 등록된 APP_ID를 전달 받는다.
       Long appId = gwAppRepository.save(gwApp).getAppId();
 
-      // Mapping 테이블에 데이터 등록
-      List<Long> serviceIdList = reqParam.getServiceId();
-      List<GwServiceAppMapping> params = new ArrayList<GwServiceAppMapping>();
-
-      if (serviceIdList.size() > 0) {
-
-        for (int i = 0; i < serviceIdList.size(); i++) {
-
-          GwServiceAppMappingKey key = new GwServiceAppMappingKey(serviceIdList.get(i), appId);
-          GwServiceAppMapping param = new GwServiceAppMapping(key);
-
-          params.add(param);
-        }
-
-        // MAPPING 테이블에 데이터 등록
-        gwServiceAppMappingRepository.saveAll(params);
-      }
+      // Mapping 데이터 등록
+      gwServiceAppMappingService.registerServiceAppMapping(reqParam, appId);
 
       // 등록 이후 게이트웨이에 해당 정보를 갱신해준다.
       CommonUtils.refreshGatewayRoutes(reqParam.getRegUserNo());
-
-      return appId;
     } catch (BizException e) {
 
       throw new BizException(BizExceptionCode.valueOf(e.getMessage()));
@@ -179,28 +155,28 @@ public class GwAppService {
    * @param reqParam
    */
   @Transactional
-  public void updateApp(AppDTO reqParam, Long id) {
-
-    // 필수 파라미터 체크(AppKey)
-    if (isEmptyAppKey(reqParam.getAppKey())) {
-
-      throw new BizException(BizExceptionCode.COM002);
-    }
+  public void updateApp(AppDTO reqParam, Long appId) {
 
     try {
+
+      // 필수 파라미터 체크(AppKey)
+      if (isEmptyAppKey(reqParam.getAppKey())) {
+
+        throw new BizException(BizExceptionCode.COM002);
+      }
 
       if (!isValidServiceId(reqParam)) {
 
         throw new BizException(BizExceptionCode.COM005);
       }
 
-      if (!isValidModifyAppNm(reqParam, id)) {
+      if (!isValidModifyAppNm(reqParam, appId)) {
 
         throw new BizException(BizExceptionCode.COM003);
       }
 
       // GwApp 테이블에 정보 수정
-      GwApp gwApp = gwAppRepository.findByAppId(id);
+      GwApp gwApp = gwAppRepository.findByAppId(appId);
 
       gwApp.setAppKey(reqParam.getAppKey());
       gwApp.setAppDesc(reqParam.getAppDesc());
@@ -210,25 +186,8 @@ public class GwAppService {
 
       gwAppRepository.save(gwApp);
 
-      // Mapping 테이블에 데이터 등록
-      List<Long> serviceIdList = reqParam.getServiceId();
-      List<GwServiceAppMapping> params = new ArrayList<GwServiceAppMapping>();
-
-      gwServiceAppMappingRepository.deleteByIdAppIdAndIdServiceIdNotIn(id, reqParam.getServiceId());
-
-      if (serviceIdList.size() > 0) {
-
-        for (int i = 0; i < serviceIdList.size(); i++) {
-
-          GwServiceAppMappingKey key = new GwServiceAppMappingKey(serviceIdList.get(i), id);
-          GwServiceAppMapping param = new GwServiceAppMapping(key);
-
-          params.add(param);
-        }
-
-        // Mapping 테이블 갱신
-        gwServiceAppMappingRepository.saveAll(params);
-      }
+      // Mapping 데이터 등록
+      gwServiceAppMappingService.registerServiceAppMapping(reqParam, appId);
 
       CommonUtils.refreshGatewayRoutes(reqParam.getRegUserNo());
     } catch (BizException e) {

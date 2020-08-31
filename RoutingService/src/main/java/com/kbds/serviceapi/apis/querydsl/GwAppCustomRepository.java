@@ -1,6 +1,7 @@
 package com.kbds.serviceapi.apis.querydsl;
 
 import com.kbds.serviceapi.apis.dto.AppDTO;
+import com.kbds.serviceapi.framework.dto.SearchDTO;
 import java.util.List;
 
 /**
@@ -21,9 +22,9 @@ public interface GwAppCustomRepository {
   /**
    * 조건문에 맞는 앱 검색
    *
-   * @param param
+   * @param searchDTO
    * @return
    */
-  public List<AppDTO> findbyConditions(AppDTO param);
+  List<AppDTO> findByConditions(SearchDTO searchDTO);
   
 }

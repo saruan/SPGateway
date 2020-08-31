@@ -1,13 +1,15 @@
 package com.kbds.serviceapi.apis.querydsl.impl;
 
+import static com.kbds.serviceapi.apis.entity.QGwServiceFilter.gwServiceFilter;
+
 import com.kbds.serviceapi.apis.dto.FilterDTO;
+import com.kbds.serviceapi.apis.dto.QFilterDTO;
 import com.kbds.serviceapi.apis.entity.GwService;
-import com.kbds.serviceapi.apis.entity.QGwServiceFilter;
 import com.kbds.serviceapi.apis.querydsl.GwFilterCustomRepository;
-import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Projections;
+import com.kbds.serviceapi.common.utils.StringUtils;
+import com.kbds.serviceapi.framework.dto.SearchDTO;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import java.util.List;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Service;
 
@@ -40,57 +42,35 @@ public class GwFilterCustomRepositoryImpl extends QuerydslRepositorySupport
    * 검색 조건에 맞게 GW_SERVICE 테이블을 조회하는 Custom Repository
    */
   @Override
-  public List<FilterDTO> findbyConditions(FilterDTO param) {
-
-    QGwServiceFilter gwFilter = QGwServiceFilter.gwServiceFilter;
-
-    // 검색 조건문 등록
-    BooleanBuilder builder = new BooleanBuilder();
-
-    if (param.getFilterId() != null) {
-      builder.and(gwFilter.filterId.eq(param.getFilterId()));
-    }
-
-    if (!StringUtils.isEmpty(param.getFilterBean())) {
-      builder.and(gwFilter.filterBean.eq(param.getFilterBean()));
-    }
+  public List<FilterDTO> findByConditions(SearchDTO searchDTO) {
 
     // GW_SERVICE_FILTER에서 검색 조건문으로 등록한 조건에 맞게 검색한 후 FilterDTO로 결과 값을 매핑시킨다.
-    return from(gwFilter).select(Projections.constructor(FilterDTO.class, gwFilter.filterId,
-        gwFilter.filterNm, gwFilter.filterDesc, gwFilter.filterBean, gwFilter.useYn,
-        gwFilter.regUserNo, gwFilter.uptUserNo, gwFilter.regDt, gwFilter.uptDt)).where(builder)
-        .fetch();
+    return from(gwServiceFilter)
+          .select(new QFilterDTO(
+              gwServiceFilter.filterId,
+              gwServiceFilter.filterNm,
+              gwServiceFilter.filterDesc,
+              gwServiceFilter.filterBean,
+              gwServiceFilter.useYn,
+              gwServiceFilter.regUserNo,
+              gwServiceFilter.uptUserNo,
+              gwServiceFilter.regDt,
+              gwServiceFilter.uptDt))
+          .where(likeNm(searchDTO.getName()))
+          .fetch();
   }
 
   /**
    * 필터 등록 전 중복 서비스 여부 체크
    */
   @Override
-  public boolean checkRegistValidation(FilterDTO param) {
-
-    QGwServiceFilter gwServiceFilter = QGwServiceFilter.gwServiceFilter;
-
-    // 검색 조건문 등록
-    BooleanBuilder builder = new BooleanBuilder();
-
-    // servicePath, serviceNm은 한 가지라도 등록이 되어 있다면 등록이 되지 않아야 한다.
-    if (!StringUtils.isEmpty(param.getFilterBean())) {
-      builder.and(gwServiceFilter.filterBean.eq(param.getFilterBean()));
-    }
-
-    if (!StringUtils.isEmpty(param.getFilterNm())) {
-      builder.and(gwServiceFilter.filterNm.eq(param.getFilterNm()));
-    }
-
-    // filterNm, filterBean은 한 가지라도 등록이 되어 있다면 등록이 되지 않아야 한다.
-    if (!StringUtils.isEmpty(param.getFilterNm()) && !StringUtils.isEmpty(param.getFilterBean())) {
-      builder.and(gwServiceFilter.filterNm.eq(param.getFilterNm())
-          .or(gwServiceFilter.filterBean.eq(param.getFilterBean())));
-    }
+  public boolean isValidData(FilterDTO param) {
 
     // 이미 등록되어 있는 데이터가 있다면 true 없다면 false를 리턴한다.
-    return from(gwServiceFilter).fetchJoin().select().where(builder).fetchCount() > 0 ? true
-        : false;
+    return from(gwServiceFilter)
+          .select()
+          .where(eqFilterNmOrFilterBean(param.getFilterNm(), param.getFilterBean()))
+          .fetchCount() > 0;
   }
 
   /**
@@ -99,23 +79,44 @@ public class GwFilterCustomRepositoryImpl extends QuerydslRepositorySupport
   @Override
   public boolean checkUpdateValidation(FilterDTO param) {
 
-    QGwServiceFilter gwServiceFilter = QGwServiceFilter.gwServiceFilter;
-
-    // 검색 조건문 등록
-    BooleanBuilder builder = new BooleanBuilder();
-
-    // 해당 filterId 이 외의 자료를 체크하기 위한 조건
-    builder.and(gwServiceFilter.filterId.ne(param.getFilterId()));
-
-    // 필터명, 필터빈은 한 가지라도 등록이 되어 있다면 수정이 되지 않아야 한다.
-    if (!StringUtils.isEmpty(param.getFilterBean()) && !StringUtils.isEmpty(param.getFilterNm())) {
-      builder.and(gwServiceFilter.filterNm.eq(param.getFilterNm())
-          .or(gwServiceFilter.filterBean.eq(param.getFilterBean())));
-    }
-
     // 이미 등록되어 있는 데이터가 있다면 false 없다면 true를 리턴한다.
-    return from(gwServiceFilter).fetchJoin().select().where(builder).fetchCount() > 0 ? false
-        : true;
+    return from(gwServiceFilter)
+          .select()
+          .where(eqFilterNmOrFilterBean(param.getFilterNm(), param.getFilterBean()),
+              neFilterId(param.getFilterId()))
+          .fetchCount() <= 0;
   }
 
+  /**
+   * Filter Bean LIKE 검색
+   * @param name
+   * @return
+   */
+  private BooleanExpression likeNm(String name){
+
+    return StringUtils.isEmptyParams(name) ? null : gwServiceFilter.filterNm.contains(name);
+  }
+
+  /**
+   * Filter 중복 체크
+   * @param filterNm
+   * @return
+   */
+  private BooleanExpression eqFilterNmOrFilterBean(String filterNm, String filterBean){
+
+    return StringUtils.isEmptyParams(filterNm, filterBean) ?
+        null : gwServiceFilter.filterNm.eq(filterNm).or(gwServiceFilter.filterBean.eq(filterBean));
+  }
+
+  /**
+   * 현재 Filter ID를 제외한 검색
+   * @param filterId
+   * @return
+   */
+  private BooleanExpression neFilterId(Long filterId){
+
+    return filterId == null ?
+        null : gwServiceFilter.filterId.ne(filterId);
+  }
+  
 }

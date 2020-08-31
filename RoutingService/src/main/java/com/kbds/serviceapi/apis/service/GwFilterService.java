@@ -8,6 +8,7 @@ import com.kbds.serviceapi.apis.querydsl.GwRoutingCustomRepository;
 import com.kbds.serviceapi.apis.repository.GwFilterRepository;
 import com.kbds.serviceapi.apis.repository.GwRoutingRepository;
 import com.kbds.serviceapi.common.code.BizExceptionCode;
+import com.kbds.serviceapi.framework.dto.SearchDTO;
 import com.kbds.serviceapi.framework.exception.BizException;
 import java.util.List;
 import java.util.Optional;
@@ -50,14 +51,14 @@ public class GwFilterService {
   /**
    * 필터 검색 기능
    *
-   * @param params
+   * @param searchDTO
    * @return
    */
-  public List<FilterDTO> findFilters(FilterDTO params) {
+  public List<FilterDTO> findFilters(SearchDTO searchDTO) {
 
     try {
 
-      return gwFilterCustomRepository.findbyConditions(params);
+      return gwFilterCustomRepository.findByConditions(searchDTO);
     } catch (Exception e) {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
@@ -98,9 +99,9 @@ public class GwFilterService {
    */
 
   @Transactional
-  public void registFilter(FilterDTO reqParam) {
+  public void registerFilter(FilterDTO reqParam) {
 
-    if (gwFilterCustomRepository.checkRegistValidation(reqParam)) {
+    if (gwFilterCustomRepository.isValidData(reqParam)) {
 
       throw new BizException(BizExceptionCode.COM003);
     }

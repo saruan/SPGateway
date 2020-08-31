@@ -30,10 +30,9 @@ public enum CommonCode {
   N("N", "아니오"),
   GATEWAY_FILTER_APPLY("apply", "Gateway Filter 메소드명"),
   GATEWAY_REFRESH_SERVICE_NM("Gateway Routes Refresh", "Gateway Routes Refresh"),
+  BLANK("", "공백"),
   TOKEN_PREFIX("Bearer ", "Bearer Token");
 
   private String resultCode;
-
   private String resultMessage;
-
 }

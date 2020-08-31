@@ -1,5 +1,6 @@
 package com.kbds.serviceapi.apis.querydsl;
 
+import com.kbds.serviceapi.framework.dto.SearchDTO;
 import java.util.List;
 import com.kbds.serviceapi.apis.dto.FilterDTO;
 
@@ -24,10 +25,10 @@ public interface GwFilterCustomRepository {
   /**
    * 조건문에 맞는 필터 검색
    * 
-   * @param param
+   * @param searchDTO
    * @return
    */
-  public List<FilterDTO> findbyConditions(FilterDTO param);
+  List<FilterDTO> findByConditions(SearchDTO searchDTO);
 
   /**
    * 필터 등록데이터 중 중복이 불가능한 내용이 DB에 적재 되어 있는지 확인
@@ -35,7 +36,7 @@ public interface GwFilterCustomRepository {
    * @param param
    * @return
    */
-  public boolean checkRegistValidation(FilterDTO param);
+  boolean isValidData(FilterDTO param);
 
   /**
    * 필터 수정데이터 중 중복이 불가능한 내용이 DB에 적재 되어 있는지 확인
@@ -43,6 +44,6 @@ public interface GwFilterCustomRepository {
    * @param param
    * @return
    */
-  public boolean checkUpdateValidation(FilterDTO param);
+  boolean checkUpdateValidation(FilterDTO param);
 
 }

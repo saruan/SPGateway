@@ -1,6 +1,7 @@
 package com.kbds.serviceapi.apis.querydsl;
 
 import com.kbds.serviceapi.apis.dto.RoutingDTO;
+import com.kbds.serviceapi.framework.dto.SearchDTO;
 import java.util.List;
 
 /**
@@ -21,17 +22,17 @@ public interface GwRoutingCustomRepository {
   /**
    * 조건문에 맞는 서비스 검색
    *
-   * @param param
+   * @param searchDTO
    * @return
    */
-  public List<RoutingDTO> findbyConditions(RoutingDTO param);
+  public List<RoutingDTO> findByConditions(SearchDTO searchDTO);
 
   /**
    * G/W Bean 등록용 서비스 조회
    *
    * @return
    */
-  public List<RoutingDTO> findbyGwConditions();
+  public List<RoutingDTO> findByGwConditions();
 
   /**
    * 해당 데이터가 등록이 가능한 데이터인지 검증
@@ -39,7 +40,7 @@ public interface GwRoutingCustomRepository {
    * @param param
    * @return
    */
-  public boolean isRegistService(RoutingDTO param);
+  public boolean isRegisteredService(RoutingDTO param);
 
   /**
    * 해당 데이터가 수정이 가능한 데이터인지 검증
@@ -57,14 +58,5 @@ public interface GwRoutingCustomRepository {
    * @return
    */
   public long deleteService(Long[] serviceId);
-
-
-  /**
-   * 필터 삭제 시 해당 필터를 사용하는 서비스 정보 업데이트
-   *
-   * @param filterId
-   * @return
-   */
-  public long updateServiceByFilter(Long filterId);
 
 }
