@@ -13,6 +13,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,7 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder.Build
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -50,6 +52,7 @@ import reactor.core.publisher.Mono;
 public class RoutingConfiguration {
 
   private final Logger logger = LoggerFactory.getLogger(RoutingConfiguration.class);
+
   private ApplicationContext appContext;
   private CachingRequestBodyFilter cachingRequestBodyFilter;
   private ObjectMapper objectMapper;
@@ -97,14 +100,18 @@ public class RoutingConfiguration {
 
     try {
 
-      routeLocator = registDefaultService(routeLocator);
+      routeLocator = registerDefaultService(routeLocator);
 
       // Routing 관리 서버로부터 API 목록을 가져 온다.
       Mono<ResponseDTO> responseDTO =
-          WebClient.create().get().uri(routeSeverUrl).retrieve().bodyToMono(ResponseDTO.class);
+          WebClient.create()
+              .get()
+              .uri(routeSeverUrl)
+              .header(HttpHeaders.AUTHORIZATION, "Basic YWRtaW46MTIzNA== ")
+              .retrieve().bodyToMono(ResponseDTO.class);
 
       routingDTOList = new ObjectMapper().convertValue(
-          responseDTO.block().getResultData(), new TypeReference<List<RoutingDTO>>() {
+          Objects.requireNonNull(responseDTO.block()).getResultData(), new TypeReference<List<RoutingDTO>>() {
           });
     } catch (Exception e) {
 
@@ -134,7 +141,6 @@ public class RoutingConfiguration {
       } catch (Exception e) {
 
         logger.error(e.toString());
-        continue;
       }
     }
 
@@ -147,7 +153,7 @@ public class RoutingConfiguration {
    * @param routeLocator Routing 관리 객체
    * @return
    */
-  public Builder registDefaultService(
+  public Builder registerDefaultService(
       Builder routeLocator) {
 
     service.forEach((key, value) -> {
@@ -184,7 +190,7 @@ public class RoutingConfiguration {
    * @param targetUrl    Endpoint URL
    * @param hasFilter    Filter 존재 유무
    * @param filter       Filter 값 (없으면 null)
-   * @return
+
    * @throws Exception
    */
   private void registRouterLocator(Builder routeLocator, String servicePath,
@@ -237,9 +243,8 @@ public class RoutingConfiguration {
 
   /**
    * URL Pattern을 정책에 맞게 수정
-   *
+   * @param servicePath
    * @return
-   * @servicePath Routing 정보
    */
   public String getServicePath(String servicePath) {
 

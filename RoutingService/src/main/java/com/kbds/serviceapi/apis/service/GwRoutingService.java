@@ -143,26 +143,14 @@ public class GwRoutingService {
     try {
 
       // DB 상에서 해당 serviceId를 가진 Entity를 불러온다.
-      gwService = gwServiceRepository.findByServiceId(id);
+      gwService = gwServiceRepository.findById(id)
+          .orElseThrow(() -> new BizException(BizExceptionCode.COM004));
 
-    } catch (Exception e) {
+      // 수정하고자 하는 내용 중 중복이 허용되지 않는 데이터가 DB상에 등록되어 있는지 체크한다.
+      if (!gwServiceCustomRepository.isValidUpdateData(reqParam, id)) {
 
-      throw new BizException(BizExceptionCode.COM001, e.toString());
-    }
-
-    // 해당 데이터가 없다면 화면으로 오류 전달
-    if (gwService == null) {
-
-      throw new BizException(BizExceptionCode.COM004);
-    }
-
-    // 수정하고자 하는 내용 중 중복이 허용되지 않는 데이터가 DB상에 등록되어 있는지 체크한다.
-    if (!gwServiceCustomRepository.isValidUpdateData(reqParam, id)) {
-
-      throw new BizException(BizExceptionCode.COM003);
-    }
-
-    try {
+        throw new BizException(BizExceptionCode.COM003);
+      }
 
       GwServiceFilter serviceFilter = new GwServiceFilter();
       serviceFilter.setFilterId(reqParam.getFilterId());
@@ -181,6 +169,9 @@ public class GwRoutingService {
 
       // 수정 이후 게이트웨이에 해당 정보를 갱신해준다.
       CommonUtils.refreshGatewayRoutes(reqParam.getUptUserNo());
+    } catch (BizException e) {
+
+      throw new BizException(BizExceptionCode.valueOf(e.getMsg()), e.toString());
     } catch (Exception e) {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
