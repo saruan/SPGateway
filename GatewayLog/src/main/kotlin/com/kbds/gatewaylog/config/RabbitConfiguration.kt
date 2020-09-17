@@ -54,7 +54,7 @@ open class RabbitConfiguration {
                             messageConverter: MessageConverter): RabbitTemplate {
 
         val rabbitTemplate = RabbitTemplate(connectionFactory)
-        rabbitTemplate.setMessageConverter(messageConverter)
+        rabbitTemplate.messageConverter = messageConverter
         rabbitTemplate.setExchange(EXCHANGE_NM)
 
         return rabbitTemplate

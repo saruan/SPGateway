@@ -1,6 +1,7 @@
 package com.kbds.serviceapi.apis.dto;
 
 import java.util.Date;
+import java.util.List;
 import javax.validation.constraints.NotEmpty;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -41,7 +42,7 @@ public class RoutingDTO {
   @NotEmpty
   private String serviceNm;
 
-  private String appKeys;
+  private List<String> appKeys;
 
   @NotEmpty
   private String servicePath;
@@ -72,7 +73,7 @@ public class RoutingDTO {
   private Date uptDt;
 
   @QueryProjection
-  public RoutingDTO(Long serviceId, Long filterId, @NotEmpty String serviceNm, String appKeys,
+  public RoutingDTO(Long serviceId, Long filterId, @NotEmpty String serviceNm, List<String> appKeys,
       @NotEmpty String servicePath, @NotEmpty String serviceTargetUrl, String serviceDesc,
       @NotEmpty String serviceLoginType, @NotEmpty String serviceAuthType, String useYn,
       String filterBean, String filterUseYn, String regUserNo, String uptUserNo, Date regDt,

@@ -3,7 +3,7 @@ package com.kbds.serviceapi.apis.service;
 import com.kbds.serviceapi.apis.dto.AppDTO;
 import com.kbds.serviceapi.apis.dto.EmptyDataDTO;
 import com.kbds.serviceapi.apis.entity.GwApp;
-import com.kbds.serviceapi.apis.querydsl.GwAppCustomRepository;
+import com.kbds.serviceapi.apis.repository.querydsl.GwAppCustomRepository;
 import com.kbds.serviceapi.apis.repository.GwAppRepository;
 import com.kbds.serviceapi.apis.repository.GwRoutingRepository;
 import com.kbds.serviceapi.apis.repository.GwServiceAppMappingRepository;
@@ -178,7 +178,6 @@ public class GwAppService {
       // GwApp 테이블에 정보 수정
       GwApp gwApp = gwAppRepository.findByAppId(appId);
 
-      gwApp.setAppKey(reqParam.getAppKey());
       gwApp.setAppDesc(reqParam.getAppDesc());
       gwApp.setAppNm(reqParam.getAppNm());
       gwApp.setUptUserNo(reqParam.getUptUserNo());

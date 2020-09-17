@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 
 import com.kbds.serviceapi.apis.dto.FilterDTO;
 import com.kbds.serviceapi.apis.entity.GwServiceFilter;
-import com.kbds.serviceapi.apis.querydsl.GwFilterCustomRepository;
+import com.kbds.serviceapi.apis.repository.querydsl.GwFilterCustomRepository;
 import com.kbds.serviceapi.apis.repository.GwFilterRepository;
 import com.kbds.serviceapi.apis.service.GwFilterService;
 import com.kbds.serviceapi.common.code.BizExceptionCode;

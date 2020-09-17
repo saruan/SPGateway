@@ -26,7 +26,6 @@ public class GwFilterController {
   @Autowired
   GwFilterService gwFilterService;
 
-
   /**
    * 전체 Filter 서비스 목록 조회 API
    *
@@ -67,7 +66,7 @@ public class GwFilterController {
 
     Object result = CommonUtils.getResponseEntity(true);
 
-    return new ResponseEntity<>(result, HttpStatus.OK);
+    return new ResponseEntity<>(result, HttpStatus.CREATED);
   }
 
   /**
@@ -80,9 +79,9 @@ public class GwFilterController {
   public ResponseEntity<Object> updateFilter(@RequestBody @Valid FilterDTO params,
       @PathVariable Long id) {
 
-    GwServiceFilter updateData = gwFilterService.updateFilter(params, id);
+    gwFilterService.updateFilter(params, id);
 
-    Object result = CommonUtils.getResponseEntity(updateData);
+    Object result = CommonUtils.getResponseEntity(true);
 
     return new ResponseEntity<>(result, HttpStatus.OK);
   }

@@ -6,8 +6,6 @@ import com.kbds.gateway.dto.RoutingDTO;
 import com.kbds.gateway.exception.GatewayException;
 import com.kbds.gateway.utils.StringUtils;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -26,23 +24,15 @@ import org.springframework.stereotype.Service;
  * -------------------------------------------------------------------------------
  *     변경No        변경일자        	       변경자          Description
  * -------------------------------------------------------------------------------
- *     Ver 1.0      2020-04-20     구경태          Initialized
+ *     Ver 1.0      2020-04-20             구경태          Initialized
  * -------------------------------------------------------------------------------
  * </pre>
  */
 @Service("TokenFilter")
 public class TokenFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
-  // 로그용 변수
-  Logger logger = LoggerFactory.getLogger(TokenFilter.class);
-
   @Value("${oauth.client-id}")
   String oAuthKey;
-
-  private final String CONST_REFRESH_TOKEN_TYPE = "refresh_token";
-  private final String CONST_PASSWORD_TYPE = "password";
-  private final String CONST_GRANT_TYPE = "grant_type";
-  private final String CONST_SAML = "saml";
 
   @Override
   public GatewayFilter apply(RoutingDTO routingDTO) {
@@ -81,8 +71,14 @@ public class TokenFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
     Map<String, String> queryParam = StringUtils.queryToMap(buffer);
 
+    String CONST_PASSWORD_TYPE = "password";
+    String CONST_SAML = "saml";
+    String CONST_REFRESH_TOKEN_TYPE = "refresh_token";
+    String CONST_GRANT_TYPE = "grant_type";
+
     // Params 체크
-    if (queryParam == null || !queryParam.containsKey(CONST_GRANT_TYPE)) {
+
+    if (!queryParam.containsKey(CONST_GRANT_TYPE)) {
 
       throw new GatewayException(GatewayExceptionCode.GWE002, HttpStatus.UNAUTHORIZED);
     }

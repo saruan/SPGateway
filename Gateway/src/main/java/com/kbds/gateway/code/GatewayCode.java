@@ -37,6 +37,6 @@ public enum GatewayCode {
 
   DUMMY("", "");
 
-  private String code;
-  private String desc;
+  private final String code;
+  private final String desc;
 }

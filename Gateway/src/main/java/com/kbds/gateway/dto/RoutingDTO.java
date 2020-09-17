@@ -3,6 +3,7 @@ package com.kbds.gateway.dto;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -38,7 +39,7 @@ public class RoutingDTO {
 
   private String serviceNm;
 
-  private String appKeys;
+  private List<String> appKeys;
 
   private String servicePath;
 

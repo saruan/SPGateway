@@ -26,10 +26,9 @@ public interface GatewayClient {
    * Gateway Routing Refresh 서비스 호출
    *
    * @param headers Spring Cloud Config Bus API를 활용하기 위한 인증 헤더 정보
-   * @return
    */
   @Async
   @PostMapping(value = "${services.bus.refresh}")
-  public Map<String, Object> callRefreshGateway(@RequestHeader Map<String, String> headers);
+  void callRefreshGateway(@RequestHeader Map<String, String> headers);
 
 }

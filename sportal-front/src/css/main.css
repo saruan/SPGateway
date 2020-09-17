@@ -1,0 +1,10 @@
+.api_main_type1 {
+  height: 10vh;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.contents_main_type1 {
+  height: 80vh;
+  margin: 2em;
+}

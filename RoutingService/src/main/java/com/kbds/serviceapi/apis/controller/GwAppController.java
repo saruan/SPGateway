@@ -94,7 +94,7 @@ public class GwAppController {
 
     Object result = CommonUtils.getResponseEntity(true);
 
-    return new ResponseEntity<>(result, HttpStatus.CREATED);
+    return new ResponseEntity<>(result, HttpStatus.OK);
   }
 
   /**
@@ -110,6 +110,6 @@ public class GwAppController {
 
     Object result = CommonUtils.getResponseEntity(true);
 
-    return new ResponseEntity<>(result, HttpStatus.CREATED);
+    return new ResponseEntity<>(result, HttpStatus.OK);
   }
 }

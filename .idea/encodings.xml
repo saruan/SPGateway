@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/AuthService/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Gateway/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/GatewayConfig/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/GatewayConfig/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/GatewayLog/src/main/kotlin" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RoutingService/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/RoutingService/target/generated-sources/java" charset="UTF-8" />
+  </component>
+</project>

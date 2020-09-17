@@ -32,10 +32,8 @@ import org.springframework.stereotype.Component;
 public class CommonUtils {
 
   // 로그용 변수
-  private static Logger logger = LoggerFactory.getLogger(CommonUtils.class);
-
+  private static final Logger logger = LoggerFactory.getLogger(CommonUtils.class);
   private static String secretKey;
-
   private static GatewayClient gatewayClient;
 
   @Value("${jwt.secret-key}")
@@ -46,6 +44,7 @@ public class CommonUtils {
 
   @Autowired
   private void setGatewayClient(GatewayClient gatewayClient) {
+
     CommonUtils.gatewayClient = gatewayClient;
   }
 
@@ -59,8 +58,8 @@ public class CommonUtils {
 
     ResponseDTO responseDTO = new ResponseDTO();
 
-    responseDTO.setResultCode(CommonCode.SUCCESS.getResultCode());
-    responseDTO.setResultMessage(CommonCode.SUCCESS.getResultMessage());
+    responseDTO.setResultCode(CommonCode.SUCCESS.getCode());
+    responseDTO.setResultMessage(CommonCode.SUCCESS.getMessage());
     responseDTO.setResultData(params);
 
     return responseDTO;
@@ -86,7 +85,7 @@ public class CommonUtils {
 
     } catch (Exception e) {
 
-      CommonUtils.setCommonLog(CommonCode.GATEWAY_REFRESH_SERVICE_NM.getResultCode(), regUserNo);
+      CommonUtils.setCommonLog(CommonCode.GATEWAY_REFRESH_SERVICE_NM.getCode(), regUserNo);
       logger.error(e.toString());
     }
 

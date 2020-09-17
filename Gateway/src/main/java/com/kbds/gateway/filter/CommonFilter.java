@@ -109,15 +109,8 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
   public boolean isValidAppKey(RoutingDTO routingDTO, String appKey) {
 
     // Header에 있는 AppKey와 해당 Routing URL이 가지고 있는 Appkey 목록과 비교한다.
-    if (!StringUtils.isEmptyParams(routingDTO.getAppKeys())) {
 
-      List<String> appKeys = Arrays
-          .asList(routingDTO.getAppKeys().split(GatewayCode.APP_KEY_PREFIX.getCode()));
-
-      return !StringUtils.isEmptyParams(appKey) && appKeys.contains(appKey);
-    }
-
-    return false;
+    return routingDTO.getAppKeys().size() > 0 && routingDTO.getAppKeys().contains(appKey);
   }
 
   /**

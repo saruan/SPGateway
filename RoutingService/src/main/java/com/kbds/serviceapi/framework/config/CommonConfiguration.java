@@ -1,5 +1,8 @@
 package com.kbds.serviceapi.framework.config;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
@@ -8,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.validation.beanvalidation.SpringConstraintValidatorFactory;
 
 /**
@@ -20,18 +24,23 @@ import org.springframework.validation.beanvalidation.SpringConstraintValidatorFa
  * -------------------------------------------------------------------------------
  *     변경No        변경일자        	       변경자          Description
  * -------------------------------------------------------------------------------
- *     Ver 1.0      2020-05-26    	   구경태          Initialized
+ *     Ver 1.0      2020-05-26    	       구경태          Initialized
  * -------------------------------------------------------------------------------
  * </pre>
  *
  */
 @Configuration
+@EnableJpaAuditing
 public class CommonConfiguration {
+
+  @PersistenceContext
+  private EntityManager entityManager;
+
 
   /**
    * 데이터 형변환을 위한 ModelMapper 등록
    * 
-   * @return
+   * @return  ModelMapper
    */
   @Bean
   public ModelMapper modelMapper() {
@@ -40,10 +49,10 @@ public class CommonConfiguration {
   }
 
   /**
-   * 유효성 체크를 위한 Validation 빈 등록
+   * 유효성 체크를 위한 Validation Bean 등록
    * 
    * @param autowireCapableBeanFactory
-   * @return
+   * @return  Validator
    */
   @Bean
   Validator validator(AutowireCapableBeanFactory autowireCapableBeanFactory) {
@@ -54,5 +63,16 @@ public class CommonConfiguration {
         .buildValidatorFactory();
 
     return validatorFactory.getValidator();
+  }
+
+  /**
+   * QueryDSL Bean 등록
+   *
+   * @return  JPAQueryFactory
+   */
+  @Bean
+  public JPAQueryFactory jpaQueryFactory() {
+
+    return new JPAQueryFactory(entityManager);
   }
 }

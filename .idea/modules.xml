@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/AuthService/AuthService.iml" filepath="$PROJECT_DIR$/AuthService/AuthService.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Gateway/Gateway.iml" filepath="$PROJECT_DIR$/Gateway/Gateway.iml" />
+      <module fileurl="file://$PROJECT_DIR$/GatewayConfig/GatewayConfig.iml" filepath="$PROJECT_DIR$/GatewayConfig/GatewayConfig.iml" />
+      <module fileurl="file://$PROJECT_DIR$/GatewayLog/GatewayLog.iml" filepath="$PROJECT_DIR$/GatewayLog/GatewayLog.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RoutingService/RoutingService.iml" filepath="$PROJECT_DIR$/RoutingService/RoutingService.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/SPGateway.iml" filepath="$PROJECT_DIR$/.idea/SPGateway.iml" />
+    </modules>
+  </component>
+</project>

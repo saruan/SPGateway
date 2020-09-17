@@ -3,8 +3,8 @@ package com.kbds.serviceapi.apis.service;
 import com.kbds.serviceapi.apis.dto.EmptyDataDTO;
 import com.kbds.serviceapi.apis.dto.FilterDTO;
 import com.kbds.serviceapi.apis.entity.GwServiceFilter;
-import com.kbds.serviceapi.apis.querydsl.GwFilterCustomRepository;
-import com.kbds.serviceapi.apis.querydsl.GwRoutingCustomRepository;
+import com.kbds.serviceapi.apis.repository.querydsl.GwFilterCustomRepository;
+import com.kbds.serviceapi.apis.repository.querydsl.GwRoutingCustomRepository;
 import com.kbds.serviceapi.apis.repository.GwFilterRepository;
 import com.kbds.serviceapi.apis.repository.GwRoutingRepository;
 import com.kbds.serviceapi.common.code.BizExceptionCode;
@@ -126,7 +126,7 @@ public class GwFilterService {
    * @return
    */
   @Transactional
-  public GwServiceFilter updateFilter(FilterDTO reqParam, Long filterId) {
+  public void updateFilter(FilterDTO reqParam, Long filterId) {
 
     GwServiceFilter gwServiceFilter;
 
@@ -159,9 +159,7 @@ public class GwFilterService {
       gwServiceFilter.setFilterBean(reqParam.getFilterBean());
       gwServiceFilter.setUptUserNo(reqParam.getUptUserNo());
 
-      GwServiceFilter result = gwFilterRepository.save(gwServiceFilter);
-
-      return result;
+      gwFilterRepository.save(gwServiceFilter);
     } catch (BizException e) {
 
       throw new BizException(BizExceptionCode.valueOf(e.getMessage()));

@@ -14,7 +14,7 @@ import lombok.Getter;
  * -------------------------------------------------------------------------------
  *     변경No        변경일자        	       변경자          Description
  * -------------------------------------------------------------------------------
- *     Ver 1.0      2020-04-16     구경태          Initialized
+ *     Ver 1.0      2020-04-16             구경태          Initialized
  * -------------------------------------------------------------------------------
  * </pre>
  *
@@ -29,6 +29,6 @@ public enum SystemExceptionCode {
 
   DUMMY("", "");
 
-  private String code;
-  private String msg;
+  private final String code;
+  private final String msg;
 }

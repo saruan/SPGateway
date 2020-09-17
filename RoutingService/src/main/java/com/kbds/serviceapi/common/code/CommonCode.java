@@ -33,6 +33,6 @@ public enum CommonCode {
   BLANK("", "공백"),
   TOKEN_PREFIX("Bearer ", "Bearer Token");
 
-  private String resultCode;
-  private String resultMessage;
+  private final String code;
+  private final String message;
 }

@@ -45,7 +45,6 @@ public class LoggingFilter implements GlobalFilter, Ordered {
 
     String startTime = DateUtils.getCurrentTime();
 
-    // POST 필터 호출 시 Kafka를 통해 서비스 로그 전송
     return chain.filter(exchange.mutate().response(logResponse(exchange, startTime)).build());
   }
 
@@ -73,31 +72,30 @@ public class LoggingFilter implements GlobalFilter, Ordered {
 
         String endTime = DateUtils.getCurrentTime();
         String headerInfo = exchange.getRequest().getHeaders().toSingleValueMap().toString();
-        String appKey = exchange.getRequest().getHeaders()
-            .getFirst(GatewayCode.API_KEY.getCode());
+        String appKey = exchange.getRequest().getHeaders().getFirst(GatewayCode.API_KEY.getCode());
         String servicePath = exchange.getRequest().getURI().getPath();
 
         Flux<? extends DataBuffer> fluxBody = (Flux<? extends DataBuffer>) body;
         return super.writeWith(fluxBody.map(dataBuffer -> {
 
-          // Body Content를 읽어온다.
+          // Response Body 추출
           byte[] content = new byte[dataBuffer.readableByteCount()];
           dataBuffer.read(content);
           String responseBody = new String(content, StandardCharsets.UTF_8);
 
-          // Body 추출 이후 임시 저장
+          // Request Body 추출
           Object attribute = exchange.getAttribute(GatewayCode.CACHE_REQUEST_BODY.getCode());
-          StringBuilder requestBody = new StringBuilder();
+          String requestBody = "";
 
           if (attribute instanceof DataBuffer) {
 
             DataBuffer buffer = (DataBuffer) attribute;
-            requestBody.append(StandardCharsets.UTF_8.decode(buffer.asByteBuffer()).toString());
+            requestBody = StandardCharsets.UTF_8.decode(buffer.asByteBuffer()).toString();
           }
 
           // 큐에 서비스 로그 전송
           ServiceLogDTO serviceLog =
-              new ServiceLogDTO(headerInfo, requestBody.toString(), responseBody,
+              new ServiceLogDTO(headerInfo, requestBody, responseBody,
                   appKey == null ? "" : appKey, servicePath, CLIENT_NAME, startTime, endTime);
           rabbitTemplate
               .convertAndSend(GatewayCode.MQ_ROUTING_KEY.getCode(), serviceLog);

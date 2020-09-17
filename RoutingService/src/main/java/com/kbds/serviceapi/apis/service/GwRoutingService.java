@@ -4,7 +4,7 @@ import com.kbds.serviceapi.apis.dto.EmptyDataDTO;
 import com.kbds.serviceapi.apis.dto.RoutingDTO;
 import com.kbds.serviceapi.apis.entity.GwService;
 import com.kbds.serviceapi.apis.entity.GwServiceFilter;
-import com.kbds.serviceapi.apis.querydsl.GwRoutingCustomRepository;
+import com.kbds.serviceapi.apis.repository.querydsl.GwRoutingCustomRepository;
 import com.kbds.serviceapi.apis.repository.GwFilterRepository;
 import com.kbds.serviceapi.apis.repository.GwRoutingRepository;
 import com.kbds.serviceapi.common.code.BizExceptionCode;
@@ -51,6 +51,7 @@ public class GwRoutingService {
    *
    * @return
    */
+  @Transactional
   public List<RoutingDTO> findGwServices() {
 
     try {
@@ -109,7 +110,7 @@ public class GwRoutingService {
    *
    * @param reqParam
    */
-  public GwService registerService(RoutingDTO reqParam) {
+  public void registerService(RoutingDTO reqParam) {
 
     if (gwServiceCustomRepository.isRegisteredService(reqParam)) {
 
@@ -118,12 +119,10 @@ public class GwRoutingService {
 
     try {
 
-      GwService result = gwServiceRepository.save(modelMapper.map(reqParam, GwService.class));
+      gwServiceRepository.save(modelMapper.map(reqParam, GwService.class));
 
       // 등록 이후 게이트웨이에 해당 정보를 갱신해준다.
       CommonUtils.refreshGatewayRoutes(reqParam.getRegUserNo());
-
-      return result;
     } catch (Exception e) {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
@@ -143,8 +142,13 @@ public class GwRoutingService {
     try {
 
       // DB 상에서 해당 serviceId를 가진 Entity를 불러온다.
-      gwService = gwServiceRepository.findById(id)
-          .orElseThrow(() -> new BizException(BizExceptionCode.COM004));
+      gwService = gwServiceRepository.findByServiceId(id);
+
+      // 해당 데이터가 없다면 화면으로 오류 전달
+      if (gwService == null) {
+
+        throw new BizException(BizExceptionCode.COM004);
+      }
 
       // 수정하고자 하는 내용 중 중복이 허용되지 않는 데이터가 DB상에 등록되어 있는지 체크한다.
       if (!gwServiceCustomRepository.isValidUpdateData(reqParam, id)) {
@@ -171,7 +175,7 @@ public class GwRoutingService {
       CommonUtils.refreshGatewayRoutes(reqParam.getUptUserNo());
     } catch (BizException e) {
 
-      throw new BizException(BizExceptionCode.valueOf(e.getMsg()), e.toString());
+      throw new BizException(BizExceptionCode.valueOf(e.getMessage()), e.toString());
     } catch (Exception e) {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());

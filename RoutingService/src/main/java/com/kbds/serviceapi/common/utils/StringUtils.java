@@ -20,7 +20,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
   /**
    * Null/공백 체크를 하여야 한는 가변 파라미터 체크
    *
-   * @return
+   * @return  NULL 체크 여부
    */
   public static boolean isEmptyParams(String... params) {
 
@@ -37,7 +37,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
   /**
    * App-key 생성
    *
-   * @return
+   * @return  생성된 APPKEY
    */
   public static String generateAppKey() {
 

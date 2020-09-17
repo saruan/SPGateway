@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 
 import com.kbds.serviceapi.apis.dto.RoutingDTO;
 import com.kbds.serviceapi.apis.entity.GwService;
-import com.kbds.serviceapi.apis.querydsl.GwRoutingCustomRepository;
+import com.kbds.serviceapi.apis.repository.querydsl.GwRoutingCustomRepository;
 import com.kbds.serviceapi.apis.repository.GwRoutingRepository;
 import com.kbds.serviceapi.apis.service.GwRoutingService;
 import com.kbds.serviceapi.common.code.BizExceptionCode;

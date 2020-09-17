@@ -2,19 +2,16 @@ package com.kbds.serviceapi.api.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 import com.kbds.serviceapi.apis.dto.AppDTO;
 import com.kbds.serviceapi.apis.entity.GwApp;
-import com.kbds.serviceapi.apis.entity.GwServiceAppMapping;
-import com.kbds.serviceapi.apis.entity.key.GwServiceAppMappingKey;
-import com.kbds.serviceapi.apis.querydsl.GwAppCustomRepository;
-import com.kbds.serviceapi.apis.querydsl.GwRoutingCustomRepository;
 import com.kbds.serviceapi.apis.repository.GwAppRepository;
-import com.kbds.serviceapi.apis.repository.GwRoutingRepository;
-import com.kbds.serviceapi.apis.repository.GwServiceAppMappingRepository;
+import com.kbds.serviceapi.apis.repository.querydsl.GwAppCustomRepository;
 import com.kbds.serviceapi.apis.service.GwAppService;
+import com.kbds.serviceapi.apis.service.GwServiceAppMappingService;
 import com.kbds.serviceapi.common.code.BizExceptionCode;
 import com.kbds.serviceapi.common.utils.CommonUtils;
 import com.kbds.serviceapi.framework.dto.SearchDTO;
@@ -59,16 +56,7 @@ public class AppServiceTest {
   GwAppCustomRepository gwAppCustomRepository;
 
   @Mock
-  GwRoutingRepository gwRoutingRepository;
-
-  @Mock
-  GwRoutingCustomRepository gwRoutingCustomRepository;
-
-  @Mock
-  GwServiceAppMappingRepository gwServiceAppMappingRepository;
-
-  @Mock
-  CommonUtils commonUtils;
+  GwServiceAppMappingService gwServiceAppMappingService;
 
   @Spy
   @InjectMocks
@@ -128,18 +116,7 @@ public class AppServiceTest {
     when(gwAppService.setGwAppWithAppKey(registAppDTO)).thenReturn(gwApp);
     when(gwAppRepository.save(gwApp)).thenReturn(gwApp);
 
-    // Mapping 테이블에 데이터 등록
-    List<GwServiceAppMapping> params = new ArrayList<GwServiceAppMapping>();
-
-    for (int i = 0; i < serviceIdList.size(); i++) {
-
-      GwServiceAppMappingKey key = new GwServiceAppMappingKey(serviceIdList.get(i), appId);
-      GwServiceAppMapping param = new GwServiceAppMapping(key);
-
-      params.add(param);
-    }
-
-    when(gwServiceAppMappingRepository.saveAll(params)).thenReturn(params);
+    doNothing().when(gwServiceAppMappingService).registerServiceAppMapping(registAppDTO, appId);
 
     gwAppService.registerApp(registAppDTO);
   }
@@ -183,21 +160,7 @@ public class AppServiceTest {
     when(gwAppRepository.findByAppId(appId)).thenReturn(gwApp);
     when(gwAppRepository.save(gwApp)).thenReturn(gwApp);
 
-    // Mapping 테이블에 데이터 등록
-    List<GwServiceAppMapping> params = new ArrayList<GwServiceAppMapping>();
-
-    when(gwServiceAppMappingRepository.
-        deleteByIdAppIdAndIdServiceIdNotIn(appId, serviceIdList)).thenReturn(1L);
-
-    for (int i = 0; i < serviceIdList.size(); i++) {
-
-      GwServiceAppMappingKey key = new GwServiceAppMappingKey(serviceIdList.get(i), appId);
-      GwServiceAppMapping param = new GwServiceAppMapping(key);
-
-      params.add(param);
-    }
-
-    when(gwServiceAppMappingRepository.saveAll(params)).thenReturn(params);
+    doNothing().when(gwServiceAppMappingService).registerServiceAppMapping(updateAppDTO, appId);
 
     gwAppService.updateApp(updateAppDTO, appId);
   }
