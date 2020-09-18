@@ -33,7 +33,7 @@ public enum AuthCode {
   ROLE_ADMIN("ROLE_ADMIN", "관리자 권한"),
 
   // PARAMETER 정보
-  PARAMTER_SAML("saml", "SAML 파라미터 규격"),
+  PARAMTER_JWT("jwt", "JWT 파라미터 규격"),
 
   DUMMY("", "");
 

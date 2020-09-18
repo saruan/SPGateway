@@ -38,6 +38,7 @@ public class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter {
     http
         .authorizeRequests()
         .antMatchers("/docs/**").permitAll()
+        .antMatchers("/api/service/**").permitAll()
         .anyRequest().access("@roleService.hasAuthority(request, authentication)")
         .and()
           .csrf()

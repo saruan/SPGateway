@@ -25,7 +25,7 @@ public enum GatewayExceptionCode {
   GWE002("GWE002", "Invalid Parameters."),
   GWE003("GWE003", "Gateway 기본 Routing 주소 등록 중 오류 발생"),
 
-  SAM001("SAM001", "Invalid SAML."),
+  JWT001("JWT001", "Invalid JWT Token."),
 
   TOK001("TOK001", "AccessToken 만료"),
   TOK002("TOK002", "AccessToken가 유효하지 않습니다."),

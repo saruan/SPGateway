@@ -18,27 +18,40 @@ import org.springframework.web.bind.annotation.RestController;
  * -------------------------------------------------------------------------------
  *     변경No        변경일자        	       변경자          Description
  * -------------------------------------------------------------------------------
- *     Ver 1.0      2020-05-04     구경태          Initialized
+ *     Ver 1.0      2020-05-04             구경태          Initialized
  * -------------------------------------------------------------------------------
  * </pre>
  */
 @RestController
-@RequestMapping("/auth/")
+@RequestMapping("/auth")
 public class GatewayClusterController {
 
   @Autowired
   GatewayClusterService gwClusterService;
 
   /**
-   * SAML 생성 API
+   * JWT Token 생성 API
    *
-   * @return
+   * @return  생성된 JWT Token
    */
-  @GetMapping(value = "v1.0/oauth/saml")
-  public ResponseEntity<Object> generateSAML() {
+  @GetMapping(value = "/v1.0/oauth/jwt")
+  public ResponseEntity<Object> generateJWT() {
 
-    Object result = CommonUtils.getResponseEntity(gwClusterService.generateSAML());
+    Object result = CommonUtils.getResponseEntity(gwClusterService.generateJWT());
 
-    return new ResponseEntity<Object>(result, HttpStatus.OK);
+    return new ResponseEntity<>(result, HttpStatus.OK);
+  }
+
+  /**
+   * G/W 클러스터 목록 조회
+   *
+   * @return  등록된 G/W 클러스터 목록
+   */
+  @GetMapping(value = "/v1.0/jwt/cluster")
+  public ResponseEntity<Object> selectAllClusters() {
+
+    Object result = CommonUtils.getResponseEntity(gwClusterService.selectAllClusters());
+
+    return new ResponseEntity<>(result, HttpStatus.OK);
   }
 }

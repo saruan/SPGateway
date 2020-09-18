@@ -71,9 +71,9 @@ public class RoutingConfiguration {
   /**
    * Constructor Injection
    *
-   * @param appContext
-   * @param cachingRequestBodyFilter
-   * @param objectMapper
+   * @param appContext  스프링 context
+   * @param cachingRequestBodyFilter  캐싱 Body 데이터
+   * @param objectMapper  ObjectMapper 객체
    */
   @Autowired
   RoutingConfiguration(ApplicationContext appContext,
@@ -88,8 +88,8 @@ public class RoutingConfiguration {
   /**
    * Routing 정보를 조회 한 후 필터와 함께 GATEWAY에 등록 하는 메소드
    *
-   * @param builder
-   * @return
+   * @param builder Router 객체
+   * @return  Router 정보
    */
   @Bean
   @RefreshScope
@@ -122,12 +122,6 @@ public class RoutingConfiguration {
     // 실제 Routing 서비스, 필터 들을 등록 한다.
     for (RoutingDTO routingDTO : routingDTOList) {
 
-      if (StringUtils.isEmptyParams(routingDTO.getServicePath(),
-          routingDTO.getServiceTargetUrl())) {
-
-        continue;
-      }
-
       try {
 
         final boolean hasFilter = !StringUtils.isEmptyParams(routingDTO.getFilterBean());
@@ -151,7 +145,7 @@ public class RoutingConfiguration {
    * Gateway 시스템 기본 필수 Routing 정보 등록
    *
    * @param routeLocator Routing 관리 객체
-   * @return
+   * @return  Builder
    */
   public Builder registerDefaultService(
       Builder routeLocator) {
@@ -161,8 +155,7 @@ public class RoutingConfiguration {
       try {
 
         Map<String, String> defaultPath = objectMapper
-            .convertValue(value, new TypeReference<Map<String, String>>() {
-            });
+            .convertValue(value, new TypeReference<Map<String, String>>() {});
 
         final boolean hasFilter = defaultPath.containsKey(FILTER);
         final String servicePath = defaultPath.get(PATH);
@@ -191,7 +184,7 @@ public class RoutingConfiguration {
    * @param hasFilter    Filter 존재 유무
    * @param filter       Filter 값 (없으면 null)
 
-   * @throws Exception
+   * @throws Exception Exception 오류
    */
   private void registRouterLocator(Builder routeLocator, String servicePath,
       String targetPath, String targetUrl, boolean hasFilter, String filter, RoutingDTO routingDTO)
@@ -215,7 +208,7 @@ public class RoutingConfiguration {
 
     } else {
 
-      routeLocator.route(r -> r.path(servicePath)
+      routeLocator.route(r -> r.path(getServicePath(servicePath))
           .filters(f -> f.rewritePath(
               String.format("%s(?<segment>.*)", servicePath),
               String.format("%s${segment}", targetPath)))
@@ -228,8 +221,8 @@ public class RoutingConfiguration {
    *
    * @param filterNm 필터명
    * @param params   Routing 정보
-   * @return
-   * @throws Exception
+   * @return  GatewayFilter 객체
+   * @throws Exception  오류
    */
   private GatewayFilter getFilterSpec(String filterNm, RoutingDTO params) throws Exception {
 
@@ -243,8 +236,8 @@ public class RoutingConfiguration {
 
   /**
    * URL Pattern을 정책에 맞게 수정
-   * @param servicePath
-   * @return
+   * @param servicePath G/W Router Path
+   * @return  최종 Fix Router Path
    */
   public String getServicePath(String servicePath) {
 

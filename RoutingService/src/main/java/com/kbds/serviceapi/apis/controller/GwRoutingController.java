@@ -43,9 +43,9 @@ public class GwRoutingController {
   /**
    * 전체 Routing 서비스 목록 조회 API
    * 
-   * @return
+   * @return  서비스 조회 결과
    */
-  @GetMapping(value = "/v1/routes/")
+  @GetMapping(value = "/v1/routes")
   public ResponseEntity<Object> findServices(@ModelAttribute SearchDTO searchDTO) {
 
     Object result = CommonUtils.getResponseEntity(gwRoutingService.findServices(searchDTO));
@@ -56,9 +56,9 @@ public class GwRoutingController {
   /**
    * G/W Routing Bean으로 등록할 정보들 조회 API
    * 
-   * @return
+   * @return Gateway에 등록할 라우팅 목록
    */
-  @GetMapping(value = "/v1/routes/gateway/")
+  @GetMapping(value = "/v1/routes/gateway")
   public ResponseEntity<Object> findGwServices() {
 
     Object result = CommonUtils.getResponseEntity(gwRoutingService.findGwServices());
@@ -70,7 +70,7 @@ public class GwRoutingController {
   /**
    * Routing 특정 서비스 조회 API
    * 
-   * @return
+   * @return  서비스 상세 데이터
    */
   @GetMapping(value = "/v1/routes/{id}")
   public ResponseEntity<Object> findServiceDetail(@PathVariable Long id) {
@@ -83,8 +83,8 @@ public class GwRoutingController {
   /**
    * 신규 Routing 서비스 등록
    * 
-   * @param params
-   * @return
+   * @param params  등록 파라미터
+   * @return  등록 결과
    */
   @PostMapping(value = "/v1/routes")
   public ResponseEntity<Object> registerService(@RequestBody @Valid RoutingDTO params) {
@@ -99,8 +99,8 @@ public class GwRoutingController {
   /**
    * Routing 서비스 수정
    * 
-   * @param params
-   * @return
+   * @param params  수정 파라미터
+   * @return  수정 결과
    */
   @PutMapping(value = "/v1/routes/{id}")
   public ResponseEntity<Object> updateService(@PathVariable Long id,
@@ -116,8 +116,8 @@ public class GwRoutingController {
   /**
    * Routing 서비스 삭제
    * 
-   * @param id
-   * @return
+   * @param id  삭제할 ID
+   * @return  삭제 결과
    */
   @DeleteMapping(value = "/v1/routes/{id}")
   public ResponseEntity<Object> deleteService(@PathVariable Long[] id) {

@@ -22,12 +22,8 @@ public class ResponseDTO {
 
   // 결과 코드
   private String resultCode;
-
   // 결과 메시지
   private String resultMessage;
-
   // 결과 데이터
   private Object resultData;
-
-
 }

@@ -4,14 +4,18 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kbds.auth.code.AuthCode;
 import com.kbds.auth.code.BizExceptionCode;
+import com.kbds.auth.dto.GatewayClusterDTO;
 import com.kbds.auth.entity.GatewayCluster;
 import com.kbds.auth.exception.CustomOAuthException;
 import com.kbds.auth.repository.GatewayClusterRepository;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,16 +38,19 @@ public class GatewayClusterService {
   @Autowired
   private GatewayClusterRepository gatewayClusterRespository;
 
+  @Autowired
+  ModelMapper modelMapper;
+
   /**
-   * 현재 Gateway에서 인증된 사용자에게 SAML발급을 위해 생성
+   * 현재 Gateway에서 인증된 사용자에게 JWT 발급을 위해 생성
    *
-   * @return
+   * @return  생성된 JWT 키값
    */
-  public String generateSAML() {
+  public String generateJWT() {
 
     try {
 
-      GatewayCluster gatewayCluster = gatewayClusterRespository.findByMainYn(AuthCode.Y.getCode());
+      GatewayCluster gatewayCluster = gatewayClusterRespository.findByMainYn(AuthCode.Y.name());
 
       Algorithm algorithm = Algorithm.HMAC256(gatewayCluster.getSecretKey());
 
@@ -52,7 +59,7 @@ public class GatewayClusterService {
           .withClaim("Key", UUID.randomUUID().toString()).sign(algorithm);
     } catch (JWTCreationException e) {
 
-      throw new CustomOAuthException(BizExceptionCode.SAML001, e.toString());
+      throw new CustomOAuthException(BizExceptionCode.JWT001, e.toString());
     } catch (Exception e) {
 
       throw new CustomOAuthException(BizExceptionCode.COM001, e.toString());
@@ -60,14 +67,14 @@ public class GatewayClusterService {
   }
 
   /**
-   * DB에 등록되어 있는 Cluster의 정보로 SAML 검증
+   * DB에 등록되어 있는 Cluster의 정보로 JWT 토큰 검증
    *
-   * @param key
-   * @return
+   * @param key JWT Key값
+   * @return  유효성 결과
    */
-  public boolean isValidSAML(String key) {
+  public boolean isValidJWT(String key) {
 
-    List<GatewayCluster> gatewayClusters = null;
+    List<GatewayCluster> gatewayClusters;
 
     try {
 
@@ -88,12 +95,19 @@ public class GatewayClusterService {
         JWT.require(algorithm).withIssuer(gatewayCluster.getGatewayId()).build().verify(key);
 
         return true;
-      } catch (JWTVerificationException e) {
-
-        continue;
-      }
+      } catch (JWTVerificationException ignore) {}
     }
     return false;
   }
 
+  /**
+   * 등록된 전체 클러스터 목록 조회
+   *
+   * @return  클러스터 전체 목록
+   */
+  public List<GatewayClusterDTO> selectAllClusters(){
+
+    return modelMapper.map(gatewayClusterRespository.findAll()
+        , new TypeReference<List<GatewayClusterDTO>>(){}.getType());
+  }
 }

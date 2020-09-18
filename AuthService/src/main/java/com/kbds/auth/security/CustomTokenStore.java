@@ -1,21 +1,15 @@
 package com.kbds.auth.security;
 
-import com.kbds.auth.code.AuthCode;
-import com.kbds.auth.code.BizExceptionCode;
 import com.kbds.auth.entity.OAuthAccessToken;
 import com.kbds.auth.entity.OAuthRefreshToken;
-import com.kbds.auth.exception.CustomOAuthException;
 import com.kbds.auth.repository.OAuthAccessTokenRepository;
 import com.kbds.auth.repository.OAuthRefreshTokenRepository;
 import com.kbds.auth.service.GatewayClusterService;
 import com.kbds.auth.utils.OAuthUtils;
-import com.kbds.auth.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2RefreshToken;
@@ -39,9 +33,6 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
  */
 public class CustomTokenStore implements TokenStore {
 
-  // 로그용 변수
-  Logger logger = LoggerFactory.getLogger(CustomTokenStore.class);
-
   @Autowired
   OAuthAccessTokenRepository oAuthAccessTokenRepository;
 
@@ -51,12 +42,7 @@ public class CustomTokenStore implements TokenStore {
   @Autowired
   GatewayClusterService gatewayClusterService;
 
-  private final String GRANT_TYPE_CLIENTS = "Clients";
-
-  // DefaultAuthenticationKeyGenerator : Client / AccessToken가 1:1 일 경우
-  // UniqueAuthenticationKeyGenerator : Client / AccessToken가 1:N 일 경우
-  private AuthenticationKeyGenerator authenticationKeyGenerator =
-      // new DefaultAuthenticationKeyGenerator();
+  private final AuthenticationKeyGenerator authenticationKeyGenerator =
       new UniqueAuthenticationKeyGenerator();
 
   @Override
@@ -71,19 +57,15 @@ public class CustomTokenStore implements TokenStore {
     Optional<OAuthAccessToken> accessToken =
         oAuthAccessTokenRepository.findByTokenId(OAuthUtils.extractTokenKey(token));
 
-    if (accessToken.isPresent()) {
-
-      return (OAuth2Authentication) SerializationUtils
-          .deserialize(accessToken.get().getAuthentication());
-    }
-
-    return null;
+    return accessToken.<OAuth2Authentication>map(oAuthAccessToken -> SerializationUtils
+        .deserialize(oAuthAccessToken.getAuthentication())).orElse(null);
   }
 
   @Override
   public void storeAccessToken(OAuth2AccessToken oAuth2AccessToken,
       OAuth2Authentication oAuth2Authentication) {
 
+    String GRANT_TYPE_CLIENTS = "Clients";
     String refreshToken = null;
 
     if (oAuth2AccessToken.getRefreshToken() != null) {
@@ -119,11 +101,9 @@ public class CustomTokenStore implements TokenStore {
     Optional<OAuthAccessToken> accessToken =
         oAuthAccessTokenRepository.findByTokenId(OAuthUtils.extractTokenKey(tokenValue));
 
-    if (accessToken.isPresent()) {
-
-      return (OAuth2AccessToken) SerializationUtils.deserialize(accessToken.get().getToken());
-    }
-    return null;
+    return accessToken.<OAuth2AccessToken>map(
+        oAuthAccessToken -> SerializationUtils.deserialize(oAuthAccessToken.getToken()))
+        .orElse(null);
   }
 
 
@@ -133,10 +113,7 @@ public class CustomTokenStore implements TokenStore {
     Optional<OAuthAccessToken> accessToken = oAuthAccessTokenRepository
         .findByTokenId(OAuthUtils.extractTokenKey(oAuth2AccessToken.getValue()));
 
-    if (accessToken.isPresent()) {
-
-      oAuthAccessTokenRepository.delete(accessToken.get());
-    }
+    accessToken.ifPresent(oAuthAccessToken -> oAuthAccessTokenRepository.delete(oAuthAccessToken));
   }
 
   @Override
@@ -158,9 +135,8 @@ public class CustomTokenStore implements TokenStore {
     Optional<OAuthRefreshToken> refreshToken =
         oAuthRefreshTokenRepository.findByTokenId(OAuthUtils.extractTokenKey(tokenValue));
 
-    return refreshToken.isPresent()
-        ? (OAuth2RefreshToken) SerializationUtils.deserialize(refreshToken.get().getToken())
-        : null;
+    return refreshToken.map(oAuthRefreshToken -> (OAuth2RefreshToken) SerializationUtils
+        .deserialize(oAuthRefreshToken.getToken())).orElse(null);
   }
 
   @Override
@@ -170,10 +146,8 @@ public class CustomTokenStore implements TokenStore {
     Optional<OAuthRefreshToken> oAuthRefreshToken = oAuthRefreshTokenRepository
         .findByTokenId(OAuthUtils.extractTokenKey(oAuth2RefreshToken.getValue()));
 
-    return oAuthRefreshToken.isPresent()
-        ? (OAuth2Authentication) SerializationUtils
-        .deserialize(oAuthRefreshToken.get().getAuthentication())
-        : null;
+    return oAuthRefreshToken.map(authRefreshToken -> (OAuth2Authentication) SerializationUtils
+        .deserialize(authRefreshToken.getAuthentication())).orElse(null);
   }
 
   @Override
@@ -182,10 +156,8 @@ public class CustomTokenStore implements TokenStore {
     Optional<OAuthRefreshToken> oAuthRefreshToken = oAuthRefreshTokenRepository
         .findByTokenId(OAuthUtils.extractTokenKey(oAuth2RefreshToken.getValue()));
 
-    if (oAuthRefreshToken.isPresent()) {
-
-      oAuthRefreshTokenRepository.delete(oAuthRefreshToken.get());
-    }
+    oAuthRefreshToken
+        .ifPresent(authRefreshToken -> oAuthRefreshTokenRepository.delete(authRefreshToken));
   }
 
   @Override
@@ -194,10 +166,8 @@ public class CustomTokenStore implements TokenStore {
     Optional<OAuthAccessToken> oAuthAccessToken = oAuthAccessTokenRepository
         .findByRefreshToken(OAuthUtils.extractTokenKey(oAuth2RefreshToken.getValue()));
 
-    if (oAuthAccessToken.isPresent()) {
-
-      oAuthAccessTokenRepository.delete(oAuthAccessToken.get());
-    }
+    oAuthAccessToken
+        .ifPresent(authAccessToken -> oAuthAccessTokenRepository.delete(authAccessToken));
   }
 
   @Override
@@ -206,18 +176,6 @@ public class CustomTokenStore implements TokenStore {
     OAuth2AccessToken oAuth2AccessToken = null;
 
     String authenticationId = authenticationKeyGenerator.extractKey(oAuthAuthentication);
-
-    // Access 토큰 발급 로직 전 SAML 체크
-    String keySAML = oAuthAuthentication.getOAuth2Request().getRequestParameters()
-        .get(AuthCode.PARAMTER_SAML.getCode());
-
-    if (StringUtils.isEmptyParams(keySAML)) {
-
-      throw new CustomOAuthException(BizExceptionCode.SAML002);
-    } else if (!gatewayClusterService.isValidSAML(keySAML)) {
-
-      throw new CustomOAuthException(BizExceptionCode.SAML003);
-    }
 
     // Access Token 발급
     Optional<OAuthAccessToken> oAuthAccessToken =
@@ -242,7 +200,7 @@ public class CustomTokenStore implements TokenStore {
   public Collection<OAuth2AccessToken> findTokensByClientIdAndUserName(String clientId,
       String userName) {
 
-    Collection<OAuth2AccessToken> tokens = new ArrayList<OAuth2AccessToken>();
+    Collection<OAuth2AccessToken> tokens = new ArrayList<>();
 
     List<OAuthAccessToken> result =
         oAuthAccessTokenRepository.findByClientIdAndUserName(clientId, userName);
@@ -256,7 +214,7 @@ public class CustomTokenStore implements TokenStore {
   @Override
   public Collection<OAuth2AccessToken> findTokensByClientId(String clientId) {
 
-    Collection<OAuth2AccessToken> tokens = new ArrayList<OAuth2AccessToken>();
+    Collection<OAuth2AccessToken> tokens = new ArrayList<>();
 
     List<OAuthAccessToken> result = oAuthAccessTokenRepository.findByClientId(clientId);
 

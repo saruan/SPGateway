@@ -42,21 +42,25 @@ public class SecurityOAuth2Configuration extends AuthorizationServerConfigurerAd
 
   @Bean
   public TokenStore tokenStore() {
+
     return new CustomTokenStore();
   }
 
   @Override
-  public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
-    oauthServer.tokenKeyAccess("permitAll()").checkTokenAccess("permitAll()");
+  public void configure(AuthorizationServerSecurityConfigurer authorizationServerSecurityConfigurer){
+
+    authorizationServerSecurityConfigurer.tokenKeyAccess("permitAll()").checkTokenAccess("permitAll()");
   }
 
   @Override
   public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+
     clients.jdbc(dataSource);
   }
 
   @Override
-  public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+  public void configure(AuthorizationServerEndpointsConfigurer endpoints){
+
     endpoints.authenticationManager(authenticationManager);
     endpoints.tokenStore(tokenStore());
     endpoints.exceptionTranslator(new CustomOAuthResponseExceptionTranslator());

@@ -4,8 +4,6 @@ import com.kbds.auth.utils.OAuthUtils;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.oauth2.common.util.OAuth2Utils;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
@@ -27,18 +25,19 @@ import org.springframework.security.oauth2.provider.token.AuthenticationKeyGener
  */
 public class UniqueAuthenticationKeyGenerator implements AuthenticationKeyGenerator {
 
-  // 로그용 변수
-  Logger logger = LoggerFactory.getLogger(UniqueAuthenticationKeyGenerator.class);
-
-  // 문자열 상수 값
-  private final String CONST_CLIENT_ID = "client_id";
-  private final String CONST_SCOPE = "scope";
-  private final String CONST_USERNAME = "username";
-  private final String CONST_UUID_KEY = "uuid";
-
+  /**
+   * Oauth Token 랜덤 Token으로 복호화
+   * @param authentication  인증 객체
+   * @return  AccessToken 복호화 값
+   */
   public String extractKey(OAuth2Authentication authentication) {
 
-    Map<String, String> values = new LinkedHashMap<String, String>();
+    final String CONST_CLIENT_ID = "client_id";
+    final String CONST_SCOPE = "scope";
+    final String CONST_USERNAME = "username";
+    final String CONST_UUID_KEY = "uuid";
+
+    Map<String, String> values = new LinkedHashMap<>();
     OAuth2Request authorizationRequest = authentication.getOAuth2Request();
 
     if (!authentication.isClientOnly()) {

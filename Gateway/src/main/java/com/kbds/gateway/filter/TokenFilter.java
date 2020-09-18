@@ -1,12 +1,25 @@
 package com.kbds.gateway.filter;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kbds.gateway.code.GatewayCode;
 import com.kbds.gateway.code.GatewayExceptionCode;
+import com.kbds.gateway.dto.GatewayClusterDTO;
+import com.kbds.gateway.dto.ResponseDTO;
 import com.kbds.gateway.dto.RoutingDTO;
 import com.kbds.gateway.exception.GatewayException;
+import com.kbds.gateway.feign.AuthClient;
 import com.kbds.gateway.utils.StringUtils;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -33,6 +46,9 @@ public class TokenFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
   @Value("${oauth.client-id}")
   String oAuthKey;
+
+  @Autowired
+  ObjectProvider<AuthClient> authClient;
 
   @Override
   public GatewayFilter apply(RoutingDTO routingDTO) {
@@ -63,21 +79,19 @@ public class TokenFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
   }
 
   /**
-   * Grant_Type, Saml 등 검증
+   * Grant_Type, JWT 등 검증
    *
-   * @param buffer
+   * @param buffer Request Data
    */
   private void validateParams(DataBuffer buffer) {
 
+    final String CONST_PASSWORD_TYPE = "password";
+    final String CONST_JWT = "jwt";
+    final String CONST_REFRESH_TOKEN_TYPE = "refresh_token";
+    final String CONST_GRANT_TYPE = "grant_type";
     Map<String, String> queryParam = StringUtils.queryToMap(buffer);
 
-    String CONST_PASSWORD_TYPE = "password";
-    String CONST_SAML = "saml";
-    String CONST_REFRESH_TOKEN_TYPE = "refresh_token";
-    String CONST_GRANT_TYPE = "grant_type";
-
     // Params 체크
-
     if (!queryParam.containsKey(CONST_GRANT_TYPE)) {
 
       throw new GatewayException(GatewayExceptionCode.GWE002, HttpStatus.UNAUTHORIZED);
@@ -90,12 +104,60 @@ public class TokenFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
       throw new GatewayException(GatewayExceptionCode.TOK004, HttpStatus.UNAUTHORIZED,
           queryParam.toString());
     }
-    // Grant_Type이 password일 경우 SAML 체크
+    // Grant_Type이 password일 경우 JWT Token 체크
     else if (CONST_PASSWORD_TYPE.equals(queryParam.get(CONST_GRANT_TYPE)) && !queryParam
-        .containsKey(CONST_SAML)) {
+        .containsKey(CONST_JWT)) {
 
-      throw new GatewayException(GatewayExceptionCode.SAM001, HttpStatus.UNAUTHORIZED,
+      throw new GatewayException(GatewayExceptionCode.JWT001, HttpStatus.UNAUTHORIZED,
           queryParam.toString());
     }
+
+    // JWT 토큰 검증
+    if (!validateJwt(selectAllClusters(), queryParam.get(CONST_JWT))) {
+
+      throw new GatewayException(GatewayExceptionCode.JWT001, HttpStatus.UNAUTHORIZED,
+          queryParam.toString());
+    }
+  }
+
+  /**
+   * JWT 값 검증을 위한 Gateway Cluster Secret 정보 조회 (캐싱 데이터)
+   *
+   * @return GatewayCluster Secret Key 목록
+   */
+  @Cacheable(cacheNames = "gatewayClusterList")
+  public List<GatewayClusterDTO> selectAllClusters() {
+
+    ResponseDTO responseDTO = Objects.requireNonNull(authClient.getIfAvailable())
+        .selectAllClusters();
+
+    return new ObjectMapper().convertValue(
+        Objects.requireNonNull(responseDTO).getResultData(),
+        new TypeReference<List<GatewayClusterDTO>>() {
+        });
+
+  }
+
+  /**
+   * Jwt값 검증
+   *
+   * @param gatewayClusterDTOS 클러스터 Secret 목록
+   */
+  public boolean validateJwt(List<GatewayClusterDTO> gatewayClusterDTOS, String jwtToken) {
+
+    // 등록 되어 있는 Cluster의 Key값으로 검증 작업 진행
+    for (GatewayClusterDTO gatewayCluster : gatewayClusterDTOS) {
+
+      try {
+
+        Algorithm algorithm = Algorithm.HMAC256(gatewayCluster.getSecretKey());
+
+        JWT.require(algorithm).withIssuer(gatewayCluster.getGatewayId()).build().verify(jwtToken);
+
+        return true;
+      } catch (JWTVerificationException ignore) {
+      }
+    }
+    return false;
   }
 }

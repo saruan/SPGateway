@@ -41,9 +41,9 @@ public class GwAppController {
   /**
    * 전체 App 조회
    *
-   * @return
+   * @return  App 목록
    */
-  @GetMapping(value = "/v1/app/")
+  @GetMapping(value = "/v1/app")
   public ResponseEntity<Object> findApps(@ModelAttribute SearchDTO searchDTO) {
 
     Object result = CommonUtils.getResponseEntity(gwAppService.findApps(searchDTO));
@@ -54,7 +54,7 @@ public class GwAppController {
   /**
    * App 상제 조회
    *
-   * @return
+   * @return  App 상세 데이터
    */
   @GetMapping(value = "/v1/app/{appId}")
   public ResponseEntity<Object> findAppDetail(@PathVariable Long appId) {
@@ -67,8 +67,8 @@ public class GwAppController {
   /**
    * 신규 App 등록
    *
-   * @param params
-   * @return
+   * @param params  등록 파라미터
+   * @return  등록 결과
    */
   @PostMapping(value = "/v1/app")
   public ResponseEntity<Object> registerApp(@RequestBody @Valid AppDTO params) {
@@ -83,8 +83,8 @@ public class GwAppController {
   /**
    * App 수정
    *
-   * @param params
-   * @return
+   * @param params  수정 파라미터
+   * @return  수정 결과
    */
   @PutMapping(value = "/v1/app/{appId}")
   public ResponseEntity<Object> updateApp(@RequestBody @Valid AppDTO params,
@@ -100,8 +100,8 @@ public class GwAppController {
   /**
    * App 삭제
    *
-   * @param appId
-   * @return
+   * @param appId 삭제할 AppId
+   * @return  삭제 결과
    */
   @DeleteMapping(value = "/v1/app/{appId}")
   public ResponseEntity<Object> deleteApp(@PathVariable Long appId) {

@@ -7,12 +7,8 @@ import com.kbds.gateway.exception.GatewayException;
 import com.kbds.gateway.feign.AuthClient;
 import com.kbds.gateway.utils.StringUtils;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -40,15 +36,11 @@ import org.springframework.stereotype.Service;
 @Service("CommonFilter")
 public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
-  private final Logger logger = LoggerFactory.getLogger(CommonFilter.class);
-
   @Autowired
   AuthClient authClient;
 
   @Value("${oauth.client-id}")
   String clientId;
-
-  private final String TOKEN_VALID_CODE = "active";
 
   @Override
   public GatewayFilter apply(RoutingDTO routingDTO) {
@@ -56,9 +48,6 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
     return (exchange, chain) -> {
 
       ServerHttpRequest request = exchange.getRequest();
-
-      Map<String, Object> results = null;
-      Map<String, String> headers = new HashMap<>();
 
       // 인증 타입, APP Key
       String serviceLoginType = routingDTO.getServiceLoginType();
@@ -104,19 +93,18 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
    *
    * @param routingDTO Routing 정보
    * @param appKey     Header AppKey
-   * @return
+   * @return  AppKey 검증 결과
    */
   public boolean isValidAppKey(RoutingDTO routingDTO, String appKey) {
 
     // Header에 있는 AppKey와 해당 Routing URL이 가지고 있는 Appkey 목록과 비교한다.
-
     return routingDTO.getAppKeys().size() > 0 && routingDTO.getAppKeys().contains(appKey);
   }
 
   /**
    * AccessToken 검증
    *
-   * @param accessToken
+   * @param accessToken 토큰값
    */
   public void checkValidAccessToken(String accessToken) {
 
@@ -137,7 +125,6 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
       // AuthServer에서 토큰 유효성 체크를 수행한다.
       results = authClient.checkAccessToken(accessToken, headers);
-
     } catch (Exception e) {
 
       throw new GatewayException(GatewayExceptionCode.AUTH001, HttpStatus.BAD_REQUEST);
@@ -152,11 +139,11 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
   /**
    * AccessToken 유효성 체크
    *
-   * @param results
-   * @return
+   * @param results Token 검증 결과
+   * @return  유효성 검증 결과
    */
   public boolean isValidToken(Map<String, Object> results) {
 
-    return results != null && results.containsKey(TOKEN_VALID_CODE);
+    return results != null && results.containsKey("active");
   }
 }

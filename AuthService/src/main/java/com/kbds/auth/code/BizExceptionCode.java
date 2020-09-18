@@ -20,9 +20,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum BizExceptionCode {
 
-  SAML001("SAML001", "SAML 생성 실패"),
-  SAML002("SAML002", "SAML값이 없습니다."),
-  SAML003("SAML003", "SAML이 유효하지 않습니다."),
+  JWT001("JWT001", "JWT Token 생성 실패"),
+  JWT002("JWT002", "JWT Token is not Exist"),
+  JWT003("JWT003", "Invalid JWT Token"),
 
   COM001("COM001", "서비스 처리 실패"),
 
