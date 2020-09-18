@@ -14,7 +14,7 @@ services:
   auth:
     host: http://localhost:7777
     check_token-uri: /oauth/check_token
-    cluster_list: /v1.0/oauth/cluster
+    cluster_list: /auth/v1.0/jwt/cluster
 
 # 기본 서비스
 gateway:
