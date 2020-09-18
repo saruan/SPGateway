@@ -27,10 +27,10 @@ gateway:
     filter:
       path: /gateway/filters/
       url:  http://localhost:8080/api/service/v1/filter/
-    saml:
-      path: /gateway/saml/
-      url:  http://localhost:7777/auth/v1.0/oauth/saml
-      filter: SAMLFilter
+    jwt:
+      path: /gateway/jwt/
+      url:  http://localhost:7777/auth/v1.0/oauth/jwt
+      filter: JWTFilter
     token:
       path: /gateway/token/
       url:  http://localhost:7777/oauth/token
