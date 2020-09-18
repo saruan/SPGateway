@@ -19,20 +19,20 @@ services:
 gateway:
   service:
     routing:
-      path: /gateway/routes/
+      path: /gateway/routes
       url:  http://localhost:8080/api/service/v1/routes
     app:
-      path: /gateway/apps/
+      path: /gateway/apps
       url:  http://localhost:8080/api/service/v1/app
     filter:
-      path: /gateway/filters/
+      path: /gateway/filters
       url:  http://localhost:8080/api/service/v1/filter
     jwt:
-      path: /gateway/jwt/
+      path: /gateway/jwt
       url:  http://localhost:7777/auth/v1.0/oauth/jwt
       filter: JWTFilter
     token:
-      path: /gateway/token/
+      path: /gateway/token
       url:  http://localhost:7777/oauth/token
       filter: TokenFilter
 
