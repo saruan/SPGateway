@@ -1,4 +1,4 @@
-package com.kbds.serviceapi.framework.dto;
+package com.kbds.portal.framework.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import java.util.Date;

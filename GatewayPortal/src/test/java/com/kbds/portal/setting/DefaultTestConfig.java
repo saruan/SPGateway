@@ -1,4 +1,4 @@
-package com.kbds.serviceapi.setting;
+package com.kbds.portal.setting;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -6,14 +6,14 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kbds.serviceapi.apis.controller.GwAppController;
-import com.kbds.serviceapi.apis.controller.GwFilterController;
-import com.kbds.serviceapi.apis.controller.GwRoutingController;
-import com.kbds.serviceapi.apis.service.GwAppService;
-import com.kbds.serviceapi.apis.service.GwFilterService;
-import com.kbds.serviceapi.apis.service.GwRoutingService;
-import com.kbds.serviceapi.framework.security.CustomAuthenticationProvider;
-import com.kbds.serviceapi.framework.service.RoleService;
+import com.kbds.portal.apis.controller.GwAppController;
+import com.kbds.portal.apis.controller.GwFilterController;
+import com.kbds.portal.apis.controller.GwRoutingController;
+import com.kbds.portal.apis.service.GwAppService;
+import com.kbds.portal.apis.service.GwFilterService;
+import com.kbds.portal.apis.service.GwRoutingService;
+import com.kbds.portal.framework.security.CustomAuthenticationProvider;
+import com.kbds.portal.framework.service.RoleService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

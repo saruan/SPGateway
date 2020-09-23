@@ -1,4 +1,4 @@
-package com.kbds.serviceapi.apis.dto;
+package com.kbds.portal.apis.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;

@@ -1,6 +1,6 @@
-package com.kbds.serviceapi.apis.entity;
+package com.kbds.portal.apis.entity;
 
-import com.kbds.serviceapi.apis.entity.key.GwServiceAppMappingKey;
+import com.kbds.portal.apis.entity.key.GwServiceAppMappingKey;
 import java.io.Serializable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;

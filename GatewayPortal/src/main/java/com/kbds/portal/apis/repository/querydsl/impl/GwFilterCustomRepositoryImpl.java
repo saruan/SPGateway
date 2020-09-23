@@ -1,13 +1,13 @@
-package com.kbds.serviceapi.apis.repository.querydsl.impl;
+package com.kbds.portal.apis.repository.querydsl.impl;
 
-import static com.kbds.serviceapi.apis.entity.QGwServiceFilter.gwServiceFilter;
+import static com.kbds.portal.apis.entity.QGwServiceFilter.gwServiceFilter;
 
-import com.kbds.serviceapi.apis.dto.FilterDTO;
-import com.kbds.serviceapi.apis.dto.QFilterDTO;
-import com.kbds.serviceapi.apis.entity.GwService;
-import com.kbds.serviceapi.apis.repository.querydsl.GwFilterCustomRepository;
-import com.kbds.serviceapi.common.utils.StringUtils;
-import com.kbds.serviceapi.framework.dto.SearchDTO;
+import com.kbds.portal.apis.dto.FilterDTO;
+import com.kbds.portal.apis.dto.QFilterDTO;
+import com.kbds.portal.apis.entity.GwService;
+import com.kbds.portal.apis.repository.querydsl.GwFilterCustomRepository;
+import com.kbds.portal.common.utils.StringUtils;
+import com.kbds.portal.framework.dto.SearchDTO;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import java.util.List;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;

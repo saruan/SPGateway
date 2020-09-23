@@ -1,6 +1,6 @@
-package com.kbds.serviceapi.apis.controller;
+package com.kbds.portal.apis.controller;
 
-import com.kbds.serviceapi.framework.dto.SearchDTO;
+import com.kbds.portal.framework.dto.SearchDTO;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.kbds.serviceapi.apis.dto.RoutingDTO;
-import com.kbds.serviceapi.apis.service.GwRoutingService;
-import com.kbds.serviceapi.common.utils.CommonUtils;
+import com.kbds.portal.apis.dto.RoutingDTO;
+import com.kbds.portal.apis.service.GwRoutingService;
+import com.kbds.portal.common.utils.CommonUtils;
 
 /**
  *

@@ -1,4 +1,4 @@
-package com.kbds.serviceapi.framework.config;
+package com.kbds.portal.framework.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import javax.persistence.EntityManager;

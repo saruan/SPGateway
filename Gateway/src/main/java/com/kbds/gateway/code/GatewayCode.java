@@ -25,14 +25,18 @@ public enum GatewayCode {
   EMPTY("", "공백"),
   ROLE_ADMIN("ROLE_ADMIN", "관리자 권한"),
   GATEWAY_FILTER_APPLY("apply", "Gateway Filter 메소드명"),
+  SERVICE_NAME("GATEWAY", "현재 서비스 이름"),
+  BLANK("", "공백"),
+
+  // Params, Header 정보
   API_KEY("api_key", "appKey 헤더 정보"),
   CACHE_REQUEST_BODY("cachedRequestBody", "Request Body Caching 데이터"),
-
   TOKEN_PREFIX("Bearer ", "TOKEN 헤더 PREFIX"),
-  APP_KEY_PREFIX(",", "APP-KEY 구분자"),
+  REFRESH_TOKEN("refresh_token", "Refresh Token 파라미터"),
+  JWT("jwt", "JWT Token 파라미터"),
+  GRANT_TYPE("grant_type","Oauth Grant Type"),
 
   OAUTH_TYPE("1", "OAuth 인증 방식"),
-
   MQ_ROUTING_KEY("gateway.routing.all", "RabbitMQ 라우팅 키"),
 
   DUMMY("", "");

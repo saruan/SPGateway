@@ -1,4 +1,4 @@
-package com.kbds.serviceapi.common.utils;
+package com.kbds.portal.common.utils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

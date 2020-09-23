@@ -1,10 +1,9 @@
-package com.kbds.serviceapi.apis.controller;
+package com.kbds.portal.apis.controller;
 
-import com.kbds.serviceapi.apis.dto.FilterDTO;
-import com.kbds.serviceapi.apis.entity.GwServiceFilter;
-import com.kbds.serviceapi.apis.service.GwFilterService;
-import com.kbds.serviceapi.common.utils.CommonUtils;
-import com.kbds.serviceapi.framework.dto.SearchDTO;
+import com.kbds.portal.apis.dto.FilterDTO;
+import com.kbds.portal.apis.service.GwFilterService;
+import com.kbds.portal.common.utils.CommonUtils;
+import com.kbds.portal.framework.dto.SearchDTO;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,6 +1,6 @@
-package com.kbds.serviceapi.apis.repository;
+package com.kbds.portal.apis.repository;
 
-import com.kbds.serviceapi.apis.entity.GwServiceFilter;
+import com.kbds.portal.apis.entity.GwServiceFilter;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

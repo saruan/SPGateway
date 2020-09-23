@@ -1,19 +1,19 @@
-package com.kbds.serviceapi.apis.repository.querydsl.impl;
+package com.kbds.portal.apis.repository.querydsl.impl;
 
-import static com.kbds.serviceapi.apis.entity.QGwApp.gwApp;
-import static com.kbds.serviceapi.apis.entity.QGwService.gwService;
-import static com.kbds.serviceapi.apis.entity.QGwServiceAppMapping.gwServiceAppMapping;
-import static com.kbds.serviceapi.apis.entity.QGwServiceFilter.gwServiceFilter;
+import static com.kbds.portal.apis.entity.QGwApp.gwApp;
+import static com.kbds.portal.apis.entity.QGwService.gwService;
+import static com.kbds.portal.apis.entity.QGwServiceAppMapping.gwServiceAppMapping;
+import static com.kbds.portal.apis.entity.QGwServiceFilter.gwServiceFilter;
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
 
-import com.kbds.serviceapi.apis.dto.QRoutingDTO;
-import com.kbds.serviceapi.apis.dto.RoutingDTO;
-import com.kbds.serviceapi.apis.entity.GwService;
-import com.kbds.serviceapi.apis.repository.querydsl.GwRoutingCustomRepository;
-import com.kbds.serviceapi.common.code.CommonCode;
-import com.kbds.serviceapi.common.utils.StringUtils;
-import com.kbds.serviceapi.framework.dto.SearchDTO;
+import com.kbds.portal.apis.dto.QRoutingDTO;
+import com.kbds.portal.apis.dto.RoutingDTO;
+import com.kbds.portal.apis.entity.GwService;
+import com.kbds.portal.apis.repository.querydsl.GwRoutingCustomRepository;
+import com.kbds.portal.common.code.CommonCode;
+import com.kbds.portal.common.utils.StringUtils;
+import com.kbds.portal.framework.dto.SearchDTO;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import java.util.List;

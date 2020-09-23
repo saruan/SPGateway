@@ -1,6 +1,6 @@
 spring:
   application:
-    name: RoutingService
+    name: GatewayPortal
   cloud:
     config:
       uri:

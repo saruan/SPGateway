@@ -10,10 +10,10 @@
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
   <groupId>com.kbds.gateway</groupId>
-  <artifactId>RoutingService</artifactId>
+  <artifactId>GatewayPortal</artifactId>
   <version>0.0.1</version>
-  <name>RoutingService</name>
-  <description>Routing Service Management Service</description>
+  <name>GatewayPortal</name>
+  <description>GatewayPortal</description>
 
   <properties>
     <java.version>1.8</java.version>

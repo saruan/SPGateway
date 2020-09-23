@@ -1,18 +1,18 @@
-package com.kbds.serviceapi.api.service;
+package com.kbds.portal.api.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-import com.kbds.serviceapi.apis.dto.FilterDTO;
-import com.kbds.serviceapi.apis.entity.GwServiceFilter;
-import com.kbds.serviceapi.apis.repository.querydsl.GwFilterCustomRepository;
-import com.kbds.serviceapi.apis.repository.GwFilterRepository;
-import com.kbds.serviceapi.apis.service.GwFilterService;
-import com.kbds.serviceapi.common.code.BizExceptionCode;
-import com.kbds.serviceapi.framework.dto.SearchDTO;
-import com.kbds.serviceapi.framework.exception.BizException;
+import com.kbds.portal.apis.dto.FilterDTO;
+import com.kbds.portal.apis.entity.GwServiceFilter;
+import com.kbds.portal.apis.repository.querydsl.GwFilterCustomRepository;
+import com.kbds.portal.apis.repository.GwFilterRepository;
+import com.kbds.portal.apis.service.GwFilterService;
+import com.kbds.portal.common.code.BizExceptionCode;
+import com.kbds.portal.framework.dto.SearchDTO;
+import com.kbds.portal.framework.exception.BizException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

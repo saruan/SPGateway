@@ -1,6 +1,6 @@
-package com.kbds.serviceapi.framework.exception;
+package com.kbds.portal.framework.exception;
 
-import com.kbds.serviceapi.common.code.BizExceptionCode;
+import com.kbds.portal.common.code.BizExceptionCode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

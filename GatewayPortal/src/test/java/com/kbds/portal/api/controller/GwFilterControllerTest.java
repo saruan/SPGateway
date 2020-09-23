@@ -1,4 +1,4 @@
-package com.kbds.serviceapi.api.controller;
+package com.kbds.portal.api.controller;
 
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -13,10 +13,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.kbds.serviceapi.apis.dto.FilterDTO;
-import com.kbds.serviceapi.common.code.BizExceptionCode;
-import com.kbds.serviceapi.framework.dto.SearchDTO;
-import com.kbds.serviceapi.setting.DefaultTestConfig;
+import com.kbds.portal.apis.dto.FilterDTO;
+import com.kbds.portal.common.code.BizExceptionCode;
+import com.kbds.portal.framework.dto.SearchDTO;
+import com.kbds.portal.setting.DefaultTestConfig;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.kbds.serviceapi.apis.entity;
+package com.kbds.portal.apis.entity;
 
 import java.util.Date;
 import javax.persistence.EntityListeners;

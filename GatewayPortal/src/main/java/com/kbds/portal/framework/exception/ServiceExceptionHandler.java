@@ -1,10 +1,10 @@
-package com.kbds.serviceapi.framework.exception;
+package com.kbds.portal.framework.exception;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import com.kbds.serviceapi.apis.dto.EmptyDataDTO;
-import com.kbds.serviceapi.common.code.BizExceptionCode;
-import com.kbds.serviceapi.common.code.SystemExceptionCode;
-import com.kbds.serviceapi.framework.dto.ResponseDTO;
+import com.kbds.portal.apis.dto.EmptyDataDTO;
+import com.kbds.portal.common.code.BizExceptionCode;
+import com.kbds.portal.common.code.SystemExceptionCode;
+import com.kbds.portal.framework.dto.ResponseDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

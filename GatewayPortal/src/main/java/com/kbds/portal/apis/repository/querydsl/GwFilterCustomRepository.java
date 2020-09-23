@@ -1,8 +1,8 @@
-package com.kbds.serviceapi.apis.repository.querydsl;
+package com.kbds.portal.apis.repository.querydsl;
 
-import com.kbds.serviceapi.framework.dto.SearchDTO;
+import com.kbds.portal.framework.dto.SearchDTO;
 import java.util.List;
-import com.kbds.serviceapi.apis.dto.FilterDTO;
+import com.kbds.portal.apis.dto.FilterDTO;
 
 /**
  * 

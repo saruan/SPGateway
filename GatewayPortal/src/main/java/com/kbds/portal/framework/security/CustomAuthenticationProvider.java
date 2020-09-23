@@ -1,8 +1,8 @@
-package com.kbds.serviceapi.framework.security;
+package com.kbds.portal.framework.security;
 
-import com.kbds.serviceapi.common.code.BizExceptionCode;
-import com.kbds.serviceapi.framework.service.UserDetailService;
-import com.kbds.serviceapi.framework.dto.UserDTO;
+import com.kbds.portal.common.code.BizExceptionCode;
+import com.kbds.portal.framework.service.UserDetailService;
+import com.kbds.portal.framework.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;

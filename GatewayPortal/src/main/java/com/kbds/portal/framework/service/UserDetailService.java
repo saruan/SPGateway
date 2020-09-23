@@ -1,10 +1,10 @@
-package com.kbds.serviceapi.framework.service;
+package com.kbds.portal.framework.service;
 
-import com.kbds.serviceapi.common.code.BizExceptionCode;
-import com.kbds.serviceapi.framework.entity.Role;
-import com.kbds.serviceapi.framework.entity.User;
-import com.kbds.serviceapi.framework.repository.UserRepository;
-import com.kbds.serviceapi.framework.dto.UserDTO;
+import com.kbds.portal.common.code.BizExceptionCode;
+import com.kbds.portal.framework.entity.Role;
+import com.kbds.portal.framework.entity.User;
+import com.kbds.portal.framework.repository.UserRepository;
+import com.kbds.portal.framework.dto.UserDTO;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

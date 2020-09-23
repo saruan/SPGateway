@@ -1,7 +1,7 @@
-package com.kbds.serviceapi.framework.repository.querydsl;
+package com.kbds.portal.framework.repository.querydsl;
 
-import com.kbds.serviceapi.framework.dto.RoleDTO;
-import com.kbds.serviceapi.framework.dto.SearchDTO;
+import com.kbds.portal.framework.dto.RoleDTO;
+import com.kbds.portal.framework.dto.SearchDTO;
 import java.util.List;
 
 /**

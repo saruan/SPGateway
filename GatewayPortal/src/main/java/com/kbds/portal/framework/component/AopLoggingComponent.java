@@ -1,4 +1,4 @@
-package com.kbds.serviceapi.framework.component;
+package com.kbds.portal.framework.component;
 
 import javax.servlet.http.HttpServletRequest;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -6,7 +6,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import com.kbds.serviceapi.common.utils.CommonUtils;
+import com.kbds.portal.common.utils.CommonUtils;
 
 /**
  *
@@ -36,7 +36,7 @@ public class AopLoggingComponent {
    * @param pjp
    * @throws Throwable
    */
-  @Around("execution(* com.kbds.serviceapi.apis.controller.*.*(..)) || execution(* com.kbds.serviceapi.framework.exception.ServiceExceptionHandler.*(..))")
+  @Around("execution(* com.kbds.portal.apis.controller.*.*(..)) || execution(* com.kbds.portal.framework.exception.ServiceExceptionHandler.*(..))")
   public Object setCommonLogParams(ProceedingJoinPoint pjp) throws Throwable {
 
     // 추후 인증서버 도입 시 변경 필요..현재는 공통 기능에서 사용자 번호를 알 수 있는 방법이 없음

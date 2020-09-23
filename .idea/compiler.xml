@@ -8,9 +8,9 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="GatewayLog" />
+        <module name="GatewayPortal" />
         <module name="Gateway" />
         <module name="GatewayConfig" />
-        <module name="RoutingService" />
         <module name="AuthService" />
       </profile>
     </annotationProcessing>
@@ -19,7 +19,7 @@
       <module name="Gateway" target="1.8" />
       <module name="GatewayConfig" target="1.8" />
       <module name="GatewayLog" target="1.8" />
-      <module name="RoutingService" target="1.8" />
+      <module name="GatewayPortal" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
@@ -28,7 +28,7 @@
       <module name="Gateway" options="-parameters" />
       <module name="GatewayConfig" options="-parameters" />
       <module name="GatewayLog" options="-parameters" />
-      <module name="RoutingService" options="-parameters" />
+      <module name="GatewayPortal" options="-parameters" />
     </option>
   </component>
   <component name="TypeScriptCompiler">

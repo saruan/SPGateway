@@ -42,9 +42,6 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
   @Autowired
   private RabbitTemplate rabbitTemplate;
 
-  private final String SERVICE_NAME = "GATEWAY";
-  private final String BLANK = "";
-
   public GlobalErrorWebExceptionHandler(ErrorAttributes g, ApplicationContext applicationContext,
       ServerCodecConfigurer serverCodecConfigurer) {
 
@@ -63,18 +60,16 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
   /**
    * 오류 Response 설정
    *
-   * @param request
-   * @request
+   * @param request ServerRequest 객체
+   * @request response
    */
   private Mono<ServerResponse> renderErrorResponse(final ServerRequest request) {
 
     ResponseDTO errorResponseDTO = new ResponseDTO();
+    errorResponseDTO.setResultData(true);
 
     Throwable error = getError(request);
-
     HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-
-    errorResponseDTO.setResultData(true);
 
     // 에러의 종류가 GatewayExcpetion일 경우 정해진 규격에 맞춰 화면에 전달한다.
     if (error instanceof GatewayException) {
@@ -94,8 +89,8 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
 
       // 큐에 오류 로그 전송
       ServiceLogDTO serviceLog = new ServiceLogDTO(request.headers().asHttpHeaders().toString(),
-          e.getArg(), errorResponseDTO.toString(), BLANK, BLANK, SERVICE_NAME, currentTime,
-          currentTime);
+          e.getArg(), errorResponseDTO.toString(), GatewayCode.BLANK.getCode(),
+          GatewayCode.BLANK.getCode(), GatewayCode.SERVICE_NAME.getCode(), currentTime, currentTime);
       rabbitTemplate.convertAndSend(GatewayCode.MQ_ROUTING_KEY.getCode(), serviceLog);
     }
     // 그 이외의 정해진 규격이 아닌 Gateway 오류일 경우 아래와 같이 설정한다.

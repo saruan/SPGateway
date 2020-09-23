@@ -1,4 +1,4 @@
-package com.kbds.serviceapi.apis.dto;
+package com.kbds.portal.apis.dto;
 
 import java.util.Date;
 import java.util.List;

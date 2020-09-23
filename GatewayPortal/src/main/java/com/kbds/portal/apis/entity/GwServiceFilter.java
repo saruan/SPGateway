@@ -1,4 +1,4 @@
-package com.kbds.serviceapi.apis.entity;
+package com.kbds.portal.apis.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

@@ -1,7 +1,7 @@
-package com.kbds.serviceapi.framework.config;
+package com.kbds.portal.framework.config;
 
-import com.kbds.serviceapi.framework.security.CustomAuthenticationProvider;
-import com.kbds.serviceapi.framework.service.RoleService;
+import com.kbds.portal.framework.security.CustomAuthenticationProvider;
+import com.kbds.portal.framework.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;

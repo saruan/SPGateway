@@ -1,6 +1,6 @@
-package com.kbds.serviceapi.framework.entity;
+package com.kbds.portal.framework.entity;
 
-import com.kbds.serviceapi.apis.entity.AuditLog;
+import com.kbds.portal.apis.entity.AuditLog;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;

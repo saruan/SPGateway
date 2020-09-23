@@ -1,4 +1,4 @@
-package com.kbds.serviceapi.common.utils;
+package com.kbds.portal.common.utils;
 
 import org.apache.commons.lang3.RandomStringUtils;
 

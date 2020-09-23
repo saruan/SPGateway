@@ -1,19 +1,19 @@
-package com.kbds.serviceapi.api.service;
+package com.kbds.portal.api.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
-import com.kbds.serviceapi.apis.dto.RoutingDTO;
-import com.kbds.serviceapi.apis.entity.GwService;
-import com.kbds.serviceapi.apis.repository.querydsl.GwRoutingCustomRepository;
-import com.kbds.serviceapi.apis.repository.GwRoutingRepository;
-import com.kbds.serviceapi.apis.service.GwRoutingService;
-import com.kbds.serviceapi.common.code.BizExceptionCode;
-import com.kbds.serviceapi.common.utils.CommonUtils;
-import com.kbds.serviceapi.framework.dto.SearchDTO;
-import com.kbds.serviceapi.framework.exception.BizException;
+import com.kbds.portal.apis.dto.RoutingDTO;
+import com.kbds.portal.apis.entity.GwService;
+import com.kbds.portal.apis.repository.querydsl.GwRoutingCustomRepository;
+import com.kbds.portal.apis.repository.GwRoutingRepository;
+import com.kbds.portal.apis.service.GwRoutingService;
+import com.kbds.portal.common.code.BizExceptionCode;
+import com.kbds.portal.common.utils.CommonUtils;
+import com.kbds.portal.framework.dto.SearchDTO;
+import com.kbds.portal.framework.exception.BizException;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;

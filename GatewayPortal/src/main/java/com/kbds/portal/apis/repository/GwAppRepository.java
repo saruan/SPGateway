@@ -1,9 +1,9 @@
-package com.kbds.serviceapi.apis.repository;
+package com.kbds.portal.apis.repository;
 
 import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import com.kbds.serviceapi.apis.entity.GwApp;
+import com.kbds.portal.apis.entity.GwApp;
 
 /**
  *

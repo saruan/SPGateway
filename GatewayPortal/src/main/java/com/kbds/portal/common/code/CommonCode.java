@@ -1,4 +1,4 @@
-package com.kbds.serviceapi.common.code;
+package com.kbds.portal.common.code;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

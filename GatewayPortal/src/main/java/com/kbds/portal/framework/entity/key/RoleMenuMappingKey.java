@@ -1,4 +1,4 @@
-package com.kbds.serviceapi.framework.entity.key;
+package com.kbds.portal.framework.entity.key;
 
 import java.io.Serializable;
 import javax.persistence.Column;

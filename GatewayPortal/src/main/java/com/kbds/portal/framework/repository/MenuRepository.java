@@ -1,6 +1,6 @@
-package com.kbds.serviceapi.framework.repository;
+package com.kbds.portal.framework.repository;
 
-import com.kbds.serviceapi.framework.entity.Menu;
+import com.kbds.portal.framework.entity.Menu;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,16 +1,16 @@
-package com.kbds.serviceapi.apis.repository.querydsl.impl;
+package com.kbds.portal.apis.repository.querydsl.impl;
 
-import static com.kbds.serviceapi.apis.entity.QGwApp.gwApp;
-import static com.kbds.serviceapi.apis.entity.QGwService.gwService;
-import static com.kbds.serviceapi.apis.entity.QGwServiceAppMapping.gwServiceAppMapping;
+import static com.kbds.portal.apis.entity.QGwApp.gwApp;
+import static com.kbds.portal.apis.entity.QGwService.gwService;
+import static com.kbds.portal.apis.entity.QGwServiceAppMapping.gwServiceAppMapping;
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
 
-import com.kbds.serviceapi.apis.dto.AppDTO;
-import com.kbds.serviceapi.apis.entity.GwApp;
-import com.kbds.serviceapi.apis.repository.querydsl.GwAppCustomRepository;
-import com.kbds.serviceapi.common.utils.StringUtils;
-import com.kbds.serviceapi.framework.dto.SearchDTO;
+import com.kbds.portal.apis.dto.AppDTO;
+import com.kbds.portal.apis.entity.GwApp;
+import com.kbds.portal.apis.repository.querydsl.GwAppCustomRepository;
+import com.kbds.portal.common.utils.StringUtils;
+import com.kbds.portal.framework.dto.SearchDTO;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import java.util.List;
 import java.util.Map;

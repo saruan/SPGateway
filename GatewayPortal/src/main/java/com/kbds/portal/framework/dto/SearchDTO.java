@@ -1,10 +1,9 @@
-package com.kbds.serviceapi.framework.dto;
+package com.kbds.portal.framework.dto;
 
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**

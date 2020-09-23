@@ -1,9 +1,9 @@
-package com.kbds.serviceapi.apis.service;
+package com.kbds.portal.apis.service;
 
-import com.kbds.serviceapi.apis.dto.AppDTO;
-import com.kbds.serviceapi.apis.entity.GwServiceAppMapping;
-import com.kbds.serviceapi.apis.entity.key.GwServiceAppMappingKey;
-import com.kbds.serviceapi.apis.repository.GwServiceAppMappingRepository;
+import com.kbds.portal.apis.dto.AppDTO;
+import com.kbds.portal.apis.entity.GwServiceAppMapping;
+import com.kbds.portal.apis.entity.key.GwServiceAppMappingKey;
+import com.kbds.portal.apis.repository.GwServiceAppMappingRepository;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

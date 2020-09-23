@@ -6,7 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/Gateway/Gateway.iml" filepath="$PROJECT_DIR$/Gateway/Gateway.iml" />
       <module fileurl="file://$PROJECT_DIR$/GatewayConfig/GatewayConfig.iml" filepath="$PROJECT_DIR$/GatewayConfig/GatewayConfig.iml" />
       <module fileurl="file://$PROJECT_DIR$/GatewayLog/GatewayLog.iml" filepath="$PROJECT_DIR$/GatewayLog/GatewayLog.iml" />
-      <module fileurl="file://$PROJECT_DIR$/RoutingService/RoutingService.iml" filepath="$PROJECT_DIR$/RoutingService/RoutingService.iml" />
+      <module fileurl="file://$PROJECT_DIR$/GatewayPortal/GatewayPortal.iml" filepath="$PROJECT_DIR$/GatewayPortal/GatewayPortal.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/SPGateway.iml" filepath="$PROJECT_DIR$/.idea/SPGateway.iml" />
     </modules>
   </component>

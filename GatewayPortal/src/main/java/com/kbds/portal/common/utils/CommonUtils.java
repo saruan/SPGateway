@@ -1,10 +1,10 @@
-package com.kbds.serviceapi.common.utils;
+package com.kbds.portal.common.utils;
 
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.kbds.serviceapi.common.code.CommonCode;
-import com.kbds.serviceapi.common.feign.GatewayClient;
-import com.kbds.serviceapi.framework.dto.ResponseDTO;
+import com.kbds.portal.common.code.CommonCode;
+import com.kbds.portal.common.feign.GatewayClient;
+import com.kbds.portal.framework.dto.ResponseDTO;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.logging.log4j.ThreadContext;

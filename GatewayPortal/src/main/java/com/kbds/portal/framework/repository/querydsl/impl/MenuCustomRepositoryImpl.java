@@ -1,13 +1,13 @@
-package com.kbds.serviceapi.framework.repository.querydsl.impl;
+package com.kbds.portal.framework.repository.querydsl.impl;
 
-import static com.kbds.serviceapi.framework.entity.QMenu.menu;
-import static com.kbds.serviceapi.framework.entity.QRole.role;
-import static com.kbds.serviceapi.framework.entity.QRoleMenuMapping.roleMenuMapping;
+import static com.kbds.portal.framework.entity.QMenu.menu;
+import static com.kbds.portal.framework.entity.QRole.role;
+import static com.kbds.portal.framework.entity.QRoleMenuMapping.roleMenuMapping;
 
-import com.kbds.serviceapi.framework.dto.MenuDTO;
-import com.kbds.serviceapi.framework.dto.QMenuDTO;
-import com.kbds.serviceapi.framework.entity.Menu;
-import com.kbds.serviceapi.framework.repository.querydsl.MenuCustomRepository;
+import com.kbds.portal.framework.dto.MenuDTO;
+import com.kbds.portal.framework.dto.QMenuDTO;
+import com.kbds.portal.framework.entity.Menu;
+import com.kbds.portal.framework.repository.querydsl.MenuCustomRepository;
 import java.util.List;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;

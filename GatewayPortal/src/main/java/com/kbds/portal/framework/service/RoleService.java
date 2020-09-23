@@ -1,14 +1,14 @@
-package com.kbds.serviceapi.framework.service;
+package com.kbds.portal.framework.service;
 
-import com.kbds.serviceapi.common.code.BizExceptionCode;
-import com.kbds.serviceapi.framework.dto.MenuDTO;
-import com.kbds.serviceapi.framework.dto.RoleDTO;
-import com.kbds.serviceapi.framework.dto.SearchDTO;
-import com.kbds.serviceapi.framework.entity.Role;
-import com.kbds.serviceapi.framework.exception.BizException;
-import com.kbds.serviceapi.framework.repository.querydsl.MenuCustomRepository;
-import com.kbds.serviceapi.framework.repository.querydsl.RoleCustomRepository;
-import com.kbds.serviceapi.framework.repository.RoleRepository;
+import com.kbds.portal.common.code.BizExceptionCode;
+import com.kbds.portal.framework.dto.MenuDTO;
+import com.kbds.portal.framework.dto.RoleDTO;
+import com.kbds.portal.framework.dto.SearchDTO;
+import com.kbds.portal.framework.entity.Role;
+import com.kbds.portal.framework.exception.BizException;
+import com.kbds.portal.framework.repository.querydsl.MenuCustomRepository;
+import com.kbds.portal.framework.repository.querydsl.RoleCustomRepository;
+import com.kbds.portal.framework.repository.RoleRepository;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;

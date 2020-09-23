@@ -1,4 +1,4 @@
-package com.kbds.serviceapi.api.service;
+package com.kbds.portal.api.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -6,16 +6,16 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
-import com.kbds.serviceapi.apis.dto.AppDTO;
-import com.kbds.serviceapi.apis.entity.GwApp;
-import com.kbds.serviceapi.apis.repository.GwAppRepository;
-import com.kbds.serviceapi.apis.repository.querydsl.GwAppCustomRepository;
-import com.kbds.serviceapi.apis.service.GwAppService;
-import com.kbds.serviceapi.apis.service.GwServiceAppMappingService;
-import com.kbds.serviceapi.common.code.BizExceptionCode;
-import com.kbds.serviceapi.common.utils.CommonUtils;
-import com.kbds.serviceapi.framework.dto.SearchDTO;
-import com.kbds.serviceapi.framework.exception.BizException;
+import com.kbds.portal.apis.dto.AppDTO;
+import com.kbds.portal.apis.entity.GwApp;
+import com.kbds.portal.apis.repository.GwAppRepository;
+import com.kbds.portal.apis.repository.querydsl.GwAppCustomRepository;
+import com.kbds.portal.apis.service.GwAppService;
+import com.kbds.portal.apis.service.GwServiceAppMappingService;
+import com.kbds.portal.common.code.BizExceptionCode;
+import com.kbds.portal.common.utils.CommonUtils;
+import com.kbds.portal.framework.dto.SearchDTO;
+import com.kbds.portal.framework.exception.BizException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

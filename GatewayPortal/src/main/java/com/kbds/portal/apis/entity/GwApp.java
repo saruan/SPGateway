@@ -1,4 +1,4 @@
-package com.kbds.serviceapi.apis.entity;
+package com.kbds.portal.apis.entity;
 
 import java.io.Serializable;
 import java.util.List;

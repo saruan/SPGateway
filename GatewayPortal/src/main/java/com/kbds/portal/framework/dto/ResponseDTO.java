@@ -1,4 +1,4 @@
-package com.kbds.serviceapi.framework.dto;
+package com.kbds.portal.framework.dto;
 
 import lombok.Data;
 

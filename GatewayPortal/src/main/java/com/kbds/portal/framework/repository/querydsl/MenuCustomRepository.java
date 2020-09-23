@@ -1,6 +1,6 @@
-package com.kbds.serviceapi.framework.repository.querydsl;
+package com.kbds.portal.framework.repository.querydsl;
 
-import com.kbds.serviceapi.framework.dto.MenuDTO;
+import com.kbds.portal.framework.dto.MenuDTO;
 import java.util.List;
 import org.springframework.cache.annotation.Cacheable;
 

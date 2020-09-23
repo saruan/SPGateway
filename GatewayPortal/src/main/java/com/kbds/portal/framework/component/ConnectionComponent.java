@@ -1,4 +1,4 @@
-package com.kbds.serviceapi.framework.component;
+package com.kbds.portal.framework.component;
 
 import java.sql.Connection;
 import javax.sql.DataSource;

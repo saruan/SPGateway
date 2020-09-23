@@ -7,7 +7,7 @@ import com.kbds.gateway.code.GatewayExceptionCode;
 import com.kbds.gateway.dto.ResponseDTO;
 import com.kbds.gateway.dto.RoutingDTO;
 import com.kbds.gateway.exception.GatewayException;
-import com.kbds.gateway.filter.CachingRequestBodyFilter;
+import com.kbds.gateway.filter.system.CachingRequestBodyFilter;
 import com.kbds.gateway.utils.StringUtils;
 import java.lang.reflect.Method;
 import java.net.URL;

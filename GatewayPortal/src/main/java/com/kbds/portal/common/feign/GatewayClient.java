@@ -1,4 +1,4 @@
-package com.kbds.serviceapi.common.feign;
+package com.kbds.portal.common.feign;
 
 import java.util.Map;
 import org.springframework.cloud.openfeign.FeignClient;

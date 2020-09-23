@@ -1,13 +1,13 @@
-package com.kbds.serviceapi.framework.repository.querydsl.impl;
+package com.kbds.portal.framework.repository.querydsl.impl;
 
-import static com.kbds.serviceapi.framework.entity.QRole.role;
+import static com.kbds.portal.framework.entity.QRole.role;
 
-import com.kbds.serviceapi.common.utils.StringUtils;
-import com.kbds.serviceapi.framework.dto.QRoleDTO;
-import com.kbds.serviceapi.framework.dto.RoleDTO;
-import com.kbds.serviceapi.framework.dto.SearchDTO;
-import com.kbds.serviceapi.framework.entity.Role;
-import com.kbds.serviceapi.framework.repository.querydsl.RoleCustomRepository;
+import com.kbds.portal.common.utils.StringUtils;
+import com.kbds.portal.framework.dto.QRoleDTO;
+import com.kbds.portal.framework.dto.RoleDTO;
+import com.kbds.portal.framework.dto.SearchDTO;
+import com.kbds.portal.framework.entity.Role;
+import com.kbds.portal.framework.repository.querydsl.RoleCustomRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import java.util.List;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;

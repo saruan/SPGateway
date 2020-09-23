@@ -1,6 +1,6 @@
-package com.kbds.serviceapi.framework.entity;
+package com.kbds.portal.framework.entity;
 
-import com.kbds.serviceapi.framework.entity.key.RoleMenuMappingKey;
+import com.kbds.portal.framework.entity.key.RoleMenuMappingKey;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;

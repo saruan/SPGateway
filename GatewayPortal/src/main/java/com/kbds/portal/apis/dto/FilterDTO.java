@@ -1,17 +1,15 @@
-package com.kbds.serviceapi.apis.dto;
+package com.kbds.portal.apis.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.kbds.serviceapi.apis.entity.AuditLog;
+import com.kbds.portal.apis.entity.AuditLog;
 import com.querydsl.core.annotations.QueryProjection;
 import java.util.Date;
 import javax.validation.constraints.NotEmpty;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.repository.Query;
 
 
 /**
