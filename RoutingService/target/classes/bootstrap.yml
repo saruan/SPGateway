@@ -1,7 +1,0 @@
-spring:
-  application:
-    name: GatewayPortal
-  cloud:
-    config:
-      uri:
-      - http://localhost:9999        
