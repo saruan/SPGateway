@@ -1,0 +1,67 @@
+#log4j2 설정
+Configuration:
+  #Appender Console 로그 설정, 레벨 - 날짜 - 메시지 형식으로 구성
+  appenders:
+    #Console 로그
+    Console:
+      name: LogToConsole
+      PatternLayout:
+        Pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"
+    RollingFile: 
+      name: LogToFile 
+      fileName: "C:/logs/app.log" 
+      filePattern: "C:/logs/archive/app.log-%d{yyyy-MM-dd}" 
+      append: true 
+      PatternLayout: 
+        pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] [%level] %C{1.} - %msg%n"
+      Policies: 
+       TimeBasedTriggeringPolicy: 
+        interval: 1 
+        modulate: true
+
+    #DB 로그    
+    Jdbc:
+      name: LogToDatabase
+      tableName: GW_ERROR_LOG
+      ConnectionFactory:
+        class: com.kbds.serviceapi.framework.component.ConnectionComponent
+        method: getDatabaseConnection      
+      Column:
+        -
+          name: ERR_DT
+          isEventTimestamp: true 
+        -
+          name: GUID
+          Pattern: "%uuid{TIME}"
+        -
+          name: ERR_DESC
+          Pattern: "%msg"   
+        -
+          name: SERVICE_DESC
+          Pattern: "%X{SERVICE_DESC}"   
+        -
+          name: REG_USER_NO
+          Pattern: "%X{REG_USER_NO}"                           
+  #Appender를 package경로로 등록해줌
+  Loggers:
+    Root:
+      Level: INFO    
+      AppenderRef:
+          - ref: LogToConsole   
+          - ref: LogToFile     
+    logger:
+      #[INFO]Console 로그
+      - name: com.kbds.serviceapi
+        level: DEBUG
+        additivity: false
+        AppenderRef:
+          - ref: LogToConsole    
+          - ref: LogToFile    
+      #[ERROR]JDBC 로그
+      - name: com.kbds.serviceapi
+        level: ERROR
+        additivity: false
+        AppenderRef:
+          - ref: LogToDatabase
+          - ref: LogToConsole
+ 
