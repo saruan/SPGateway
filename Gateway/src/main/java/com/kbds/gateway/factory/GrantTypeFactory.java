@@ -24,13 +24,13 @@ public class GrantTypeFactory {
 
   /**
    * GrantType에 따라 생성자를 다르게 전달해준다.
+   *
    * @param grantType Oauth GrantType
-   * @return  GrantType 객체
+   * @return GrantType 객체
    */
   public GrantType makeGrantType(String grantType) {
 
     switch (grantType) {
-
       case CONST_PASSWORD_TYPE:
         return new PasswordGrantType();
       case CONST_REFRESH_TOKEN_TYPE:
