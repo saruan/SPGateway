@@ -18,8 +18,9 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     open-in-view: false
     show-sql: true
-    hibernate:
-      format_sql: true
+    properties:
+      hibernate:
+        format_sql: true
   #kafka 연동
   cloud:
     bus:
