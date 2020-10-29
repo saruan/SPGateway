@@ -2,29 +2,9 @@ import React, {useEffect, useState} from 'react';
 import {BootstrapTable, TableHeaderColumn} from "react-bootstrap-table"
 import {ApiDetails} from "../popup/ApiDetails";
 import moment from "moment";
-import {ApiRegister} from "../popup/ApiRegister";
+import {ApiManage} from "../popup/ApiManage";
 import {getRequest} from "../../../perist/axios";
 
-/**
- * 상세 팝업 호출
- * @param cell  cell key value
- * @param row   row json data
- */
-function detailPopup(cell, row) {
-
-  return (
-      <ApiDetails details={row}/>
-  );
-}
-
-/**
- * 날짜 타입 변환
- * @param regDt
- */
-function dateFormatter(regDt: any) {
-
-  return `${moment(regDt).format("YYYY-MM-DD hh:mm")}`;
-}
 
 /**
  * Api 목록 조회용 컴포넌트
@@ -36,16 +16,48 @@ export function ApiListComponent() {
    * Api List Search
    */
   const [apiList, setApiList] = useState([]);
+  const [serviceLoginType, setServiceLoginType] = useState([])
+  const [serviceAuthType, setServiceAuthType] = useState([])
+  const [filter, setFilter] = useState([])
 
   useEffect(() => {
 
-    getRequest(callback, '/api/service/v1/routes', new URLSearchParams());
-
+    getRequest((data) => setApiList(data), '/portal/service/v1/routes', new URLSearchParams());
+    getRequest((data) => setServiceLoginType(data), '/portal/code/ServiceLoginType'
+        , new URLSearchParams());
+    getRequest((data) => setServiceAuthType(data), '/portal/code/ServiceAuthType'
+        , new URLSearchParams());
+    getRequest((data) => setFilter(data), '/api/service/v1/filter'
+        , new URLSearchParams());
   }, [])
 
-  function callback(data) {
+  /**
+   * API List 갱신
+   */
+  const refreshApiList = () => getRequest((data) => setApiList(data),
+      '/portal/service/v1/routes', new URLSearchParams())
 
-    setApiList(data);
+  /**
+   * Row 비고 버튼 정의
+   * @param cell  Cell
+   * @param row   Row
+   */
+  const detailPopup = (cell, row) => {
+
+    return (
+        <ApiDetails data={row} filter={filter}
+                    serviceLoginType={serviceLoginType} serviceAuthType={serviceAuthType}
+                    refreshList={refreshApiList}/>
+    );
+  }
+
+  /**
+   * 날짜 타입 변환
+   * @param regDt 등록일
+   */
+  const dateFormatter = (regDt: any) => {
+
+    return `${moment(regDt).format("YYYY-MM-DD hh:mm")}`
   }
 
   return (
@@ -57,13 +69,14 @@ export function ApiListComponent() {
                              dataAlign="center">G/W URL</TableHeaderColumn>
           <TableHeaderColumn dataField='regDt' dataFormat={dateFormatter}
                              headerAlign="center" dataAlign="center">등록일</TableHeaderColumn>
-          <TableHeaderColumn dataField='useYn' headerAlign="center"
-                             dataAlign="center">사용 유무</TableHeaderColumn>
           <TableHeaderColumn dataField='serviceId' headerAlign="center"
                              dataAlign="center" dataFormat={detailPopup}>비고</TableHeaderColumn>
+          <TableHeaderColumn dataField='serviceDesc' headerAlign="center" hidden/>
         </BootstrapTable>
         <div className="button_right_type1">
-          <ApiRegister/>
+          <ApiManage isUpdate={false} serviceDetail={{}} filter={filter}
+                     serviceLoginType={serviceLoginType} serviceAuthType={serviceAuthType}
+                     refreshList={refreshApiList}/>
         </div>
       </div>
   )

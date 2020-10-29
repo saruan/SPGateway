@@ -1,6 +1,5 @@
 package com.kbds.serviceapi.apis.code.core;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.kbds.serviceapi.common.code.BizExceptionCode;
 import com.kbds.serviceapi.framework.exception.BizException;
 import java.lang.reflect.ParameterizedType;
@@ -38,14 +37,14 @@ public class AbstractCodeConverter<T extends Enum<T> & AbstractCode> implements
   @Override
   public String convertToDatabaseColumn(T attribute) {
 
-    return attribute.getType();
+    return attribute.getCode();
   }
 
   @Override
   public T convertToEntityAttribute(String dbData) {
 
     return EnumSet.allOf(enumClass).stream()
-        .filter(f -> f.getType().equals(dbData))
+        .filter(f -> f.getCode().equals(dbData))
         .findAny()
         .orElseThrow(() -> new BizException(BizExceptionCode.COM008));
   }

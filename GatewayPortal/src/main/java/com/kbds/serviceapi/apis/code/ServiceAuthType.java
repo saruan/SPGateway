@@ -24,15 +24,20 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ServiceAuthType implements AbstractCode {
 
-  PUBLIC("1", "public"),
-  SECURITY("2", "security");
+  PUBLIC("public", "public"),
+  SECURITY("sercurity", "security");
 
-  @JsonValue
   private final String type;
   private final String desc;
 
-  public String getDesc(){
+  public String getCode(){
 
     return name();
+  }
+
+  @JsonCreator
+  public static ServiceAuthType findByValue(String value){
+
+    return ServiceAuthType.valueOf(value);
   }
 }

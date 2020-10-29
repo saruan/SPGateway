@@ -1,16 +1,55 @@
 import React, {useState} from 'react';
 import {ModalComponent} from "../../common/ModalComponent";
-import {Form, Col, Row, Button} from "react-bootstrap";
+import {Button, Col, Form, Row} from "react-bootstrap";
+import {ApiManage} from "./ApiManage";
+import {deleteRequest} from "../../../perist/axios";
 
+interface ApiDetailsInterface {
+  data: any,
+  serviceLoginType: any,
+  serviceAuthType: any,
+  filter: any,
+  refreshList: Function
+}
 
 /**
  * API 상세 팝업용 데이터
  * @param data  API 상세 데이터
+ * @param serviceLoginType  로그인 타입 코드 정보
+ * @param serviceAuthType 인증 타입 코드 정보
+ * @param filter
  * @constructor
  */
-export function ApiDetails(data) {
+export function ApiDetails({
+                             data, serviceLoginType, serviceAuthType,
+                             filter, refreshList
+                           }: ApiDetailsInterface) {
 
-  let apiDetails = data.details;
+  const [click, setClick] = useState<boolean>(false)
+
+  /**
+   * 팝업 Close Event
+   */
+  const handleClose = () => {
+
+    setClick(false);
+  };
+
+  /**
+   * 팝업 Open Event
+   */
+  const handleOpen = () => {
+
+    setClick(true);
+  }
+
+  /**
+   * API 삭제 호출
+   */
+  const deleteApi = () => {
+
+    deleteRequest(() => refreshList(), '/api/service/v1/routes/' + data.serviceId);
+  }
 
   const DetailForm = (
       <>
@@ -20,7 +59,7 @@ export function ApiDetails(data) {
               API명
             </Form.Label>
             <Col sm={10}>
-              <Form.Control type="text" readOnly value={apiDetails.serviceNm}/>
+              <Form.Control type="text" readOnly value={data.serviceNm}/>
             </Col>
           </Form.Group>
           <Form.Group as={Row} controlId="servicePath">
@@ -28,7 +67,7 @@ export function ApiDetails(data) {
               G/W URL
             </Form.Label>
             <Col sm={10}>
-              <Form.Control type="text" readOnly value={apiDetails.servicePath}/>
+              <Form.Control type="text" readOnly value={data.servicePath}/>
             </Col>
           </Form.Group>
           <Form.Group as={Row} controlId="serviceTargetUrl">
@@ -36,7 +75,7 @@ export function ApiDetails(data) {
               목적지 URL
             </Form.Label>
             <Col sm={10}>
-              <Form.Control type="text" readOnly value={apiDetails.serviceTargetUrl}/>
+              <Form.Control type="text" readOnly value={data.serviceTargetUrl}/>
             </Col>
           </Form.Group>
           <Form.Group as={Row} controlId="filterBean">
@@ -44,7 +83,7 @@ export function ApiDetails(data) {
               필터명
             </Form.Label>
             <Col sm={10}>
-              <Form.Control type="text" readOnly value={apiDetails.filterBean}/>
+              <Form.Control type="text" readOnly value={data.filterBean}/>
             </Col>
           </Form.Group>
           <Form.Group as={Row} controlId="serviceLoginType">
@@ -52,7 +91,7 @@ export function ApiDetails(data) {
               로그인 타입
             </Form.Label>
             <Col sm={10}>
-              <Form.Control type="text" readOnly value={apiDetails.serviceLoginType}/>
+              <Form.Control type="text" readOnly value={data.serviceLoginType}/>
             </Col>
           </Form.Group>
           <Form.Group as={Row} controlId="serviceAuthType">
@@ -60,30 +99,26 @@ export function ApiDetails(data) {
               인증 타입
             </Form.Label>
             <Col sm={10}>
-              <Form.Control type="text" readOnly value={apiDetails.serviceAuthType}/>
+              <Form.Control type="text" readOnly value={data.serviceAuthType}/>
             </Col>
           </Form.Group>
         </Form>
       </>
   );
 
-  const [click, setClick] = useState<boolean>(false)
-  const handleClose = () => {
-
-    setClick(false);
-  };
-
-  const handleOpen = () =>  {
-
-    setClick(true);
-  }
-
   return (
       <>
-        {ModalComponent(handleClose, click, "API 상세", DetailForm)}
-        <Button variant="warning" onClick = {handleOpen}>
+        <ModalComponent handleClose={handleClose} isClicked={click} titleNm="API 상세"
+                        bodyComponent={DetailForm} isSave={false} saveEvent={handleClose}/>
+        <Button variant="outline-secondary" onClick={handleOpen}>
           상세
-        </Button>
+        </Button>{' '}
+        <ApiManage isUpdate={true} serviceDetail={data} filter={filter}
+                   serviceLoginType={serviceLoginType} serviceAuthType={serviceAuthType}
+                   refreshList={refreshList}/>{' '}
+        <Button variant="outline-secondary" onClick={deleteApi}>
+          삭제
+        </Button>{' '}
       </>
   );
 }

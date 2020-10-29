@@ -4,7 +4,7 @@ import static com.kbds.serviceapi.apis.entity.QGwServiceFilter.gwServiceFilter;
 
 import com.kbds.serviceapi.apis.dto.FilterDTO;
 import com.kbds.serviceapi.apis.dto.QFilterDTO;
-import com.kbds.serviceapi.apis.entity.GwService;
+import com.kbds.serviceapi.portal.api.entity.GwService;
 import com.kbds.serviceapi.apis.repository.querydsl.GwFilterCustomRepository;
 import com.kbds.serviceapi.common.utils.StringUtils;
 import com.kbds.serviceapi.framework.dto.SearchDTO;

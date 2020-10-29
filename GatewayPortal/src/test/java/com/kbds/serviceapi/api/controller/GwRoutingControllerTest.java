@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.kbds.serviceapi.apis.code.ServiceAuthType;
 import com.kbds.serviceapi.apis.code.ServiceLoginType;
-import com.kbds.serviceapi.apis.dto.RoutingDTO;
+import com.kbds.serviceapi.portal.api.dto.RoutingDTO;
 import com.kbds.serviceapi.common.code.BizExceptionCode;
 import com.kbds.serviceapi.framework.dto.SearchDTO;
 import com.kbds.serviceapi.setting.DefaultTestConfig;
@@ -246,7 +246,7 @@ public class GwRoutingControllerTest extends DefaultTestConfig {
   @Test
   void 서비스_삭제() throws Exception{
 
-    Long[] serviceId = {41L};
+    Long serviceId = 41L;
 
     when(gwRoutingService.deleteService(serviceId)).thenReturn(1L);
 

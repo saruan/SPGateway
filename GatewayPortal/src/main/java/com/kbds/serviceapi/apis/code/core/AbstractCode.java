@@ -1,7 +1,5 @@
 package com.kbds.serviceapi.apis.code.core;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
 /**
  * <pre>
  *  File  Name     : AbstractCode
@@ -18,5 +16,5 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public interface AbstractCode {
 
   String getType();
-  String getDesc();
+  String getCode();
 }

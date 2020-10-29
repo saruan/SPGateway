@@ -13,3 +13,7 @@
   display: flex;
   justify-content: flex-end;
 }
+
+.table > tbody > tr > td {
+  vertical-align: middle;
+}

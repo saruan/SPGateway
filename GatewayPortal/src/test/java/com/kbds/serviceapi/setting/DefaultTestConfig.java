@@ -6,12 +6,12 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kbds.serviceapi.apis.controller.GwAppController;
+import com.kbds.serviceapi.apis.controller.GwAppApiController;
 import com.kbds.serviceapi.apis.controller.GwFilterController;
-import com.kbds.serviceapi.apis.controller.GwRoutingController;
-import com.kbds.serviceapi.apis.service.GwAppService;
+import com.kbds.serviceapi.apis.controller.GwRoutingApiController;
+import com.kbds.serviceapi.portal.app.service.GwAppService;
 import com.kbds.serviceapi.apis.service.GwFilterService;
-import com.kbds.serviceapi.apis.service.GwRoutingService;
+import com.kbds.serviceapi.portal.api.service.GwRoutingService;
 import com.kbds.serviceapi.framework.security.CustomAuthenticationProvider;
 import com.kbds.serviceapi.framework.service.RoleService;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,9 +43,9 @@ import org.springframework.web.filter.CharacterEncodingFilter;
  *  </pre>
  */
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
-@WebMvcTest(controllers = {GwRoutingController.class,
+@WebMvcTest(controllers = {GwRoutingApiController.class,
                            GwFilterController.class,
-                           GwAppController.class})
+                           GwAppApiController.class})
 @ActiveProfiles(profiles = "dev")
 public class DefaultTestConfig {
 

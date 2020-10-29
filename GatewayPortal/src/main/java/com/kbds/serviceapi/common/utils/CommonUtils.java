@@ -2,9 +2,13 @@ package com.kbds.serviceapi.common.utils;
 
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.kbds.serviceapi.apis.code.core.AbstractCode;
+import com.kbds.serviceapi.common.code.BizExceptionCode;
 import com.kbds.serviceapi.common.code.CommonCode;
 import com.kbds.serviceapi.common.feign.GatewayClient;
 import com.kbds.serviceapi.framework.dto.ResponseDTO;
+import com.kbds.serviceapi.framework.exception.BizException;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.logging.log4j.ThreadContext;
@@ -38,7 +42,7 @@ public class CommonUtils {
 
   @Value("${jwt.secret-key}")
   public void setSecretKey(String secretKey) {
-    
+
     CommonUtils.secretKey = secretKey;
   }
 

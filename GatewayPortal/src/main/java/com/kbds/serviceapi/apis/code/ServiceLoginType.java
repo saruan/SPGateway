@@ -1,9 +1,10 @@
 package com.kbds.serviceapi.apis.code;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kbds.serviceapi.apis.code.core.AbstractCode;
 import java.util.Arrays;
+import jdk.nashorn.internal.objects.annotations.Constructor;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -24,15 +25,21 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ServiceLoginType implements AbstractCode {
 
-  OAUTH("1", "Oauth2.0 방식"),
-  APPKEY("2", "APPKEY 방식");
+  NONE("인증 없음", "인증 없이 사용"),
+  OAUTH("OAUTH2.0", "Oauth2.0 인증 방식"),
+  APPKEY("API_KEY", "API KEY 인증 방식");
 
-  @JsonValue
-  private final String type;
-  private final String desc;
+  private String type;
+  private String desc;
 
-  public String getDesc(){
+  public String getCode() {
 
     return name();
+  }
+
+  @JsonCreator
+  public static ServiceLoginType findByValue(String value){
+
+    return ServiceLoginType.valueOf(value);
   }
 }

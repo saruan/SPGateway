@@ -40,6 +40,8 @@ public enum BizExceptionCode {
 
   COM008("COM008", "코드 정보가 틀렸습니다."),
 
+  COM009("COM009", "API가 현재 APP에서 사용 중입니다."),
+
   USR001("USR001", "사용자 정보가 없거나 잘못 되었습니다."),
 
   DUMMY("", "");

@@ -40,7 +40,7 @@ public class CodeService {
           .forName(CommonCode.BASE_CODE_PACKAGE.getCode() + classNm);
 
       return Arrays.stream(enumClass.getEnumConstants()).
-          map(t -> new CodeDTO(t.getType(), t.getDesc())
+          map(t -> new CodeDTO(t.getCode(), t.getType())
           ).collect(Collectors.toList());
     } catch (ClassNotFoundException e) {
 
