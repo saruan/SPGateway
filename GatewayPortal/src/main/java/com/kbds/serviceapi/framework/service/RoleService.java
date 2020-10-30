@@ -80,10 +80,12 @@ public class RoleService {
         throw new BizException(BizExceptionCode.COM003);
       }
 
-      roleRepository.save(modelMapper.map(roleDTO, Role.class));
+      Role role = modelMapper.map(roleDTO, Role.class);
+
+      roleRepository.save(role);
     }catch(BizException e){
 
-      throw new BizException(BizExceptionCode.valueOf(e.getMsg()));
+      throw new BizException(BizExceptionCode.valueOf(e.getMessage()));
     }catch(Exception e){
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
@@ -99,8 +101,6 @@ public class RoleService {
   @Transactional
   public boolean hasAuthority(HttpServletRequest request, Authentication authentication) {
 
-    boolean isAuthenticated = false;
-
     // Menu, Role 전체 목록 조회 (캐싱 데이터)
     List<MenuDTO> menuDTOS = menuCustomRepository.selectListForSecurity();
 
@@ -114,11 +114,9 @@ public class RoleService {
       }
     }
 
-    isAuthenticated = authentication.getAuthorities().stream()
-        .anyMatch(r -> authority.contains(r.getAuthority()));
-
     // 현재 Context에 등록된 사용자 권한과 비교
-    return isAuthenticated;
+    return authentication.getAuthorities().stream()
+        .anyMatch(r -> authority.contains(r.getAuthority()));
   }
 
   /**
@@ -137,8 +135,8 @@ public class RoleService {
    * @param roleCd 권한 코드
    * @return 권한 등록 여부
    */
-  private boolean isRegisteredRole(String roleCd){
+  public boolean isRegisteredRole(String roleCd){
 
-    return roleRepository.findByRoleCd(roleCd) != null;
+    return roleRepository.countByRoleCd(roleCd) > 0;
   }
 }

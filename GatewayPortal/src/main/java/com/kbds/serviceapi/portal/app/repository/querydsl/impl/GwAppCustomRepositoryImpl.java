@@ -1,8 +1,8 @@
 package com.kbds.serviceapi.portal.app.repository.querydsl.impl;
 
-import static com.kbds.serviceapi.apis.entity.QGwApp.gwApp;
-import static com.kbds.serviceapi.apis.entity.QGwService.gwService;
-import static com.kbds.serviceapi.apis.entity.QGwServiceAppMapping.gwServiceAppMapping;
+import static com.kbds.serviceapi.portal.app.entity.QGwApp.gwApp;
+import static com.kbds.serviceapi.portal.api.entity.QGwService.gwService;
+import static com.kbds.serviceapi.portal.app.entity.QGwServiceAppMapping.gwServiceAppMapping;
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
 

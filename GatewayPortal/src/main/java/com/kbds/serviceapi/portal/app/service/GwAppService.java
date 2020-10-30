@@ -271,11 +271,11 @@ public class GwAppService {
    */
   public boolean isValidModifyAppNm(AppDTO reqParam, Long appId) {
 
-    return gwAppRepository.findByAppNmAndAppIdNot(reqParam.getAppNm(), appId).size() == 0;
+    return gwAppRepository.countByAppNmAndAppIdNot(reqParam.getAppNm(), appId) == 0;
   }
 
   /**
-   * 현재 사용중인 APP인지 체크
+   * 현재 사용중인 APP 체크
    *
    * @param appId APP ID
    * @return  유효 여부

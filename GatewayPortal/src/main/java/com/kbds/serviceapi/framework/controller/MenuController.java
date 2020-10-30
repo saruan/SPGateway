@@ -31,6 +31,10 @@ public class MenuController {
   @Autowired
   MenuService menuService;
 
+  /**
+   * Menu List 조회
+   * @return  Menu List Array
+   **/
   @GetMapping(value = "/v1.0/menu")
   @Transactional
   public ResponseEntity<Object> selectMenuList(){

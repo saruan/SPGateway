@@ -41,7 +41,7 @@ import org.springframework.test.web.servlet.ResultActions;
  *  </pre>
  */
 
-public class GwRoutingControllerTest extends DefaultTestConfig {
+public class GwRoutingApiControllerTest extends DefaultTestConfig {
 
   @Test
   void 서비스_조회() throws Exception{
@@ -284,7 +284,7 @@ public class GwRoutingControllerTest extends DefaultTestConfig {
     String requestBody = objectMapper.writeValueAsString(routingDTO);
     doNothing().when(gwRoutingService).registerService(routingDTO);
 
-    ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.post("/api/service/v1/routes/")
+    ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.post("/api/service/v1/routes")
         .contentType(MediaType.APPLICATION_JSON)
         .content(requestBody)
         .accept(MediaType.APPLICATION_JSON))
@@ -292,7 +292,7 @@ public class GwRoutingControllerTest extends DefaultTestConfig {
         .andExpect(status().isOk());
 
     resultActions
-        .andExpect(jsonPath("$.resultCode").value(BizExceptionCode.COM002.name()));
+        .andExpect(jsonPath("$.resultCode").value(BizExceptionCode.COM005.name()));
   }
 
   @Test
@@ -320,6 +320,6 @@ public class GwRoutingControllerTest extends DefaultTestConfig {
         .andExpect(status().isOk());
 
     resultActions
-        .andExpect(jsonPath("$.resultCode").value(BizExceptionCode.COM002.name()));
+        .andExpect(jsonPath("$.resultCode").value(BizExceptionCode.COM005.name()));
   }
 }

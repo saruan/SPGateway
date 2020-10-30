@@ -249,7 +249,7 @@ public class GwFilterControllerTest extends DefaultTestConfig {
         .andExpect(status().isOk());
 
     resultActions
-        .andExpect(jsonPath("$.resultCode").value(BizExceptionCode.COM002.name()));
+        .andExpect(jsonPath("$.resultCode").value(BizExceptionCode.COM005.name()));
   }
 
   @Test
@@ -276,7 +276,7 @@ public class GwFilterControllerTest extends DefaultTestConfig {
         .andExpect(status().isOk());
 
     resultActions
-        .andExpect(jsonPath("$.resultCode").value(BizExceptionCode.COM002.name()));
+        .andExpect(jsonPath("$.resultCode").value(BizExceptionCode.COM005.name()));
   }
 
 }

@@ -107,10 +107,8 @@ public class RoutingServiceTest {
 
     doReturn(true).when(gwRoutingCustomRepository).isRegisteredService(registRoutingDTO);
 
-    BizException ex = assertThrows(BizException.class, () -> {
-
-      gwRoutingService.registerService(registRoutingDTO);
-    });
+    BizException ex = assertThrows(BizException.class,
+        () -> gwRoutingService.registerService(registRoutingDTO));
 
     assertEquals(ex.getMessage(), BizExceptionCode.COM003.getCode());
   }

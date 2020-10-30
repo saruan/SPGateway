@@ -15,43 +15,43 @@ Gateway에 등록된 API 관리 서비스
 === RoutingService 조회
 Gateway에 등록된 API 목록을 조회합니다.
 
-include::{snippets}/gw-routing-controller-test/서비스_조회/curl-request.adoc[]
-include::{snippets}/gw-routing-controller-test/서비스_조회/request-parameters.adoc[]
-include::{snippets}/gw-routing-controller-test/서비스_조회/http-response.adoc[]
-include::{snippets}/gw-routing-controller-test/서비스_조회/response-fields.adoc[]
+include::{snippets}/gw-routing-api-controller-test/서비스_조회/curl-request.adoc[]
+include::{snippets}/gw-routing-api-controller-test/서비스_조회/request-parameters.adoc[]
+include::{snippets}/gw-routing-api-controller-test/서비스_조회/http-response.adoc[]
+include::{snippets}/gw-routing-api-controller-test/서비스_조회/response-fields.adoc[]
 
 === RoutingService 상세 조회
 Gateway에 등록된 API 상세 목록을 조회합니다.
 
-include::{snippets}/gw-routing-controller-test/서비스_상세_조회/curl-request.adoc[]
-include::{snippets}/gw-routing-controller-test/서비스_상세_조회/path-parameters.adoc[]
-include::{snippets}/gw-routing-controller-test/서비스_상세_조회/http-response.adoc[]
-include::{snippets}/gw-routing-controller-test/서비스_상세_조회/response-fields.adoc[]
+include::{snippets}/gw-routing-api-controller-test/서비스_상세_조회/curl-request.adoc[]
+include::{snippets}/gw-routing-api-controller-test/서비스_상세_조회/path-parameters.adoc[]
+include::{snippets}/gw-routing-api-controller-test/서비스_상세_조회/http-response.adoc[]
+include::{snippets}/gw-routing-api-controller-test/서비스_상세_조회/response-fields.adoc[]
 
 === RoutingService 등록
 Gateway에 API 정보를 등록합니다.
 
-include::{snippets}/gw-routing-controller-test/서비스_신규_등록/curl-request.adoc[]
-include::{snippets}/gw-routing-controller-test/서비스_신규_등록/request-fields.adoc[]
-include::{snippets}/gw-routing-controller-test/서비스_신규_등록/http-response.adoc[]
-include::{snippets}/gw-routing-controller-test/서비스_신규_등록/response-fields.adoc[]
+include::{snippets}/gw-routing-api-controller-test/서비스_신규_등록/curl-request.adoc[]
+include::{snippets}/gw-routing-api-controller-test/서비스_신규_등록/request-fields.adoc[]
+include::{snippets}/gw-routing-api-controller-test/서비스_신규_등록/http-response.adoc[]
+include::{snippets}/gw-routing-api-controller-test/서비스_신규_등록/response-fields.adoc[]
 
 === RoutingService 수정
 Gateway에 API 정보를 수정합니다.
 
-include::{snippets}/gw-routing-controller-test/서비스_수정/curl-request.adoc[]
-include::{snippets}/gw-routing-controller-test/서비스_수정/path-parameters.adoc[]
-include::{snippets}/gw-routing-controller-test/서비스_수정/request-fields.adoc[]
-include::{snippets}/gw-routing-controller-test/서비스_수정/http-response.adoc[]
-include::{snippets}/gw-routing-controller-test/서비스_수정/response-fields.adoc[]
+include::{snippets}/gw-routing-api-controller-test/서비스_수정/curl-request.adoc[]
+include::{snippets}/gw-routing-api-controller-test/서비스_수정/path-parameters.adoc[]
+include::{snippets}/gw-routing-api-controller-test/서비스_수정/request-fields.adoc[]
+include::{snippets}/gw-routing-api-controller-test/서비스_수정/http-response.adoc[]
+include::{snippets}/gw-routing-api-controller-test/서비스_수정/response-fields.adoc[]
 
 === RoutingService 삭제
 Gateway에 API 정보를 삭제합니다.
 
-include::{snippets}/gw-routing-controller-test/서비스_삭제/curl-request.adoc[]
-include::{snippets}/gw-routing-controller-test/서비스_삭제/path-parameters.adoc[]
-include::{snippets}/gw-routing-controller-test/서비스_삭제/http-response.adoc[]
-include::{snippets}/gw-routing-controller-test/서비스_삭제/response-fields.adoc[]
+include::{snippets}/gw-routing-api-controller-test/서비스_삭제/curl-request.adoc[]
+include::{snippets}/gw-routing-api-controller-test/서비스_삭제/path-parameters.adoc[]
+include::{snippets}/gw-routing-api-controller-test/서비스_삭제/http-response.adoc[]
+include::{snippets}/gw-routing-api-controller-test/서비스_삭제/response-fields.adoc[]
 
 == FilterService
 Gateway에 등록된 필터 관리 서비스
@@ -103,40 +103,40 @@ Gateway에 등록된 앱 관리 서비스
 === AppService 조회
 Gateway에 등록된 앱 목록을 조회합니다.
 
-include::{snippets}/gw-app-controller-test/앱_조회/curl-request.adoc[]
-include::{snippets}/gw-app-controller-test/앱_조회/request-parameters.adoc[]
-include::{snippets}/gw-app-controller-test/앱_조회/http-response.adoc[]
-include::{snippets}/gw-app-controller-test/앱_조회/response-fields.adoc[]
+include::{snippets}/gw-app-api-controller-test/앱_조회/curl-request.adoc[]
+include::{snippets}/gw-app-api-controller-test/앱_조회/request-parameters.adoc[]
+include::{snippets}/gw-app-api-controller-test/앱_조회/http-response.adoc[]
+include::{snippets}/gw-app-api-controller-test/앱_조회/response-fields.adoc[]
 
 === AppService 상세 조회
 Gateway에 등록된 앱을 상세 조회합니다.
 
-include::{snippets}/gw-app-controller-test/앱_상세_조회/curl-request.adoc[]
-include::{snippets}/gw-app-controller-test/앱_상세_조회/path-parameters.adoc[]
-include::{snippets}/gw-app-controller-test/앱_상세_조회/http-response.adoc[]
-include::{snippets}/gw-app-controller-test/앱_상세_조회/response-fields.adoc[]
+include::{snippets}/gw-app-api-controller-test/앱_상세_조회/curl-request.adoc[]
+include::{snippets}/gw-app-api-controller-test/앱_상세_조회/path-parameters.adoc[]
+include::{snippets}/gw-app-api-controller-test/앱_상세_조회/http-response.adoc[]
+include::{snippets}/gw-app-api-controller-test/앱_상세_조회/response-fields.adoc[]
 
 === AppService 등록
 Gateway에 앱을 신규 등록합니다.
 
-include::{snippets}/gw-app-controller-test/앱_등록/curl-request.adoc[]
-include::{snippets}/gw-app-controller-test/앱_등록/request-fields.adoc[]
-include::{snippets}/gw-app-controller-test/앱_등록/http-response.adoc[]
-include::{snippets}/gw-app-controller-test/앱_등록/response-fields.adoc[]
+include::{snippets}/gw-app-api-controller-test/앱_등록/curl-request.adoc[]
+include::{snippets}/gw-app-api-controller-test/앱_등록/request-fields.adoc[]
+include::{snippets}/gw-app-api-controller-test/앱_등록/http-response.adoc[]
+include::{snippets}/gw-app-api-controller-test/앱_등록/response-fields.adoc[]
 
 === AppService 수정
 Gateway에 앱을 수정합니다.
 
-include::{snippets}/gw-app-controller-test/앱_수정/curl-request.adoc[]
-include::{snippets}/gw-app-controller-test/앱_수정/path-parameters.adoc[]
-include::{snippets}/gw-app-controller-test/앱_수정/request-fields.adoc[]
-include::{snippets}/gw-app-controller-test/앱_수정/http-response.adoc[]
-include::{snippets}/gw-app-controller-test/앱_수정/response-fields.adoc[]
+include::{snippets}/gw-app-api-controller-test/앱_수정/curl-request.adoc[]
+include::{snippets}/gw-app-api-controller-test/앱_수정/path-parameters.adoc[]
+include::{snippets}/gw-app-api-controller-test/앱_수정/request-fields.adoc[]
+include::{snippets}/gw-app-api-controller-test/앱_수정/http-response.adoc[]
+include::{snippets}/gw-app-api-controller-test/앱_수정/response-fields.adoc[]
 
 === AppService 삭제
 Gateway에 앱을 삭제합니다.
 
-include::{snippets}/gw-app-controller-test/앱_삭제/curl-request.adoc[]
-include::{snippets}/gw-app-controller-test/앱_삭제/path-parameters.adoc[]
-include::{snippets}/gw-app-controller-test/앱_삭제/http-response.adoc[]
-include::{snippets}/gw-app-controller-test/앱_삭제/response-fields.adoc[]
+include::{snippets}/gw-app-api-controller-test/앱_삭제/curl-request.adoc[]
+include::{snippets}/gw-app-api-controller-test/앱_삭제/path-parameters.adoc[]
+include::{snippets}/gw-app-api-controller-test/앱_삭제/http-response.adoc[]
+include::{snippets}/gw-app-api-controller-test/앱_삭제/response-fields.adoc[]

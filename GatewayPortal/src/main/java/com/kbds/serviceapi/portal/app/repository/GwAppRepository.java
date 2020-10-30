@@ -46,5 +46,5 @@ public interface GwAppRepository extends CrudRepository<GwApp, Long> {
    * @param appId 앱 ID
    * @return  중복 여부
    */
-  List<GwApp> findByAppNmAndAppIdNot(String appNm, Long appId);
+  int countByAppNmAndAppIdNot(String appNm, Long appId);
 }

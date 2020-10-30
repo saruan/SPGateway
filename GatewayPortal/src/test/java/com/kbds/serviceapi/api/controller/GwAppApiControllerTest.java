@@ -13,6 +13,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.kbds.serviceapi.apis.code.ServiceAuthType;
+import com.kbds.serviceapi.apis.code.ServiceLoginType;
+import com.kbds.serviceapi.portal.api.dto.RoutingDTO;
 import com.kbds.serviceapi.portal.app.dto.AppDTO;
 import com.kbds.serviceapi.common.code.BizExceptionCode;
 import com.kbds.serviceapi.framework.dto.SearchDTO;
@@ -91,10 +94,31 @@ public class GwAppApiControllerTest extends DefaultTestConfig {
   @Test
   void 앱_상세_조회() throws Exception{
 
+    List<RoutingDTO> routingDTOS = new ArrayList<>();
+
+    RoutingDTO routingDTO = RoutingDTO.builder()
+        .serviceId(41L)
+        .filterId(1L)
+        .serviceNm("필터 서비스")
+        .servicePath("/api/filter")
+        .serviceTargetUrl("http://localhost:8080/api/service/v1/filter/")
+        .serviceDesc("필터 Service")
+        .serviceLoginType(ServiceLoginType.OAUTH)
+        .serviceAuthType(ServiceAuthType.PUBLIC)
+        .useYn("Y")
+        .filterBean("CommonFilter")
+        .filterUseYn("Y")
+        .regUserNo("1")
+        .regDt(new Date())
+        .uptDt(new Date())
+        .build();
+
+    routingDTOS.add(routingDTO);
+
     AppDetailDTO appDetailDTO = AppDetailDTO.builder()
         .appId(1L)
         .appNm("앱 서비스")
-        .serviceId(new ArrayList<>())
+        .serviceId(routingDTOS)
         .appDesc("기본 앱 서비스")
         .regUserNo("1")
         .uptUserNo("1")
@@ -120,7 +144,23 @@ public class GwAppApiControllerTest extends DefaultTestConfig {
                 fieldWithPath("resultData.appNm").description("앱 이름"),
                 fieldWithPath("resultData.appKey").description("앱키"),
                 fieldWithPath("resultData.appDesc").description("앱 설명"),
-                fieldWithPath("resultData.useYn").description("사용 유무"),
+                fieldWithPath("resultData.serviceId").description("서비스 목록"),
+
+                fieldWithPath("resultData.serviceId[].serviceId").description("서비스 ID"),
+                fieldWithPath("resultData.serviceId[].filterId").description("필터 ID"),
+                fieldWithPath("resultData.serviceId[].serviceNm").description("서비스 이름"),
+                fieldWithPath("resultData.serviceId[].serviceLoginType").description("로그인 타입"),
+                fieldWithPath("resultData.serviceId[].serviceAuthType").description("인증 타입"),
+                fieldWithPath("resultData.serviceId[].useYn").description("사용 유무"),
+                fieldWithPath("resultData.serviceId[].filterUseYn").description("필터 사용 유무"),
+                fieldWithPath("resultData.serviceId[].regUserNo").description("등록자"),
+                fieldWithPath("resultData.serviceId[].regDt").description("등록일"),
+                fieldWithPath("resultData.serviceId[].uptDt").description("수정일"),
+                fieldWithPath("resultData.serviceId[].serviceTargetUrl").description("API 서버 주소"),
+                fieldWithPath("resultData.serviceId[].filterBean").description("Filter Bean"),
+                fieldWithPath("resultData.serviceId[].serviceDesc").description("서비스 설명"),
+                fieldWithPath("resultData.serviceId[].servicePath").description("G/W 경로"),
+
                 fieldWithPath("resultData.regUserNo").description("등록자"),
                 fieldWithPath("resultData.uptUserNo").description("수정자"),
                 fieldWithPath("resultData.regDt").description("등록일"),
@@ -255,7 +295,7 @@ public class GwAppApiControllerTest extends DefaultTestConfig {
         .andExpect(status().isOk());
 
     resultActions
-        .andExpect(jsonPath("$.resultCode").value(BizExceptionCode.COM002.name()));
+        .andExpect(jsonPath("$.resultCode").value(BizExceptionCode.COM005.name()));
   }
 
   @Test
@@ -283,6 +323,6 @@ public class GwAppApiControllerTest extends DefaultTestConfig {
         .andExpect(status().isOk());
 
     resultActions
-        .andExpect(jsonPath("$.resultCode").value(BizExceptionCode.COM002.name()));
+        .andExpect(jsonPath("$.resultCode").value(BizExceptionCode.COM005.name()));
   }
 }

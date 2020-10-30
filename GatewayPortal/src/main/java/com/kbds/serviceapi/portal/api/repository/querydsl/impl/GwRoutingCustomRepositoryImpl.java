@@ -1,13 +1,13 @@
 package com.kbds.serviceapi.portal.api.repository.querydsl.impl;
 
-import static com.kbds.serviceapi.apis.entity.QGwApp.gwApp;
-import static com.kbds.serviceapi.apis.entity.QGwService.gwService;
-import static com.kbds.serviceapi.apis.entity.QGwServiceAppMapping.gwServiceAppMapping;
+import static com.kbds.serviceapi.portal.app.entity.QGwApp.gwApp;
+import static com.kbds.serviceapi.portal.api.entity.QGwService.gwService;
+import static com.kbds.serviceapi.portal.app.entity.QGwServiceAppMapping.gwServiceAppMapping;
 import static com.kbds.serviceapi.apis.entity.QGwServiceFilter.gwServiceFilter;
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
 
-import com.kbds.serviceapi.apis.dto.QRoutingDTO;
+import com.kbds.serviceapi.portal.api.dto.QRoutingDTO;
 import com.kbds.serviceapi.portal.api.dto.RoutingDTO;
 import com.kbds.serviceapi.portal.api.entity.GwService;
 import com.kbds.serviceapi.portal.api.repository.querydsl.GwRoutingCustomRepository;

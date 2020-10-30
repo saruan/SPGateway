@@ -1,5 +1,7 @@
 package com.kbds.serviceapi.portal.app.service;
 
+import com.kbds.serviceapi.common.code.BizExceptionCode;
+import com.kbds.serviceapi.framework.exception.BizException;
 import com.kbds.serviceapi.portal.app.dto.AppDTO;
 import com.kbds.serviceapi.portal.app.entity.GwServiceAppMapping;
 import com.kbds.serviceapi.portal.app.entity.key.GwServiceAppMappingKey;
@@ -35,24 +37,25 @@ public class GwServiceAppMappingService {
    */
   public void registerServiceAppMapping(AppDTO appDTO, Long id){
 
-    // Mapping 테이블에 데이터 등록
-    List<Long> serviceIdList = appDTO.getServiceId();
-    List<GwServiceAppMapping> params = new ArrayList<>();
+    try {
+      // Mapping 테이블에 데이터 등록
+      List<Long> serviceIdList = appDTO.getServiceId();
 
-    gwServiceAppMappingRepository.deleteByIdAppIdAndIdServiceIdNotIn(id, appDTO.getServiceId());
+      gwServiceAppMappingRepository.deleteByIdAppIdAndIdServiceIdNotIn(id, appDTO.getServiceId());
 
-    if (serviceIdList.size() > 0) {
+      if (serviceIdList.size() > 0) {
 
-      for (Long aLong : serviceIdList) {
+        for (Long aLong : serviceIdList) {
 
-        GwServiceAppMappingKey key = new GwServiceAppMappingKey(aLong, id);
-        GwServiceAppMapping param = new GwServiceAppMapping(key);
+          GwServiceAppMappingKey key = new GwServiceAppMappingKey(aLong, id);
+          GwServiceAppMapping param = new GwServiceAppMapping(key);
 
-        params.add(param);
+          gwServiceAppMappingRepository.save(param);
+        }
       }
+    }catch(Exception e){
 
-      // Mapping 테이블 갱신
-      gwServiceAppMappingRepository.saveAll(params);
+      throw new BizException(BizExceptionCode.COM001, e.toString());
     }
   }
 }

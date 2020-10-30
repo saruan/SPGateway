@@ -1,9 +1,7 @@
 package com.kbds.serviceapi.apis.code;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
 import com.kbds.serviceapi.apis.code.core.AbstractCode;
-import java.util.Arrays;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

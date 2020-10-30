@@ -23,6 +23,6 @@ public interface RoleRepository extends CrudRepository<Role, Long> {
    * @param roleCd
    * @return
    */
-  Role findByRoleCd(String roleCd);
+  int countByRoleCd(String roleCd);
 
 }
