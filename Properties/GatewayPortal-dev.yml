@@ -37,8 +37,7 @@ spring:
         client-id: GatewayPortal
         client-secret: GatewayPortal!
       resource:
-        token-info-url: http://localhost:7777/oauth/check_token
-
+        token-info-uri: http://localhost:7777/oauth/check_token
 # 로그 설정
 logging:
   config: classpath:${spring.profiles.active}/log4j2.yml
