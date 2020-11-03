@@ -31,6 +31,13 @@ spring:
     port: 5672
     username: guest
     password: guest
+  security:
+    oauth2:
+      client:
+        client-id: GatewayPortal
+        client-secret: GatewayPortal!
+      resource:
+        token-info-url: http://localhost:7777/oauth/check_token
 
 # 로그 설정
 logging:
