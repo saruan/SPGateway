@@ -31,13 +31,15 @@ spring:
     port: 5672
     username: guest
     password: guest
-  security:
-    oauth2:
-      client:
-        client-id: GatewayPortal
-        client-secret: GatewayPortal!
-      resource:
-        token-info-uri: http://localhost:7777/oauth/check_token
+
+# Oauth Token Check
+security:
+  oauth2:
+    client:
+      client-id: GatewayPortal
+      client-secret: GatewayPortal!
+    resource:
+      token-info-uri: http://localhost:7777/oauth/check_token
 # 로그 설정
 logging:
   config: classpath:${spring.profiles.active}/log4j2.yml
