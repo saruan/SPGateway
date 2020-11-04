@@ -51,6 +51,9 @@ services:
   bus:
     host: http://localhost:9999/
     refresh: /actuator/bus-refresh
+  auth:
+    host: http://localhost:7777
+    token: /oauth/token
 
 #인증 키관리    
 jwt:
