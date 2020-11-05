@@ -54,7 +54,7 @@ services:
   auth:
     host: http://localhost:7777
     token: /oauth/token
-    check-token: /oauth/check_token
+    basic: Basic Y2xpZW50MjpwYXNzd29yZA==
 
 #인증 키관리    
 jwt:
