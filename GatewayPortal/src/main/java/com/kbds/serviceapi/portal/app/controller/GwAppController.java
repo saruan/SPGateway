@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
  * </pre>
  */
 @RestController
-@RequestMapping("/portal/service")
+@RequestMapping("/portal/service/v1.0/app")
 public class GwAppController {
 
   @Autowired
@@ -43,7 +43,7 @@ public class GwAppController {
    *
    * @return  App 목록
    */
-  @GetMapping(value = "/v1/app")
+  @GetMapping
   public ResponseEntity<Object> findApps(@ModelAttribute SearchDTO searchDTO) {
 
     Object result = CommonUtils.getResponseEntity(gwAppService.findApps(searchDTO));
@@ -56,7 +56,7 @@ public class GwAppController {
    *
    * @return  App 상세 데이터
    */
-  @GetMapping(value = "/v1/app/{appId}")
+  @GetMapping(value = "/{appId}")
   public ResponseEntity<Object> findAppDetail(@PathVariable Long appId) {
 
     Object result = CommonUtils.getResponseEntity(gwAppService.findAppDetail(appId));
@@ -70,7 +70,7 @@ public class GwAppController {
    * @param params  등록 파라미터
    * @return  등록 결과
    */
-  @PostMapping(value = "/v1/app")
+  @PostMapping
   public ResponseEntity<Object> registerApp(@RequestBody @Valid AppDTO params) {
 
     gwAppService.registerApp(params);
@@ -86,7 +86,7 @@ public class GwAppController {
    * @param params  수정 파라미터
    * @return  수정 결과
    */
-  @PutMapping(value = "/v1/app/{appId}")
+  @PutMapping(value = "/{appId}")
   public ResponseEntity<Object> updateApp(@RequestBody @Valid AppDTO params,
       @PathVariable Long appId) {
 
@@ -103,7 +103,7 @@ public class GwAppController {
    * @param appId 삭제할 AppId
    * @return  삭제 결과
    */
-  @DeleteMapping(value = "/v1/app/{appId}")
+  @DeleteMapping(value = "/{appId}")
   public ResponseEntity<Object> deleteApp(@PathVariable Long appId) {
 
     gwAppService.deleteApp(appId);

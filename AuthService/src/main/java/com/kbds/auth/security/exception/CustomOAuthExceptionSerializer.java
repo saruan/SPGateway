@@ -3,8 +3,10 @@ package com.kbds.auth.security.exception;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.kbds.auth.common.code.BizExceptionCode;
 import com.kbds.auth.common.utils.StringUtils;
 import java.io.IOException;
+import org.apache.commons.lang3.EnumUtils;
 
 /**
  * <pre>
@@ -33,7 +35,13 @@ public class CustomOAuthExceptionSerializer extends StdSerializer<CustomOAuthExc
 
     jsonGenerator.writeStartObject();
     jsonGenerator.writeObjectField("resultCode", value.getMessage());
-    jsonGenerator.writeNumberField("authStatus", value.getHttpErrorCode());
+
+    if (EnumUtils.isValidEnum(BizExceptionCode.class, value.getMessage())) {
+
+      jsonGenerator
+          .writeObjectField("resultMessage",
+              BizExceptionCode.valueOf(value.getMessage()).getDesc());
+    }
 
     if (!StringUtils.isEmptyParams(value.getArg())) {
 

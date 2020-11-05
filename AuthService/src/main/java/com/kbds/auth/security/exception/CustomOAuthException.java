@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
  *  Class Name     : GatewayException.java
  *  Description    : Gateway 실패용 커스텀 Exception
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
- * 
+ *
  * -------------------------------------------------------------------------------
  *     변경No        변경일자        	       변경자          Description
  * -------------------------------------------------------------------------------

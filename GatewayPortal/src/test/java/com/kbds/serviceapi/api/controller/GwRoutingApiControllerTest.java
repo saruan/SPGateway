@@ -51,7 +51,7 @@ public class GwRoutingApiControllerTest extends DefaultTestConfig {
         .filterId(1L)
         .serviceNm("필터 서비스")
         .servicePath("/api/filter")
-        .serviceTargetUrl("http://localhost:8080/api/service/v1/filter/")
+        .serviceTargetUrl("http://localhost:8080/api/service/v1.0/filter/")
         .serviceDesc("필터 Service")
         .serviceLoginType(ServiceLoginType.OAUTH)
         .serviceAuthType(ServiceAuthType.PUBLIC)
@@ -70,7 +70,7 @@ public class GwRoutingApiControllerTest extends DefaultTestConfig {
 
     when(gwRoutingService.findServices(searchDTO)).thenReturn(routingListDTO);
 
-    mockMvc.perform(get("/api/service/v1/routes/")
+    mockMvc.perform(get("/api/service/v1.0/routes/")
           .contentType(MediaType.APPLICATION_JSON)
           .param("name", "필터")
           .param("servicePath", "/api/filter")
@@ -109,7 +109,7 @@ public class GwRoutingApiControllerTest extends DefaultTestConfig {
         .filterId(1L)
         .serviceNm("필터 서비스")
         .servicePath("/api/filter")
-        .serviceTargetUrl("http://localhost:8080/api/service/v1/filter/")
+        .serviceTargetUrl("http://localhost:8080/api/service/v1.0/filter/")
         .serviceDesc("필터 Service")
         .serviceLoginType(ServiceLoginType.OAUTH)
         .serviceAuthType(ServiceAuthType.PUBLIC)
@@ -125,7 +125,7 @@ public class GwRoutingApiControllerTest extends DefaultTestConfig {
 
     when(gwRoutingService.findServiceDetail(serviceId)).thenReturn(routingDTO);
 
-    mockMvc.perform(RestDocumentationRequestBuilders.get("/api/service/v1/routes/{id}", serviceId)
+    mockMvc.perform(RestDocumentationRequestBuilders.get("/api/service/v1.0/routes/{id}", serviceId)
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
         .andDo(print())
@@ -161,7 +161,7 @@ public class GwRoutingApiControllerTest extends DefaultTestConfig {
         .filterId(1L)
         .serviceNm("신규 API 서비스")
         .servicePath("/api/test")
-        .serviceTargetUrl("http://localhost:8080/api/service/v1/filter/")
+        .serviceTargetUrl("http://localhost:8080/api/service/v1.0/filter/")
         .serviceDesc("신규 등록 API 서비스")
         .serviceLoginType(ServiceLoginType.OAUTH)
         .serviceAuthType(ServiceAuthType.PUBLIC)
@@ -171,7 +171,7 @@ public class GwRoutingApiControllerTest extends DefaultTestConfig {
     String requestBody = objectMapper.writeValueAsString(routingDTO);
     doNothing().when(gwRoutingService).registerService(routingDTO);
 
-    mockMvc.perform(RestDocumentationRequestBuilders.post("/api/service/v1/routes/")
+    mockMvc.perform(RestDocumentationRequestBuilders.post("/api/service/v1.0/routes/")
         .contentType(MediaType.APPLICATION_JSON)
         .content(requestBody)
         .accept(MediaType.APPLICATION_JSON))
@@ -203,7 +203,7 @@ public class GwRoutingApiControllerTest extends DefaultTestConfig {
         .filterId(1L)
         .serviceNm("수정 API 서비스")
         .servicePath("/api/modify")
-        .serviceTargetUrl("http://localhost:8080/api/service/v1/filter/")
+        .serviceTargetUrl("http://localhost:8080/api/service/v1.0/filter/")
         .serviceDesc("수정 등록 API 서비스")
         .serviceLoginType(ServiceLoginType.OAUTH)
         .serviceAuthType(ServiceAuthType.PUBLIC)
@@ -215,7 +215,7 @@ public class GwRoutingApiControllerTest extends DefaultTestConfig {
 
     doNothing().when(gwRoutingService).updateService(routingDTO, serviceId);
 
-    mockMvc.perform(RestDocumentationRequestBuilders.put("/api/service/v1/routes/{id}", serviceId)
+    mockMvc.perform(RestDocumentationRequestBuilders.put("/api/service/v1.0/routes/{id}", serviceId)
         .contentType(MediaType.APPLICATION_JSON)
         .content(requestBody)
         .accept(MediaType.APPLICATION_JSON))
@@ -250,7 +250,7 @@ public class GwRoutingApiControllerTest extends DefaultTestConfig {
 
     when(gwRoutingService.deleteService(serviceId)).thenReturn(1L);
 
-    mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/service/v1/routes/{id}", 41L)
+    mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/service/v1.0/routes/{id}", 41L)
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
         .andDo(print())
@@ -274,7 +274,7 @@ public class GwRoutingApiControllerTest extends DefaultTestConfig {
     RoutingDTO routingDTO = RoutingDTO.builder()
         .filterId(1L)
         .servicePath("/api/test")
-        .serviceTargetUrl("http://localhost:8080/api/service/v1/filter/")
+        .serviceTargetUrl("http://localhost:8080/api/service/v1.0/filter/")
         .serviceDesc("신규 등록 API 서비스")
         .serviceLoginType(ServiceLoginType.OAUTH)
         .serviceAuthType(ServiceAuthType.PUBLIC)
@@ -284,7 +284,7 @@ public class GwRoutingApiControllerTest extends DefaultTestConfig {
     String requestBody = objectMapper.writeValueAsString(routingDTO);
     doNothing().when(gwRoutingService).registerService(routingDTO);
 
-    ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.post("/api/service/v1/routes")
+    ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.post("/api/service/v1.0/routes")
         .contentType(MediaType.APPLICATION_JSON)
         .content(requestBody)
         .accept(MediaType.APPLICATION_JSON))
@@ -302,7 +302,7 @@ public class GwRoutingApiControllerTest extends DefaultTestConfig {
     RoutingDTO routingDTO = RoutingDTO.builder()
         .filterId(1L)
         .serviceNm("수정 API")
-        .serviceTargetUrl("http://localhost:8080/api/service/v1/filter/")
+        .serviceTargetUrl("http://localhost:8080/api/service/v1.0/filter/")
         .serviceDesc("신규 등록 API 서비스")
         .serviceLoginType(ServiceLoginType.OAUTH)
         .serviceAuthType(ServiceAuthType.PUBLIC)
@@ -312,7 +312,7 @@ public class GwRoutingApiControllerTest extends DefaultTestConfig {
     String requestBody = objectMapper.writeValueAsString(routingDTO);
     doNothing().when(gwRoutingService).registerService(routingDTO);
 
-    ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.post("/api/service/v1/routes/")
+    ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.post("/api/service/v1.0/routes/")
         .contentType(MediaType.APPLICATION_JSON)
         .content(requestBody)
         .accept(MediaType.APPLICATION_JSON))

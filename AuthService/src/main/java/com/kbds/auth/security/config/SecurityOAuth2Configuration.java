@@ -1,7 +1,7 @@
 package com.kbds.auth.security.config;
 
 import com.kbds.auth.security.exception.CustomOAuthResponseExceptionTranslator;
-import com.kbds.auth.security.config.OAuth2RefreshConfiguration.CustomUserDetailsService;
+import com.kbds.auth.security.service.SPUserDetailService;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -38,7 +38,7 @@ public class SecurityOAuth2Configuration extends AuthorizationServerConfigurerAd
   private DataSource dataSource;
 
   @Autowired
-  private CustomUserDetailsService customUserDetailsService;
+  private SPUserDetailService SPUserDetailService;
 
   @Bean
   public TokenStore tokenStore() {
@@ -64,6 +64,6 @@ public class SecurityOAuth2Configuration extends AuthorizationServerConfigurerAd
     endpoints.authenticationManager(authenticationManager);
     endpoints.tokenStore(tokenStore());
     endpoints.exceptionTranslator(new CustomOAuthResponseExceptionTranslator());
-    endpoints.userDetailsService(customUserDetailsService);
+    endpoints.userDetailsService(SPUserDetailService);
   }
 }

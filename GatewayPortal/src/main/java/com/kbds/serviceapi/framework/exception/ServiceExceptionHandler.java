@@ -1,10 +1,17 @@
 package com.kbds.serviceapi.framework.exception;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.kbds.serviceapi.apis.dto.EmptyDataDTO;
 import com.kbds.serviceapi.common.code.BizExceptionCode;
 import com.kbds.serviceapi.common.code.SystemExceptionCode;
 import com.kbds.serviceapi.framework.dto.ResponseDTO;
+import feign.FeignException;
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,14 +99,34 @@ public class ServiceExceptionHandler {
             BizExceptionCode.COM005.getMsg()), HttpStatus.OK);
   }
 
+  /**
+   * FeignClient Exception Handler
+   *
+   * @param ex
+   * @return
+   */
+  @ExceptionHandler(FeignException.class)
+  public ResponseEntity<ResponseDTO> feignClientExceptionHandler(
+      FeignException ex) throws JsonProcessingException {
+
+    // 오류 로그 출력
+    logger.error(ex.getMessage());
+
+    ObjectMapper mapper = new ObjectMapper();
+
+    ResponseDTO responseDTO = mapper.readValue(ex.contentUTF8(), ResponseDTO.class);
+
+    return new ResponseEntity<>(responseDTO, HttpStatus.resolve(ex.status()));
+  }
 
   /**
    * ResponseDTO 오류 객체 생성
-   * @param code  오류 코드
-   * @param msg 오류 메시지
-   * @return  ResponseDTO 객체
+   *
+   * @param code 오류 코드
+   * @param msg  오류 메시지
+   * @return ResponseDTO 객체
    */
-  private ResponseDTO setExceptionObject(String code, String msg){
+  private ResponseDTO setExceptionObject(String code, String msg) {
 
     ResponseDTO responseDTO = new ResponseDTO();
 

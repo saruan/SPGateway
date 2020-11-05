@@ -131,6 +131,11 @@
       <artifactId>maven-antrun-plugin</artifactId>
       <version>1.8</version>
     </dependency>
+    <!--Oauth2 Resource Server -->
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-oauth2</artifactId>
+    </dependency>
     <!-- test -->
     <dependency>
       <groupId>org.springframework.boot</groupId>

@@ -1,4 +1,5 @@
 import axios from "axios";
+import React from "react";
 
 /**
  * 공통 Axios Get 요청
@@ -9,29 +10,15 @@ import axios from "axios";
 export function getRequest(callback: Function, url: string, params: URLSearchParams) {
 
   axios.get(url, {
+    headers: {
+      Authorization: "Bearer " + localStorage.getItem("access_token"),
+    },
     params: params
   })
   .then(res => {
 
-    if (res.data.resultCode !== '200') {
-
-      alert(res.data.resultMessage);
-    }
-
     callback(res.data.resultData);
-  }).catch((error) => {
-
-    if (error.response) {
-
-      alert(error.response.data.resultMessage)
-    } else if (error.request) {
-
-      alert(error.request)
-    } else {
-
-      alert(error.message)
-    }
-  });
+  }).catch((error) => errorCallback(error));
 }
 
 /**
@@ -42,8 +29,12 @@ export function getRequest(callback: Function, url: string, params: URLSearchPar
  */
 export function postRequest(callback: Function, url: string, params: any) {
 
-  axios.post(url, params)
-
+  axios.post(url, {
+    headers: {
+      Authorization: "Bearer " + localStorage.getItem("access_token"),
+    },
+    params: params
+  })
   .then(res => {
 
     if (res.data.resultCode !== '200') {
@@ -75,10 +66,13 @@ export function postRequest(callback: Function, url: string, params: any) {
  */
 export function putRequest(callback: Function, url: string, params: any) {
 
-  axios.put(url, params)
-
+  axios.put(url,
+      params, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("access_token"),
+        }
+      })
   .then(res => {
-
     if (res.data.resultCode !== '200') {
 
       alert(res.data.resultMessage);
@@ -108,8 +102,11 @@ export function putRequest(callback: Function, url: string, params: any) {
  */
 export function deleteRequest(callback: Function, url: string) {
 
-  axios.delete(url)
-
+  axios.delete(url, {
+    headers: {
+      Authorization: "Bearer " + localStorage.getItem("access_token"),
+    }
+  })
   .then(res => {
 
     if (res.data.resultCode !== '200') {
@@ -131,4 +128,26 @@ export function deleteRequest(callback: Function, url: string) {
       alert(error.message)
     }
   });
+}
+
+/**
+ * Axios 오류 처리용 Callback 함수
+ * @param error error object
+ */
+const errorCallback = (error) => {
+
+  if (error.response) {
+
+    if (error.response.status === 401) {
+
+      //window.location.href = "/"
+    } else {
+
+      alert(error.response.data.resultMessage)
+    }
+
+  } else {
+
+    alert(error.message)
+  }
 }

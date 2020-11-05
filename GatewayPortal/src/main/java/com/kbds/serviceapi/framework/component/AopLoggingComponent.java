@@ -39,7 +39,6 @@ public class AopLoggingComponent {
   @Around("execution(* com.kbds.serviceapi.apis.controller.*.*(..)) || execution(* com.kbds.serviceapi.framework.exception.ServiceExceptionHandler.*(..))")
   public Object setCommonLogParams(ProceedingJoinPoint pjp) throws Throwable {
 
-    // 추후 인증서버 도입 시 변경 필요..현재는 공통 기능에서 사용자 번호를 알 수 있는 방법이 없음
     CommonUtils.setCommonLog(request.getRequestURI(), "1");
 
     return pjp.proceed();

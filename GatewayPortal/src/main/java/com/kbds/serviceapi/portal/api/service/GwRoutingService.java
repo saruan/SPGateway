@@ -3,8 +3,8 @@ package com.kbds.serviceapi.portal.api.service;
 import com.kbds.serviceapi.apis.dto.EmptyDataDTO;
 import com.kbds.serviceapi.portal.api.dto.RoutingDTO;
 import com.kbds.serviceapi.portal.api.entity.GwService;
-import com.kbds.serviceapi.apis.entity.GwServiceFilter;
-import com.kbds.serviceapi.apis.repository.GwFilterRepository;
+import com.kbds.serviceapi.portal.filter.entity.GwServiceFilter;
+import com.kbds.serviceapi.portal.filter.repository.GwFilterRepository;
 import com.kbds.serviceapi.portal.api.repository.GwRoutingRepository;
 import com.kbds.serviceapi.portal.api.repository.querydsl.GwRoutingCustomRepository;
 import com.kbds.serviceapi.common.code.BizExceptionCode;
@@ -192,12 +192,6 @@ public class GwRoutingService {
   public long deleteService(Long serviceId) {
 
     long deletedCnt;
-
-    // 필수 파라미터 체크, 기본적으로 API 전체 삭제는 허용하지 않는다.
-    if (serviceId == null) {
-
-      throw new BizException(BizExceptionCode.COM002);
-    }
 
     try {
 

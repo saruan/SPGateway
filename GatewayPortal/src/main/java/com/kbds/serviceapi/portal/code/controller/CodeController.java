@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
  *  </pre>
  */
 @RestController
-@RequestMapping("/portal/")
+@RequestMapping("/portal/v1.0/code")
 public class CodeController {
 
   @Autowired
@@ -43,7 +43,7 @@ public class CodeController {
    * @param type 코드 클래스명
    * @return 결과 리스트
    */
-  @GetMapping("/code/{type}")
+  @GetMapping("/{type}")
   public ResponseEntity<Object> getCode(@PathVariable String type) {
 
     return new ResponseEntity<>(CommonUtils.getResponseEntity(codeService.convertEnumToValues(type))

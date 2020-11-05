@@ -1,52 +1,29 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Nav, Navbar} from 'react-bootstrap'
 import axios from 'axios';
 
-export default class HeaderLayer extends React.Component {
+export default function HeaderLayer() {
 
-  state = {
-    menuList: []
-  }
+  const [menuList, setMenuList] = useState([])
 
-  componentDidMount() {
+  useEffect(() => {
 
-    this.getMenuList();
-  }
+    axios.get('/portal/v1.0/menu').then(res => setMenuList(res.data))
+  }, []);
 
-  /**
-   * Menu목록 조회
-   */
-  getMenuList() {
-
-    axios.get('/portal/v1.0/menu').then(res => {
-
-      const menus = res.data;
-
-      this.setState({
-
-        menuList: menus
-      });
-    })
-  }
-
-  render() {
-
-    return (
-        <div>
-          <Navbar bg="dark" variant={"dark"} expand="lg">
-            <Navbar.Brand href="/">SPortal</Navbar.Brand>
-            <Navbar.Toggle aria-controls="basic-navbar-nav"/>
-            <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className="mr-auto">
-                {this.state.menuList.map((menus, index) => {
-
-                  let menu: any = menus;
-                  return (<Nav.Link key={index} href={menu.menuUrl}>{menu.menuNm}</Nav.Link>)
-                })}
-              </Nav>
-            </Navbar.Collapse>
-          </Navbar>
-        </div>
-    )
-  }
+  return (
+      <div>
+        <Navbar bg="dark" variant={"dark"} expand="lg">
+          <Navbar.Brand href="/">SPortal</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav"/>
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="mr-auto">
+              {menuList.map((menu: any, index) => {
+                return (<Nav.Link key={index} href={menu.menuUrl}>{menu.menuNm}</Nav.Link>)
+              })}
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
+      </div>
+  )
 }

@@ -66,7 +66,7 @@ public class GwAppApiControllerTest extends DefaultTestConfig {
 
     when(gwAppService.findApps(searchDTO)).thenReturn(appDTOList);
 
-    mockMvc.perform(RestDocumentationRequestBuilders.get("/api/service/v1/app/")
+    mockMvc.perform(RestDocumentationRequestBuilders.get("/api/service/v1.0/app/")
         .contentType(MediaType.APPLICATION_JSON)
         .param("name", "앱 서비스")
         .accept(MediaType.APPLICATION_JSON))
@@ -101,7 +101,7 @@ public class GwAppApiControllerTest extends DefaultTestConfig {
         .filterId(1L)
         .serviceNm("필터 서비스")
         .servicePath("/api/filter")
-        .serviceTargetUrl("http://localhost:8080/api/service/v1/filter/")
+        .serviceTargetUrl("http://localhost:8080/api/service/v1.0/filter/")
         .serviceDesc("필터 Service")
         .serviceLoginType(ServiceLoginType.OAUTH)
         .serviceAuthType(ServiceAuthType.PUBLIC)
@@ -128,7 +128,7 @@ public class GwAppApiControllerTest extends DefaultTestConfig {
 
     when(gwAppService.findAppDetail(1L)).thenReturn(appDetailDTO);
 
-    mockMvc.perform(RestDocumentationRequestBuilders.get("/api/service/v1/app/{id}", 1L)
+    mockMvc.perform(RestDocumentationRequestBuilders.get("/api/service/v1.0/app/{id}", 1L)
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
         .andDo(print())
@@ -184,7 +184,7 @@ public class GwAppApiControllerTest extends DefaultTestConfig {
     String requestBody = objectMapper.writeValueAsString(appDTO);
     doNothing().when(gwAppService).registerApp(appDTO);
 
-    mockMvc.perform(RestDocumentationRequestBuilders.post("/api/service/v1/app/")
+    mockMvc.perform(RestDocumentationRequestBuilders.post("/api/service/v1.0/app/")
         .contentType(MediaType.APPLICATION_JSON)
         .content(requestBody)
         .accept(MediaType.APPLICATION_JSON))
@@ -222,7 +222,7 @@ public class GwAppApiControllerTest extends DefaultTestConfig {
     String requestBody = objectMapper.writeValueAsString(appDTO);
     doNothing().when(gwAppService).updateApp(appDTO, 1L);
 
-    mockMvc.perform(RestDocumentationRequestBuilders.put("/api/service/v1/app/{id}", 1L)
+    mockMvc.perform(RestDocumentationRequestBuilders.put("/api/service/v1.0/app/{id}", 1L)
         .contentType(MediaType.APPLICATION_JSON)
         .content(requestBody)
         .accept(MediaType.APPLICATION_JSON))
@@ -254,7 +254,7 @@ public class GwAppApiControllerTest extends DefaultTestConfig {
 
     doNothing().when(gwAppService).deleteApp(appId);
 
-    mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/service/v1/app/{id}", 1L)
+    mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/service/v1.0/app/{id}", 1L)
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
         .andDo(print())
@@ -287,7 +287,7 @@ public class GwAppApiControllerTest extends DefaultTestConfig {
     doNothing().when(gwAppService).registerApp(appDTO);
 
     ResultActions resultActions =
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/service/v1/app/")
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/service/v1.0/app/")
         .contentType(MediaType.APPLICATION_JSON)
         .content(requestBody)
         .accept(MediaType.APPLICATION_JSON))
@@ -315,7 +315,7 @@ public class GwAppApiControllerTest extends DefaultTestConfig {
     doNothing().when(gwAppService).updateApp(appDTO, 1L);
 
     ResultActions resultActions =
-        mockMvc.perform(RestDocumentationRequestBuilders.put("/api/service/v1/app/{id}", 1L)
+        mockMvc.perform(RestDocumentationRequestBuilders.put("/api/service/v1.0/app/{id}", 1L)
         .contentType(MediaType.APPLICATION_JSON)
         .content(requestBody)
         .accept(MediaType.APPLICATION_JSON))

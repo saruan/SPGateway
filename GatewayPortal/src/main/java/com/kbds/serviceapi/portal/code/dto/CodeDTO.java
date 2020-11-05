@@ -2,12 +2,10 @@ package com.kbds.serviceapi.portal.code.dto;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.kbds.serviceapi.apis.code.core.AbstractCode;
 import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 
 /**
@@ -24,8 +22,8 @@ import lombok.NoArgsConstructor;
  * </pre>
  */
 
-@Data
 @AllArgsConstructor
+@Getter
 @JsonAutoDetect(fieldVisibility = Visibility.ANY)
 public class CodeDTO implements Serializable {
 

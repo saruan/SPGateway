@@ -10,6 +10,7 @@ import com.kbds.serviceapi.framework.dto.ResponseDTO;
 import com.kbds.serviceapi.framework.exception.BizException;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.ThreadContext;
 import org.slf4j.Logger;
@@ -105,5 +106,11 @@ public class CommonUtils {
 
     ThreadContext.put("SERVICE_DESC", serviceDesc);
     ThreadContext.put("REG_USER_NO", regUserNo);
+  }
+
+
+  public static String[] test(List<String> data){
+
+    return data.toArray(new String[0]);
   }
 }

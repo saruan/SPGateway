@@ -105,7 +105,7 @@ export function ApiManage({
 
       handleClose();
       refreshList()
-    }, '/api/service/v1/routes/', inputs)
+    }, '/api/service/v1.0/routes/', inputs)
   }
 
   /**
@@ -135,7 +135,7 @@ export function ApiManage({
 
       handleClose()
       refreshList()
-    }, '/api/service/v1/routes/' + serviceDetail.serviceId, inputs)
+    }, '/api/service/v1.0/routes/' + serviceDetail.serviceId, inputs)
   }
 
   /**

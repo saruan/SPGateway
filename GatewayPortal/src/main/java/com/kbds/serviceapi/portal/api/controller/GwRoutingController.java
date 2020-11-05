@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  */
 @RestController
-@RequestMapping("/portal/service")
+@RequestMapping("/portal/service/v1.0/routes")
 public class GwRoutingController {
 
   @Autowired
@@ -45,7 +45,7 @@ public class GwRoutingController {
    * 
    * @return  서비스 조회 결과
    */
-  @GetMapping(value = "/v1/routes")
+  @GetMapping
   public ResponseEntity<Object> findServices(@ModelAttribute SearchDTO searchDTO) {
 
     Object result = CommonUtils.getResponseEntity(gwRoutingService.findServices(searchDTO));
@@ -58,7 +58,7 @@ public class GwRoutingController {
    * 
    * @return Gateway에 등록할 라우팅 목록
    */
-  @GetMapping(value = "/v1/routes/gateway")
+  @GetMapping(value = "/gateway")
   public ResponseEntity<Object> findGwServices() {
 
     Object result = CommonUtils.getResponseEntity(gwRoutingService.findGwServices());
@@ -72,7 +72,7 @@ public class GwRoutingController {
    * 
    * @return  서비스 상세 데이터
    */
-  @GetMapping(value = "/v1/routes/{id}")
+  @GetMapping(value = "/{id}")
   public ResponseEntity<Object> findServiceDetail(@PathVariable Long id) {
 
     Object result = CommonUtils.getResponseEntity(gwRoutingService.findServiceDetail(id));
@@ -86,7 +86,7 @@ public class GwRoutingController {
    * @param params  등록 파라미터
    * @return  등록 결과
    */
-  @PostMapping(value = "/v1/routes")
+  @PostMapping
   public ResponseEntity<Object> registerService(@RequestBody @Valid RoutingDTO params) {
 
     gwRoutingService.registerService(params);
@@ -102,7 +102,7 @@ public class GwRoutingController {
    * @param params  수정 파라미터
    * @return  수정 결과
    */
-  @PutMapping(value = "/v1/routes/{id}")
+  @PutMapping(value = "/{id}")
   public ResponseEntity<Object> updateService(@PathVariable Long id,
       @RequestBody @Valid RoutingDTO params) {
 
@@ -119,7 +119,7 @@ public class GwRoutingController {
    * @param id  삭제할 ID
    * @return  삭제 결과
    */
-  @DeleteMapping(value = "/v1/routes/{id}")
+  @DeleteMapping(value = "/{id}")
   public ResponseEntity<Object> deleteService(@PathVariable Long id) {
 
     gwRoutingService.deleteService(id);

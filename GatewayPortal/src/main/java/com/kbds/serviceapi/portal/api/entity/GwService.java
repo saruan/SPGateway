@@ -5,7 +5,7 @@ import com.kbds.serviceapi.apis.code.ServiceLoginType;
 import com.kbds.serviceapi.apis.code.converter.ServiceAuthTypeConverter;
 import com.kbds.serviceapi.apis.code.converter.ServiceLoginTypeConverter;
 import com.kbds.serviceapi.apis.entity.AuditLog;
-import com.kbds.serviceapi.apis.entity.GwServiceFilter;
+import com.kbds.serviceapi.portal.filter.entity.GwServiceFilter;
 import com.kbds.serviceapi.portal.app.entity.GwServiceAppMapping;
 import java.io.Serializable;
 import java.util.List;

@@ -5,11 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-import com.kbds.serviceapi.apis.dto.FilterDTO;
-import com.kbds.serviceapi.apis.entity.GwServiceFilter;
-import com.kbds.serviceapi.apis.repository.querydsl.GwFilterCustomRepository;
-import com.kbds.serviceapi.apis.repository.GwFilterRepository;
-import com.kbds.serviceapi.apis.service.GwFilterService;
+import com.kbds.serviceapi.portal.filter.dto.FilterDTO;
+import com.kbds.serviceapi.portal.filter.entity.GwServiceFilter;
+import com.kbds.serviceapi.portal.filter.repository.querydsl.GwFilterCustomRepository;
+import com.kbds.serviceapi.portal.filter.repository.GwFilterRepository;
+import com.kbds.serviceapi.portal.filter.service.GwFilterService;
 import com.kbds.serviceapi.common.code.BizExceptionCode;
 import com.kbds.serviceapi.framework.dto.SearchDTO;
 import com.kbds.serviceapi.framework.exception.BizException;

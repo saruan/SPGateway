@@ -16,14 +16,14 @@ export function AppListComponent() {
 
   useEffect(() => {
 
-    getRequest((data) => setAppList(data), '/portal/service/v1/app', new URLSearchParams())
+    getRequest((data) => setAppList(data), '/portal/service/v1.0/app', new URLSearchParams())
   }, [])
 
   /**
    * App List 갱신
    */
   const refreshAppList = () => getRequest((data) => setAppList(data),
-      '/portal/service/v1/app', new URLSearchParams())
+      '/portal/service/v1.0/app', new URLSearchParams())
 
   /**
    * Row 비고 버튼 정의

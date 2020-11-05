@@ -59,43 +59,43 @@ Gateway에 등록된 필터 관리 서비스
 === FilterService 조회
 Gateway에 등록된 필터 목록을 조회합니다.
 
-include::{snippets}/gw-filter-controller-test/필터_조회/curl-request.adoc[]
-include::{snippets}/gw-filter-controller-test/필터_조회/request-parameters.adoc[]
-include::{snippets}/gw-filter-controller-test/필터_조회/http-response.adoc[]
-include::{snippets}/gw-filter-controller-test/필터_조회/response-fields.adoc[]
+include::{snippets}/gw-filter-api-controller-test/필터_조회/curl-request.adoc[]
+include::{snippets}/gw-filter-api-controller-test/필터_조회/request-parameters.adoc[]
+include::{snippets}/gw-filter-api-controller-test/필터_조회/http-response.adoc[]
+include::{snippets}/gw-filter-api-controller-test/필터_조회/response-fields.adoc[]
 
 === FilterService 상세 조회
 Gateway에 등록된 필터내용을 상세 조회합니다.
 
-include::{snippets}/gw-filter-controller-test/필터_상세_조회/curl-request.adoc[]
-include::{snippets}/gw-filter-controller-test/필터_상세_조회/path-parameters.adoc[]
-include::{snippets}/gw-filter-controller-test/필터_상세_조회/http-response.adoc[]
-include::{snippets}/gw-filter-controller-test/필터_상세_조회/response-fields.adoc[]
+include::{snippets}/gw-filter-api-controller-test/필터_상세_조회/curl-request.adoc[]
+include::{snippets}/gw-filter-api-controller-test/필터_상세_조회/path-parameters.adoc[]
+include::{snippets}/gw-filter-api-controller-test/필터_상세_조회/http-response.adoc[]
+include::{snippets}/gw-filter-api-controller-test/필터_상세_조회/response-fields.adoc[]
 
 === FilterService 등록
 Gateway에 필터를 신규 등록합니다.
 
-include::{snippets}/gw-filter-controller-test/필터_신규_등록/curl-request.adoc[]
-include::{snippets}/gw-filter-controller-test/필터_신규_등록/request-fields.adoc[]
-include::{snippets}/gw-filter-controller-test/필터_신규_등록/http-response.adoc[]
-include::{snippets}/gw-filter-controller-test/필터_신규_등록/response-fields.adoc[]
+include::{snippets}/gw-filter-api-controller-test/필터_신규_등록/curl-request.adoc[]
+include::{snippets}/gw-filter-api-controller-test/필터_신규_등록/request-fields.adoc[]
+include::{snippets}/gw-filter-api-controller-test/필터_신규_등록/http-response.adoc[]
+include::{snippets}/gw-filter-api-controller-test/필터_신규_등록/response-fields.adoc[]
 
 === FilterService 수정
 Gateway에 필터를 수정합니다.
 
-include::{snippets}/gw-filter-controller-test/필터_수정/curl-request.adoc[]
-include::{snippets}/gw-filter-controller-test/필터_수정/path-parameters.adoc[]
-include::{snippets}/gw-filter-controller-test/필터_수정/request-fields.adoc[]
-include::{snippets}/gw-filter-controller-test/필터_수정/http-response.adoc[]
-include::{snippets}/gw-filter-controller-test/필터_수정/response-fields.adoc[]
+include::{snippets}/gw-filter-api-controller-test/필터_수정/curl-request.adoc[]
+include::{snippets}/gw-filter-api-controller-test/필터_수정/path-parameters.adoc[]
+include::{snippets}/gw-filter-api-controller-test/필터_수정/request-fields.adoc[]
+include::{snippets}/gw-filter-api-controller-test/필터_수정/http-response.adoc[]
+include::{snippets}/gw-filter-api-controller-test/필터_수정/response-fields.adoc[]
 
 === FilterService 삭제
 Gateway에 필터를 삭제합니다.
 
-include::{snippets}/gw-filter-controller-test/필터_삭제/curl-request.adoc[]
-include::{snippets}/gw-filter-controller-test/필터_삭제/path-parameters.adoc[]
-include::{snippets}/gw-filter-controller-test/필터_삭제/http-response.adoc[]
-include::{snippets}/gw-filter-controller-test/필터_삭제/response-fields.adoc[]
+include::{snippets}/gw-filter-api-controller-test/필터_삭제/curl-request.adoc[]
+include::{snippets}/gw-filter-api-controller-test/필터_삭제/path-parameters.adoc[]
+include::{snippets}/gw-filter-api-controller-test/필터_삭제/http-response.adoc[]
+include::{snippets}/gw-filter-api-controller-test/필터_삭제/response-fields.adoc[]
 
 == AppService
 Gateway에 등록된 앱 관리 서비스

@@ -45,7 +45,7 @@ Configuration:
   #Appender를 package경로로 등록해줌
   Loggers:
     Root:
-      Level: INFO    
+      Level: INFO
       AppenderRef:
           - ref: LogToConsole   
           - ref: LogToFile     

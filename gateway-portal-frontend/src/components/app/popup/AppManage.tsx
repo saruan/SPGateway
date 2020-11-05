@@ -98,12 +98,12 @@ export function AppManage({isUpdate, appId, refreshList}: AppManageInterface) {
           apis.map(e => serviceIdList.indexOf(e.serviceId) >= 0 ?
               e.checked = true : e.checked = false)
           setApiList(apis)
-        }, '/portal/service/v1/app/' + appId, new URLSearchParams())
+        }, '/portal/service/v1.0/app/' + appId, new URLSearchParams())
       }else{
 
         setApiList(apis)
       }
-    }, '/portal/service/v1/routes', new URLSearchParams())
+    }, '/portal/service/v1.0/routes', new URLSearchParams())
   }
 
   /**
@@ -120,7 +120,7 @@ export function AppManage({isUpdate, appId, refreshList}: AppManageInterface) {
     postRequest(() => {
       handleClose();
       refreshList()
-    }, '/portal/service/v1/app', inputs)
+    }, '/portal/service/v1.0/app', inputs)
   }
 
   /**
@@ -130,7 +130,7 @@ export function AppManage({isUpdate, appId, refreshList}: AppManageInterface) {
       putRequest(() => {
         handleClose()
         refreshList()
-      }, '/api/service/v1/app/' + appId, inputs)
+      }, '/api/service/v1.0/app/' + appId, inputs)
 
 
   /**

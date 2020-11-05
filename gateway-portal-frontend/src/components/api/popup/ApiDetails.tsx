@@ -48,7 +48,7 @@ export function ApiDetails({
    */
   const deleteApi = () => {
 
-    deleteRequest(() => refreshList(), '/api/service/v1/routes/' + data.serviceId);
+    deleteRequest(() => refreshList(), '/api/service/v1.0.0/routes/' + data.serviceId);
   }
 
   const DetailForm = (

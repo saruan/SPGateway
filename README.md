@@ -11,7 +11,7 @@
      - ETC            - Redis (캐싱), Kafka,  
 
 ## 2. 프로젝트 구성도
-<img src = "https://user-images.githubusercontent.com/6766147/86095971-9f3fde80-baed-11ea-9bb5-7e8af3e6864a.PNG"/>
+<img src = "https://SPUsers-images.githubusercontent.com/6766147/86095971-9f3fde80-baed-11ea-9bb5-7e8af3e6864a.PNG"/>
 
 ## 3. Gateway
 ※ 개발 환경

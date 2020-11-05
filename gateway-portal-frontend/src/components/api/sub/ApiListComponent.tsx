@@ -22,12 +22,12 @@ export function ApiListComponent() {
 
   useEffect(() => {
 
-    getRequest((data) => setApiList(data), '/portal/service/v1/routes', new URLSearchParams());
-    getRequest((data) => setServiceLoginType(data), '/portal/code/ServiceLoginType'
+    getRequest((data) => setApiList(data), '/portal/service/v1.0/routes', new URLSearchParams());
+    getRequest((data) => setServiceLoginType(data), '/portal/v1.0/code/ServiceLoginType'
         , new URLSearchParams());
-    getRequest((data) => setServiceAuthType(data), '/portal/code/ServiceAuthType'
+    getRequest((data) => setServiceAuthType(data), '/portal/v1.0/code/ServiceAuthType'
         , new URLSearchParams());
-    getRequest((data) => setFilter(data), '/api/service/v1/filter'
+    getRequest((data) => setFilter(data), '/portal/service/v1.0/filter'
         , new URLSearchParams());
   }, [])
 
@@ -35,7 +35,7 @@ export function ApiListComponent() {
    * API List 갱신
    */
   const refreshApiList = () => getRequest((data) => setApiList(data),
-      '/portal/service/v1/routes', new URLSearchParams())
+      '/portal/service/v1.0/routes', new URLSearchParams())
 
   /**
    * Row 비고 버튼 정의

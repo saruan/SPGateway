@@ -7,13 +7,12 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kbds.serviceapi.apis.controller.GwAppApiController;
-import com.kbds.serviceapi.apis.controller.GwFilterController;
+import com.kbds.serviceapi.apis.controller.GwFilterApiController;
 import com.kbds.serviceapi.apis.controller.GwRoutingApiController;
 import com.kbds.serviceapi.portal.app.service.GwAppService;
-import com.kbds.serviceapi.apis.service.GwFilterService;
+import com.kbds.serviceapi.portal.filter.service.GwFilterService;
 import com.kbds.serviceapi.portal.api.service.GwRoutingService;
-import com.kbds.serviceapi.framework.security.CustomAuthenticationProvider;
-import com.kbds.serviceapi.framework.service.RoleService;
+import com.kbds.serviceapi.framework.service.SPRoleService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +43,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
  */
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @WebMvcTest(controllers = {GwRoutingApiController.class,
-                           GwFilterController.class,
+                           GwFilterApiController.class,
                            GwAppApiController.class})
 @ActiveProfiles(profiles = "dev")
 public class DefaultTestConfig {
@@ -53,10 +52,7 @@ public class DefaultTestConfig {
   protected RestDocumentationResultHandler restDocumentationResultHandler;
 
   @MockBean
-  protected CustomAuthenticationProvider customAuthenticationProvider;
-
-  @MockBean
-  protected RoleService roleService;
+  protected SPRoleService SPRoleService;
 
   @MockBean
   protected GwRoutingService gwRoutingService;

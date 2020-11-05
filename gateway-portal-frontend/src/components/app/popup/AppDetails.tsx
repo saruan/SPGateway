@@ -40,7 +40,7 @@ export function AppDetails({appId, refreshList}: AppDetailsInterface) {
     setClick(true)
 
     getRequest((data) => setDetail(data),
-        '/portal/service/v1/app/' + appId, new URLSearchParams())
+        '/portal/service/v1.0/app/' + appId, new URLSearchParams())
   }
 
   /**
@@ -49,7 +49,7 @@ export function AppDetails({appId, refreshList}: AppDetailsInterface) {
   /*
     const deleteApp = () => {
 
-      deleteRequest(() => refreshList(), '/api/service/v1/routes/' + data.serviceId);
+      deleteRequest(() => refreshList(), '/api/service/v1.0/routes/' + data.serviceId);
     }
   */
 
