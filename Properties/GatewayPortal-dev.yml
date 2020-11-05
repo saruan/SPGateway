@@ -18,8 +18,9 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     open-in-view: false
     show-sql: true
-    hibernate:
-      format_sql: true
+    properties:
+      hibernate:
+        format_sql: true
   #kafka 연동
   cloud:
     bus:
@@ -31,6 +32,16 @@ spring:
     username: guest
     password: guest
 
+# Oauth Token Check
+security:
+  oauth2:
+    client:
+      client-id: GatewayPortal
+      client-secret: GatewayPortal!
+    resource:
+      filter-order: 3
+      token-info-uri: http://localhost:7777/oauth/check_token
+
 # 로그 설정
 logging:
   config: classpath:${spring.profiles.active}/log4j2.yml
@@ -40,6 +51,10 @@ services:
   bus:
     host: http://localhost:9999/
     refresh: /actuator/bus-refresh
+  auth:
+    host: http://localhost:7777
+    token: /oauth/token
+    basic: Basic Y2xpZW50MjpwYXNzd29yZA==
 
 #인증 키관리    
 jwt:

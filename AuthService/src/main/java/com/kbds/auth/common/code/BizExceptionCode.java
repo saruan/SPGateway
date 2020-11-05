@@ -26,6 +26,8 @@ public enum BizExceptionCode {
 
   COM001("COM001", "서비스 처리 실패"),
 
+  USR001("USR001", "사용자 정보가 없거나 잘못 되었습니다."),
+
   DUMMY("", "");
 
   private String code;

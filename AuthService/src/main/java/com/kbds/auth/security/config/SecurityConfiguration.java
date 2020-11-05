@@ -1,6 +1,5 @@
 package com.kbds.auth.security.config;
 
-import com.kbds.auth.security.config.OAuth2RefreshConfiguration.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,7 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   @Autowired
-  private CustomUserDetailsService customUserDetailsService;
+  private CustomAuthenticationProvider customAuthenticationProvider;
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
@@ -37,20 +36,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   }
 
   @Autowired
-  public void configure(AuthenticationManagerBuilder auth) throws Exception {
+  public void configure(AuthenticationManagerBuilder auth){
 
-    auth.inMemoryAuthentication().withUser("user").password("{noop}pass").roles("USER");
-    customUserDetailsService.addService(auth.getDefaultUserDetailsService());
+    auth.authenticationProvider(customAuthenticationProvider);
   }
 
   @Bean
-  public PasswordEncoder encoder() {
-
-    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-  }
-
-  @Bean
-  @Override
   protected AuthenticationManager authenticationManager() throws Exception {
 
     return super.authenticationManager();

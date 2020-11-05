@@ -130,7 +130,7 @@ public class RoutingConfiguration {
         final String servicePath = routingDTO.getServicePath();
         final String filter = hasFilter ? routingDTO.getFilterBean() : null;
 
-        registRouterLocator(routeLocator, servicePath, targetPath, originUrl, hasFilter, filter,
+        registerRouterLocator(routeLocator, servicePath, targetPath, originUrl, hasFilter, filter,
             routingDTO);
       } catch (Exception e) {
 
@@ -163,7 +163,7 @@ public class RoutingConfiguration {
         final String targetPath = new URL(originUrl).getPath();
         final String filter = hasFilter ? defaultPath.get(FILTER) : null;
 
-        registRouterLocator(routeLocator, servicePath, targetPath, originUrl, hasFilter, filter,
+        registerRouterLocator(routeLocator, servicePath, targetPath, originUrl, hasFilter, filter,
             new RoutingDTO());
       } catch (Exception e) {
 
@@ -186,7 +186,7 @@ public class RoutingConfiguration {
 
    * @throws Exception Exception 오류
    */
-  private void registRouterLocator(Builder routeLocator, String servicePath,
+  private void registerRouterLocator(Builder routeLocator, String servicePath,
       String targetPath, String targetUrl, boolean hasFilter, String filter, RoutingDTO routingDTO)
       throws Exception {
     
@@ -248,6 +248,8 @@ public class RoutingConfiguration {
 
       servicePath += "/**";
     }
+
+    System.out.println(servicePath);
 
     return servicePath;
   }

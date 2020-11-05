@@ -51,7 +51,7 @@ Configuration:
           - ref: LogToFile     
     logger:
       #[INFO]Console 로그
-      - name: com.kbds.serviceapi
+      - name:
         level: DEBUG
         additivity: false
         AppenderRef:
