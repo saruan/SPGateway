@@ -54,6 +54,7 @@ services:
   auth:
     host: http://localhost:7777
     token: /oauth/token
+    apis: /auth/v1.0/api
     basic: Basic Y2xpZW50MjpwYXNzd29yZA==
 
 #인증 키관리    
