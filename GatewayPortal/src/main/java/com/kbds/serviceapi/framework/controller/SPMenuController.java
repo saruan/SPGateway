@@ -1,8 +1,6 @@
 package com.kbds.serviceapi.framework.controller;
 
-import com.kbds.serviceapi.framework.dto.MenuDTO;
 import com.kbds.serviceapi.framework.service.SPMenuService;
-import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SPMenuController {
 
   @Autowired
-  SPMenuService SPMenuService;
+  SPMenuService spMenuService;
 
   /**
    * Menu List 조회
@@ -39,8 +37,6 @@ public class SPMenuController {
   @Transactional
   public ResponseEntity<Object> selectMenuList(){
 
-    List<MenuDTO> result = SPMenuService.selectAllMenuList();
-
-    return new ResponseEntity<>(result, HttpStatus.OK);
+    return new ResponseEntity<>(spMenuService.selectAllMenuList(), HttpStatus.OK);
   }
 }
