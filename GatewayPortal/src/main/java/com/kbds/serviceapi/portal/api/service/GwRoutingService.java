@@ -1,21 +1,18 @@
 package com.kbds.serviceapi.portal.api.service;
 
 import com.kbds.serviceapi.apis.dto.EmptyDataDTO;
-import com.kbds.serviceapi.portal.api.dto.RoutingDTO;
-import com.kbds.serviceapi.portal.api.entity.GwService;
-import com.kbds.serviceapi.portal.filter.entity.GwServiceFilter;
-import com.kbds.serviceapi.portal.filter.repository.GwFilterRepository;
-import com.kbds.serviceapi.portal.api.repository.GwRoutingRepository;
-import com.kbds.serviceapi.portal.api.repository.querydsl.GwRoutingCustomRepository;
 import com.kbds.serviceapi.common.code.BizExceptionCode;
 import com.kbds.serviceapi.common.utils.CommonUtils;
 import com.kbds.serviceapi.framework.dto.SearchDTO;
 import com.kbds.serviceapi.framework.exception.BizException;
+import com.kbds.serviceapi.portal.api.dto.RoutingDTO;
+import com.kbds.serviceapi.portal.api.entity.GwService;
+import com.kbds.serviceapi.portal.api.repository.GwRoutingRepository;
+import com.kbds.serviceapi.portal.filter.entity.GwServiceFilter;
 import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -34,17 +31,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class GwRoutingService {
 
-  @Autowired
-  GwRoutingCustomRepository gwServiceCustomRepository;
+  private final GwRoutingRepository gwServiceRepository;
+  private final ModelMapper modelMapper;
 
-  @Autowired
-  GwRoutingRepository gwServiceRepository;
-
-  @Autowired
-  GwFilterRepository gwFilterRepository;
-
-  @Autowired
-  ModelMapper modelMapper;
+  /**
+   * Constructor Injection
+   * @param gwServiceRepository gwServiceRepository
+   * @param modelMapper modelMapper
+   */
+  public GwRoutingService(GwRoutingRepository gwServiceRepository, ModelMapper modelMapper) {
+    this.gwServiceRepository = gwServiceRepository;
+    this.modelMapper = modelMapper;
+  }
 
   /**
    * G/W Routing Bean으로 등록할 정보들 조회 서비스
@@ -56,7 +54,7 @@ public class GwRoutingService {
 
     try {
 
-      return gwServiceCustomRepository.findByGwConditions();
+      return gwServiceRepository.findByGwConditions();
     } catch (Exception e) {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
@@ -73,7 +71,7 @@ public class GwRoutingService {
 
     try {
 
-      return gwServiceCustomRepository.findByConditions(searchDTO);
+      return gwServiceRepository.findByConditions(searchDTO);
     } catch (Exception e) {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
@@ -112,7 +110,7 @@ public class GwRoutingService {
    */
   public void registerService(RoutingDTO reqParam) {
 
-    if (gwServiceCustomRepository.isRegisteredService(reqParam)) {
+    if (gwServiceRepository.isRegisteredService(reqParam)) {
 
       throw new BizException(BizExceptionCode.COM003);
     }
@@ -152,7 +150,7 @@ public class GwRoutingService {
       }
 
       // 수정하고자 하는 내용 중 중복이 허용되지 않는 데이터가 DB상에 등록되어 있는지 체크한다.
-      if (!gwServiceCustomRepository.isValidUpdateData(reqParam, id)) {
+      if (!gwServiceRepository.isValidUpdateData(reqParam, id)) {
 
         throw new BizException(BizExceptionCode.COM003);
       }
@@ -201,7 +199,7 @@ public class GwRoutingService {
       }
 
       // 서비스 사용 유무를 변경한다.
-      deletedCnt = gwServiceCustomRepository.deleteService(serviceId);
+      deletedCnt = gwServiceRepository.deleteService(serviceId);
 
     } catch (BizException e) {
 

@@ -1,7 +1,9 @@
 package com.kbds.auth.security.config;
 
 import com.kbds.auth.security.exception.CustomOAuthResponseExceptionTranslator;
-import com.kbds.auth.security.service.SPUserDetailService;
+import com.kbds.auth.apps.user.service.SPUserDetailService;
+import com.kbds.auth.security.token.CustomTokenEnhancer;
+import com.kbds.auth.security.token.CustomTokenStore;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +14,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
 /**
@@ -46,6 +49,13 @@ public class SecurityOAuth2Configuration extends AuthorizationServerConfigurerAd
     return new CustomTokenStore();
   }
 
+  @Bean
+  public TokenEnhancer tokenEnhancer() {
+
+    return new CustomTokenEnhancer();
+  }
+
+
   @Override
   public void configure(AuthorizationServerSecurityConfigurer authorizationServerSecurityConfigurer){
 
@@ -65,5 +75,6 @@ public class SecurityOAuth2Configuration extends AuthorizationServerConfigurerAd
     endpoints.tokenStore(tokenStore());
     endpoints.exceptionTranslator(new CustomOAuthResponseExceptionTranslator());
     endpoints.userDetailsService(SPUserDetailService);
+    endpoints.tokenEnhancer(tokenEnhancer());
   }
 }

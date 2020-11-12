@@ -29,11 +29,9 @@ public enum AuthCode {
   Y("Y", "예"),
   N("N", "아니오"),
 
-  // ROLE 정보
   ROLE_ADMIN("ROLE_ADMIN", "관리자 권한"),
 
-  // PARAMETER 정보
-  PARAMTER_JWT("jwt", "JWT 파라미터 규격"),
+  PARAMETERS_JWT("jwt", "JWT 파라미터 규격"),
 
   DUMMY("", "");
 

@@ -1,20 +1,16 @@
 package com.kbds.serviceapi.portal.filter.service;
 
-import com.kbds.serviceapi.apis.dto.EmptyDataDTO;
-import com.kbds.serviceapi.portal.filter.dto.FilterDTO;
-import com.kbds.serviceapi.portal.filter.entity.GwServiceFilter;
-import com.kbds.serviceapi.portal.filter.repository.querydsl.GwFilterCustomRepository;
-import com.kbds.serviceapi.portal.api.repository.querydsl.GwRoutingCustomRepository;
-import com.kbds.serviceapi.portal.filter.repository.GwFilterRepository;
-import com.kbds.serviceapi.portal.api.repository.GwRoutingRepository;
 import com.kbds.serviceapi.common.code.BizExceptionCode;
 import com.kbds.serviceapi.framework.dto.SearchDTO;
 import com.kbds.serviceapi.framework.exception.BizException;
+import com.kbds.serviceapi.portal.api.repository.GwRoutingRepository;
+import com.kbds.serviceapi.portal.filter.dto.FilterDTO;
+import com.kbds.serviceapi.portal.filter.entity.GwServiceFilter;
+import com.kbds.serviceapi.portal.filter.repository.GwFilterRepository;
 import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -33,32 +29,36 @@ import org.springframework.stereotype.Service;
 @Service
 public class GwFilterService {
 
-  @Autowired
-  GwFilterRepository gwFilterRepository;
+  private final GwFilterRepository gwFilterRepository;
+  private final GwRoutingRepository gwRoutingRepository;
+  private final ModelMapper modelMapper;
 
-  @Autowired
-  GwFilterCustomRepository gwFilterCustomRepository;
+  /**
+   * Constructor Injection
+   *
+   * @param gwFilterRepository  gwFilterRepository
+   * @param gwRoutingRepository gwRoutingRepository
+   * @param modelMapper         modelMapper
+   */
+  public GwFilterService(GwFilterRepository gwFilterRepository,
+      GwRoutingRepository gwRoutingRepository, ModelMapper modelMapper) {
 
-  @Autowired
-  GwRoutingRepository gwRoutingRepository;
-
-  @Autowired
-  GwRoutingCustomRepository gwRoutingCustomRepository;
-
-  @Autowired
-  ModelMapper modelMapper;
+    this.gwFilterRepository = gwFilterRepository;
+    this.gwRoutingRepository = gwRoutingRepository;
+    this.modelMapper = modelMapper;
+  }
 
   /**
    * 필터 검색 기능
    *
-   * @param searchDTO
-   * @return
+   * @param searchDTO 검색 객체
+   * @return 필터 목록
    */
   public List<FilterDTO> findFilters(SearchDTO searchDTO) {
 
     try {
 
-      return gwFilterCustomRepository.findByConditions(searchDTO);
+      return gwFilterRepository.findByConditions(searchDTO);
     } catch (Exception e) {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
@@ -68,24 +68,27 @@ public class GwFilterService {
   /**
    * 필터 상세 검색 기능
    *
-   * @param filterId
-   * @return
+   * @param filterId 필터 ID
+   * @return 상세 데이터
    */
   @Transactional
   public Object findFilterDetail(Long filterId) {
 
     try {
 
-      // DB 상에서 해당 filterId를 가진 Entity를 불러온다.
+      // DB 상에서 해당 filterId를 가진 Entity 를 불러온다.
       Optional<GwServiceFilter> gwServiceFilter = gwFilterRepository.findById(filterId);
 
       if (!gwServiceFilter.isPresent()) {
 
-        return new EmptyDataDTO();
+        throw new BizException(BizExceptionCode.COM004);
       }
 
       // 결과 값으로 전달할 FilterDTO로 변환한 후 리턴한다.
       return modelMapper.map(gwServiceFilter.get(), FilterDTO.class);
+    } catch (BizException e) {
+
+      throw new BizException(BizExceptionCode.valueOf(e.getMessage()));
     } catch (Exception e) {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
@@ -95,20 +98,20 @@ public class GwFilterService {
   /**
    * 필터링 서비스 등록
    *
-   * @param reqParam
+   * @param reqParam 등록 파라미터
    */
 
   @Transactional
   public void registerFilter(FilterDTO reqParam) {
 
-    if (gwFilterCustomRepository.isValidData(reqParam)) {
+    if (!gwFilterRepository.isValidData(reqParam)) {
 
       throw new BizException(BizExceptionCode.COM003);
     }
 
     try {
 
-      // DTO를 Entity로 변환 후 데이터를 적재한다.
+      // DTO 를 Entity 로 변환 후 데이터를 적재한다.
       GwServiceFilter param = modelMapper.map(reqParam, GwServiceFilter.class);
 
       gwFilterRepository.save(param);
@@ -118,12 +121,10 @@ public class GwFilterService {
     }
   }
 
-
   /**
    * 필터 수정
    *
-   * @param reqParam
-   * @return
+   * @param reqParam 수정 파라미터
    */
   @Transactional
   public void updateFilter(FilterDTO reqParam, Long filterId) {
@@ -134,21 +135,15 @@ public class GwFilterService {
 
       // DB 상에서 해당 serviceId를 가진 Entity를 불러온다.
       gwServiceFilter = gwFilterRepository.findByFilterId(filterId);
-    } catch (Exception e) {
 
-      throw new BizException(BizExceptionCode.COM001, e.toString());
-    }
+      if (gwServiceFilter == null) {
 
-    if (gwServiceFilter == null) {
-
-      throw new BizException(BizExceptionCode.COM004);
-    }
-
-    try {
+        throw new BizException(BizExceptionCode.COM004);
+      }
 
       reqParam.setFilterId(filterId);
 
-      if (!gwFilterCustomRepository.checkUpdateValidation(reqParam)) {
+      if (!gwFilterRepository.checkUpdateValidation(reqParam)) {
 
         throw new BizException(BizExceptionCode.COM003);
       }
@@ -172,7 +167,7 @@ public class GwFilterService {
   /**
    * 필터 삭제
    *
-   * @param filterId
+   * @param filterId 필터 ID
    */
   @Transactional
   public void deleteFilter(Long filterId) {
@@ -198,8 +193,8 @@ public class GwFilterService {
   /**
    * FilterId를 사용중인 서비스가 존재하는지 체크
    *
-   * @param filterId
-   * @return
+   * @param filterId 필터 ID
+   * @return 존재 여부
    */
   public boolean isUseFilterService(Long filterId) {
 

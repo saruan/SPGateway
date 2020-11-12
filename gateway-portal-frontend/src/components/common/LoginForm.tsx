@@ -39,7 +39,7 @@ export default function LoginForm() {
       // Session 정보 저장
       setIsLogin(true)
       localStorage.setItem("isLogin", "true");
-      localStorage.setItem("access_token", res.data.access_token);
+      localStorage.setItem("access_token", res.data.accessToken);
     }).catch(ex => {
 
       const data = ex.response.data

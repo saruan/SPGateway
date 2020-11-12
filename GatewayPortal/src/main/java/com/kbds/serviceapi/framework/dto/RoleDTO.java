@@ -38,16 +38,4 @@ public class RoleDTO {
   private Date regDt;
 
   private Date uptDt;
-
-  @QueryProjection
-  public RoleDTO(Long roleId, @NonNull String roleCd, @NonNull String roleNm,
-      String regUserNo, String uptUserNo, Date regDt, Date uptDt) {
-    this.roleId = roleId;
-    this.roleCd = roleCd;
-    this.roleNm = roleNm;
-    this.regUserNo = regUserNo;
-    this.uptUserNo = uptUserNo;
-    this.regDt = regDt;
-    this.uptDt = uptDt;
-  }
 }

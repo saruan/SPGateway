@@ -1,5 +1,6 @@
 package com.kbds.serviceapi.portal.app.repository;
 
+import com.kbds.serviceapi.portal.app.repository.querydsl.GwAppCustomRepository;
 import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -21,7 +22,7 @@ import com.kbds.serviceapi.portal.app.entity.GwApp;
  *
  */
 @Repository
-public interface GwAppRepository extends CrudRepository<GwApp, Long> {
+public interface GwAppRepository extends CrudRepository<GwApp, Long>, GwAppCustomRepository {
 
   /**
    * APP ID로 단건 검색

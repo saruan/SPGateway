@@ -1,10 +1,10 @@
 package com.kbds.serviceapi.framework.service;
 
 import com.kbds.serviceapi.common.code.BizExceptionCode;
-import com.kbds.serviceapi.framework.dto.MenuDTO;
+import com.kbds.serviceapi.common.feign.AuthClient;
+import com.kbds.serviceapi.common.utils.CommonUtils;
+import com.kbds.serviceapi.framework.dto.ResponseDTO;
 import com.kbds.serviceapi.framework.exception.BizException;
-import com.kbds.serviceapi.framework.repository.querydsl.SPMenuCustomRepository;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,20 +25,21 @@ import org.springframework.stereotype.Service;
 public class SPMenuService {
 
   @Autowired
-  SPMenuCustomRepository SPMenuCustomRepository;
+  AuthClient authClient;
 
   /**
-   *  화면을 구성할 전체 메뉴 목록을 조회 (권한 별로)
+   * 화면을 구성할 전체 메뉴 목록을 조회 (권한 별로)
+   *
    * @return 메뉴 리스트 DTO 객체
    */
-  public List<MenuDTO> selectAllMenuList(){
+  public ResponseDTO selectAllMenuList() {
 
     try {
 
-      return SPMenuCustomRepository.selectAllMenuList();
-    }catch(Exception e){
+      return authClient.selectAllMenuList(CommonUtils.setFeignCommonHeaders());
+    } catch (Exception e) {
 
-      throw new BizException(BizExceptionCode.COM001);
+      throw new BizException(BizExceptionCode.COM001, e.toString());
     }
   }
 }

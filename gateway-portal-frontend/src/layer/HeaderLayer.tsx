@@ -8,7 +8,7 @@ export default function HeaderLayer() {
 
   useEffect(() => {
 
-    axios.get('/portal/v1.0/menu').then(res => setMenuList(res.data))
+    axios.get('/portal/v1.0/menu').then(res => setMenuList(res.data.resultData))
   }, []);
 
   return (

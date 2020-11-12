@@ -44,7 +44,7 @@ public class GwFilterCustomRepositoryImpl extends QuerydslRepositorySupport
   @Override
   public List<FilterDTO> findByConditions(SearchDTO searchDTO) {
 
-    // GW_SERVICE_FILTER에서 검색 조건문으로 등록한 조건에 맞게 검색한 후 FilterDTO로 결과 값을 매핑시킨다.
+    // GW_SERVICE_FILTER 에서 검색 조건문으로 등록한 조건에 맞게 검색한 후 FilterDTO로 결과 값을 매핑시킨다.
     return from(gwServiceFilter)
           .select(new QFilterDTO(
               gwServiceFilter.filterId,
@@ -66,11 +66,11 @@ public class GwFilterCustomRepositoryImpl extends QuerydslRepositorySupport
   @Override
   public boolean isValidData(FilterDTO param) {
 
-    // 이미 등록되어 있는 데이터가 있다면 true 없다면 false를 리턴한다.
+    // 이미 등록되어 있는 데이터가 있다면 true 없다면 false 를 리턴한다.
     return from(gwServiceFilter)
           .select()
           .where(eqFilterNmOrFilterBean(param.getFilterNm(), param.getFilterBean()))
-          .fetchCount() > 0;
+          .fetchCount() == 0;
   }
 
   /**

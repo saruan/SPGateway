@@ -120,6 +120,24 @@ public class ServiceExceptionHandler {
   }
 
   /**
+   * 기타 Exception Handler
+   *
+   * @param ex
+   * @return
+   */
+  @ExceptionHandler(Exception.class)
+  public ResponseEntity<ResponseDTO> feignClientExceptionHandler(
+      Exception ex) {
+
+    // 오류 로그 출력
+    logger.error(ex.getMessage());
+
+    return new ResponseEntity<>(
+        setExceptionObject(BizExceptionCode.COM001.getCode(),
+            BizExceptionCode.COM001.getMsg()), HttpStatus.OK);
+  }
+
+  /**
    * ResponseDTO 오류 객체 생성
    *
    * @param code 오류 코드

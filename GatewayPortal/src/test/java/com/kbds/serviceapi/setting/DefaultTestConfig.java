@@ -12,7 +12,6 @@ import com.kbds.serviceapi.apis.controller.GwRoutingApiController;
 import com.kbds.serviceapi.portal.app.service.GwAppService;
 import com.kbds.serviceapi.portal.filter.service.GwFilterService;
 import com.kbds.serviceapi.portal.api.service.GwRoutingService;
-import com.kbds.serviceapi.framework.service.SPRoleService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,9 +49,6 @@ public class DefaultTestConfig {
 
   protected MockMvc mockMvc;
   protected RestDocumentationResultHandler restDocumentationResultHandler;
-
-  @MockBean
-  protected SPRoleService SPRoleService;
 
   @MockBean
   protected GwRoutingService gwRoutingService;

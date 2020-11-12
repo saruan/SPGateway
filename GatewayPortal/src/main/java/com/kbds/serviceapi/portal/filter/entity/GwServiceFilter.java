@@ -50,8 +50,7 @@ public class GwServiceFilter extends AuditLog {
    */
   @PrePersist
   public void prePersist() {
+
     this.useYn = this.useYn == null ? "Y" : this.useYn;
   }
-
-
 }

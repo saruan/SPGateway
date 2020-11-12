@@ -1,5 +1,7 @@
 package com.kbds.serviceapi.common.feign;
 
+import com.kbds.serviceapi.framework.dto.ResponseDTO;
+import com.kbds.serviceapi.framework.dto.SessionDTO;
 import java.util.Map;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
@@ -41,4 +43,20 @@ public interface AuthClient {
   Map<String, Object> login(@RequestHeader Map<String, String> headers,
       @RequestParam String username, @RequestParam String password, @RequestParam String scope,
       @RequestParam String grant_type);
+
+  /**
+   * Spring Security 사용할 모든 API-권한 데이터
+   * @param headers 헤더 정보
+   * @return 목록
+   */
+  @GetMapping(value = "${services.auth.apis}")
+  ResponseDTO selectListForSecurity(@RequestHeader Map<String, String> headers);
+
+  /**
+   * 모든 메뉴 목록 조회
+   * @param headers 헤더 인증 정보
+   * @return  목록
+   */
+  @GetMapping(value = "${services.auth.menus}")
+  ResponseDTO selectAllMenuList(@RequestHeader Map<String, String> headers);
 }

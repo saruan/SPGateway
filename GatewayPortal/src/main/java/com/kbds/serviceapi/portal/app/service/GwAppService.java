@@ -13,13 +13,11 @@ import com.kbds.serviceapi.portal.app.dto.AppDetailDTO;
 import com.kbds.serviceapi.portal.app.entity.GwApp;
 import com.kbds.serviceapi.portal.app.repository.GwAppRepository;
 import com.kbds.serviceapi.portal.app.repository.GwServiceAppMappingRepository;
-import com.kbds.serviceapi.portal.app.repository.querydsl.GwAppCustomRepository;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -38,37 +36,44 @@ import org.springframework.stereotype.Service;
 @Service
 public class GwAppService {
 
-  @Autowired
-  GwAppRepository gwAppRepository;
+  private final GwAppRepository gwAppRepository;
+  private final GwServiceAppMappingRepository gwServiceAppMappingRepository;
+  private final GwRoutingRepository gwRoutingRepository;
+  private final GwServiceAppMappingService gwServiceAppMappingService;
+  private final ModelMapper modelMapper;
 
-  @Autowired
-  GwServiceAppMappingRepository gwServiceAppMappingRepository;
+  /**
+   * Constructor Injection
+   * @param gwAppRepository gwAppRepository
+   * @param gwServiceAppMappingRepository gwServiceAppMappingRepository
+   * @param gwRoutingRepository gwRoutingRepository
+   * @param gwServiceAppMappingService gwServiceAppMappingService
+   * @param modelMapper modelMapper
+   */
+  public GwAppService(GwAppRepository gwAppRepository,
+      GwServiceAppMappingRepository gwServiceAppMappingRepository,
+      GwRoutingRepository gwRoutingRepository,
+      GwServiceAppMappingService gwServiceAppMappingService, ModelMapper modelMapper) {
 
-  @Autowired
-  GwAppCustomRepository gwAppCustomRepository;
-
-  @Autowired
-  GwRoutingRepository gwRoutingRepository;
-
-  @Autowired
-  GwServiceAppMappingService gwServiceAppMappingService;
-
-  @Autowired
-  ModelMapper modelMapper;
-
+    this.gwAppRepository = gwAppRepository;
+    this.gwServiceAppMappingRepository = gwServiceAppMappingRepository;
+    this.gwRoutingRepository = gwRoutingRepository;
+    this.gwServiceAppMappingService = gwServiceAppMappingService;
+    this.modelMapper = modelMapper;
+  }
 
   /**
    * APP 리스트 검색 기능
    *
    * @param searchDTO 검색 조건
-   * @return  결과 목록
+   * @return 결과 목록
    */
   @Transactional
   public List<AppDTO> findApps(SearchDTO searchDTO) {
 
     try {
 
-      return gwAppCustomRepository.findByConditions(searchDTO);
+      return gwAppRepository.findByConditions(searchDTO);
     } catch (Exception e) {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
@@ -78,19 +83,19 @@ public class GwAppService {
   /**
    * APP 상세 검색 기능
    *
-   * @param id  AppID
-   * @return  상세 정보
+   * @param id AppID
+   * @return 상세 정보
    */
   @Transactional
   public AppDetailDTO findAppDetail(Long id) {
 
     GwApp gwApp;
-    
+
     try {
       // APP 정보 조회
-      Map<GwApp, List<GwService>> gwApps = gwAppCustomRepository.findAppDetailById(id);
-      
-      if(!gwApps.keySet().stream().findFirst().isPresent()){
+      Map<GwApp, List<GwService>> gwApps = gwAppRepository.findAppDetailById(id);
+
+      if (!gwApps.keySet().stream().findFirst().isPresent()) {
 
         throw new BizException(BizExceptionCode.COM004);
       }
@@ -120,7 +125,7 @@ public class GwAppService {
    * 4. GwServiceAppMapping에 데이터 등록
    * </pre>
    *
-   * @param reqParam  등록 정보
+   * @param reqParam 등록 정보
    */
   @Transactional
   public void registerApp(AppDTO reqParam) {
@@ -165,8 +170,8 @@ public class GwAppService {
    * 3. GwServiceAppMapping 테이블 수정
    * </pre>
    *
-   * @param reqParam  수정 정보
-   * @param appId APP ID
+   * @param reqParam 수정 정보
+   * @param appId    APP ID
    */
   @Transactional
   public void updateApp(AppDTO reqParam, Long appId) {
@@ -179,7 +184,6 @@ public class GwAppService {
 
         throw new BizException(BizExceptionCode.COM002);
       }
-
 
       if (!isValidServiceId(reqParam)) {
 
@@ -243,8 +247,8 @@ public class GwAppService {
   /**
    * 입력 받은 서비스ID가 실제 DB에 존재 하는지 체크
    *
-   * @param reqParam  체크할 서비스 정보
-   * @return  유효 여부
+   * @param reqParam 체크할 서비스 정보
+   * @return 유효 여부
    */
   public boolean isValidServiceId(AppDTO reqParam) {
 
@@ -255,8 +259,8 @@ public class GwAppService {
   /**
    * APP 이름이 DB에 존재하는지 체크
    *
-   * @param reqParam  체크할 앱 정보
-   * @return  유효 여부
+   * @param reqParam 체크할 앱 정보
+   * @return 유효 여부
    */
   public boolean isValidAppNm(AppDTO reqParam) {
 
@@ -266,8 +270,8 @@ public class GwAppService {
   /**
    * APP 수정 시 전달 받은 APP 이름이 DB에 존재하는지 체크
    *
-   * @param reqParam  체크할 앱 정보
-   * @return  유효 여부
+   * @param reqParam 체크할 앱 정보
+   * @return 유효 여부
    */
   public boolean isValidModifyAppNm(AppDTO reqParam, Long appId) {
 
@@ -278,7 +282,7 @@ public class GwAppService {
    * 현재 사용중인 APP 체크
    *
    * @param appId APP ID
-   * @return  유효 여부
+   * @return 유효 여부
    */
   public boolean isUsingApp(Long appId) {
 
@@ -288,8 +292,8 @@ public class GwAppService {
   /**
    * APP DTO -> 엔티티 변환 후 APP_KEY 설정
    *
-   * @param reqParam  APP KEY 정보 저장할 객체
-   * @return  저장 결과 객체
+   * @param reqParam APP KEY 정보 저장할 객체
+   * @return 저장 결과 객체
    */
   public GwApp setGwAppWithAppKey(AppDTO reqParam) {
 
@@ -302,8 +306,8 @@ public class GwAppService {
   /**
    * AppKey 유효성 체크
    *
-   * @param appKey  APPKEY
-   * @return  유효 여부
+   * @param appKey APPKEY
+   * @return 유효 여부
    */
   public boolean isEmptyAppKey(String appKey) {
 

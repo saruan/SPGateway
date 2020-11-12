@@ -41,9 +41,9 @@ public class GwAppCustomRepositoryImpl extends QuerydslRepositorySupport
 
     // 조회 쿼리 실행
     Map<GwApp, List<Long>> gwApps = from(gwApp)
-        .innerJoin(gwServiceAppMapping).fetchJoin()
+        .leftJoin(gwServiceAppMapping).fetchJoin()
         .on(gwApp.appId.eq(gwServiceAppMapping.gwApp.appId))
-        .innerJoin(gwService).fetchJoin()
+        .leftJoin(gwService).fetchJoin()
         .on(gwServiceAppMapping.gwService.serviceId.eq(gwService.serviceId))
         .where(likeNm(searchDTO.getName()))
         .transform(groupBy(gwApp).as(list(gwService.serviceId)));
@@ -64,9 +64,9 @@ public class GwAppCustomRepositoryImpl extends QuerydslRepositorySupport
 
     // 조회 쿼리 실행
     return from(gwApp)
-        .innerJoin(gwServiceAppMapping).fetchJoin()
+        .leftJoin(gwServiceAppMapping).fetchJoin()
         .on(gwApp.appId.eq(gwServiceAppMapping.gwApp.appId))
-        .innerJoin(gwService).fetchJoin()
+        .leftJoin(gwService).fetchJoin()
         .on(gwServiceAppMapping.gwService.serviceId.eq(gwService.serviceId))
         .where(gwApp.appId.eq(appId))
         .transform(groupBy(gwApp).as(list(gwService)));

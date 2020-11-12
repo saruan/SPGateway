@@ -1,7 +1,5 @@
 package com.kbds.serviceapi.framework.dto;
 
-import com.kbds.serviceapi.framework.entity.SPMenus;
-import com.querydsl.core.annotations.QueryProjection;
 import java.io.Serializable;
 import java.util.Set;
 import lombok.AllArgsConstructor;
@@ -40,23 +38,6 @@ public class MenuDTO implements Serializable {
 
   private String useYn;
 
-  private Set<SPMenus> subSPMenus;
-
-  public MenuDTO(Long menuId, String menuUrl, String menuNm, String useYn,
-      Set<SPMenus> subSPMenus) {
-
-    this.menuId = menuId;
-    this.menuUrl = menuUrl;
-    this.menuNm = menuNm;
-    this.useYn = useYn;
-    this.subSPMenus = subSPMenus;
-  }
-
-  @QueryProjection
-  public MenuDTO(String menuUrl, String roleNm) {
-
-    this.menuUrl = menuUrl;
-    this.roleNm = roleNm;
-  }
+  private Set<MenuDTO> subSPMenus;
 }
 

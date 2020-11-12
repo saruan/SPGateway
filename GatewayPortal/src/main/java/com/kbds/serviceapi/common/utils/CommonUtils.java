@@ -2,15 +2,10 @@ package com.kbds.serviceapi.common.utils;
 
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.kbds.serviceapi.apis.code.core.AbstractCode;
-import com.kbds.serviceapi.common.code.BizExceptionCode;
 import com.kbds.serviceapi.common.code.CommonCode;
 import com.kbds.serviceapi.common.feign.GatewayClient;
 import com.kbds.serviceapi.framework.dto.ResponseDTO;
-import com.kbds.serviceapi.framework.exception.BizException;
-import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.ThreadContext;
 import org.slf4j.Logger;
@@ -39,12 +34,19 @@ public class CommonUtils {
   // 로그용 변수
   private static final Logger logger = LoggerFactory.getLogger(CommonUtils.class);
   private static String secretKey;
+  private static String basicAuthorization;
   private static GatewayClient gatewayClient;
 
   @Value("${jwt.secret-key}")
   public void setSecretKey(String secretKey) {
 
     CommonUtils.secretKey = secretKey;
+  }
+
+  @Value("${services.auth.basic}")
+  public void setBasicAuthorization(String basicAuthorization) {
+
+    CommonUtils.basicAuthorization = basicAuthorization;
   }
 
   @Autowired
@@ -56,8 +58,8 @@ public class CommonUtils {
   /**
    * 공통 Response Model 생성 유틸 메소드
    *
-   * @param params
-   * @return
+   * @param params  데이터 결과
+   * @return  ResponseDTO 객체
    */
   public static ResponseDTO getResponseEntity(Object params) {
 
@@ -73,7 +75,7 @@ public class CommonUtils {
   /**
    * RoutingService의 최신 데이터를 Gateway에 변경 요청한다.
    *
-   * @param regUserNo
+   * @param regUserNo 등록자
    */
   public static void refreshGatewayRoutes(String regUserNo) {
 
@@ -99,8 +101,8 @@ public class CommonUtils {
   /**
    * Log4j2 공통 로그 필드 설정 메소드
    *
-   * @param serviceDesc
-   * @param regUserNo
+   * @param serviceDesc 서비스 설명
+   * @param regUserNo 등록자
    */
   public static void setCommonLog(String serviceDesc, String regUserNo) {
 
@@ -109,8 +111,16 @@ public class CommonUtils {
   }
 
 
-  public static String[] test(List<String> data){
+  /**
+   * 인증서버에서 사용하는 헤더 정보 Return
+   * @return  Header 객체
+   */
+ public static Map<String, String> setFeignCommonHeaders(){
 
-    return data.toArray(new String[0]);
-  }
+   Map<String, String> headers = new HashMap<>();
+
+   headers.put(HttpHeaders.AUTHORIZATION, basicAuthorization);
+   
+   return headers;
+ }
 }

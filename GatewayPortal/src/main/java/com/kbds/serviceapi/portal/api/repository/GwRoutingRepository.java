@@ -1,5 +1,6 @@
 package com.kbds.serviceapi.portal.api.repository;
 
+import com.kbds.serviceapi.portal.api.repository.querydsl.GwRoutingCustomRepository;
 import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -20,7 +21,8 @@ import com.kbds.serviceapi.portal.api.entity.GwService;
  */
 
 @Repository
-public interface GwRoutingRepository extends CrudRepository<GwService, Long> {
+public interface GwRoutingRepository extends CrudRepository<GwService, Long>,
+    GwRoutingCustomRepository {
 
   /**
    * ServiceId 건수 조회

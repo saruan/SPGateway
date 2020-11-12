@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 
@@ -36,7 +37,7 @@ import org.springframework.stereotype.Service;
  * -------------------------------------------------------------------------------
  * </pre>
  */
-@Service
+@Repository
 public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
     implements GwRoutingCustomRepository {
 
@@ -62,7 +63,7 @@ public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
           .on(gwApp.appId.eq(gwServiceAppMapping.gwApp.appId))
         .transform(groupBy(gwService).as(list(gwApp.appKey)));
 
-    // AppDTO로 변환 후 리턴
+    // AppDTO 로 변환 후 리턴
     return gwServiceListMap.entrySet().stream().map(entry -> {
 
       GwService gwService = entry.getKey();
@@ -125,7 +126,7 @@ public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
   @Override
   public boolean isRegisteredService(RoutingDTO param) {
 
-    // 이미 등록되어 있는 데이터가 있다면 true 없다면 false를 리턴한다.
+    // 이미 등록되어 있는 데이터가 있다면 true 없다면 false 를 리턴한다.
     return from(gwService)
         .innerJoin(gwServiceFilter)
           .on(gwService.filter.filterId.eq(gwServiceFilter.filterId))
@@ -139,7 +140,7 @@ public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
   @Override
   public boolean isValidUpdateData(RoutingDTO param, Long serviceId) {
 
-    // 이미 등록되어 있는 데이터가 있다면 true 없다면 false를 리턴한다.
+    // 이미 등록되어 있는 데이터가 있다면 true 없다면 false 를 리턴한다.
     return from(gwService)
         .innerJoin(gwServiceFilter)
         .on(gwService.filter.filterId.eq(gwServiceFilter.filterId))

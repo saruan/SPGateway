@@ -22,31 +22,32 @@ public interface GwRoutingCustomRepository {
   /**
    * 조건문에 맞는 서비스 검색
    *
-   * @param searchDTO
-   * @return
+   * @param searchDTO 검색 조건
+   * @return  검색 결과 리스트
    */
   List<RoutingDTO> findByConditions(SearchDTO searchDTO);
 
   /**
    * G/W Bean 등록용 서비스 조회
    *
-   * @return
+   * @return G/W 등록할 모든 API 목록
    */
   List<RoutingDTO> findByGwConditions();
 
   /**
    * 해당 데이터가 등록이 가능한 데이터인지 검증
    *
-   * @param param
-   * @return
+   * @param param 등록 파라미터
+   * @return  기등록 여부
    */
   boolean isRegisteredService(RoutingDTO param);
 
   /**
    * 해당 데이터가 수정이 가능한 데이터인지 검증
    *
-   * @param param
-   * @return
+   * @param param 수정 파라미터
+   * @param serviceId 서비스 ID
+   * @return  수정 가능 여부
    */
   boolean isValidUpdateData(RoutingDTO param, Long serviceId);
 
@@ -54,8 +55,8 @@ public interface GwRoutingCustomRepository {
   /**
    * 서비스 삭제
    *
-   * @param serviceId
-   * @return
+   * @param serviceId 서비스 ID
+   * @return 삭제된 ID
    */
   long deleteService(Long serviceId);
 
