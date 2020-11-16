@@ -18,7 +18,7 @@ import java.util.Map;
 public interface GrantType {
 
   /**
-   * GrantType별 Parameter 체크 메소드
+   * GrantType 별 Parameter 체크 메소드
    * @param params  Body 전문
    */
   void validateParameters(Map<String, String> params);

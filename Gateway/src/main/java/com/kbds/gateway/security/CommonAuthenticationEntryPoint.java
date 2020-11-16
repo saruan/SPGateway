@@ -37,7 +37,7 @@ public class CommonAuthenticationEntryPoint implements ServerAuthenticationEntry
     exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
     exchange.getResponse().getHeaders().add("Content-Type", "application/json");
 
-    Map<String, String> data = new HashMap<String, String>();
+    Map<String, String> data = new HashMap<>();
 
     data.put("message", e.getMessage());
 

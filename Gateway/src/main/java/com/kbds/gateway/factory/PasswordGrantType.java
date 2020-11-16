@@ -65,13 +65,13 @@ public class PasswordGrantType implements GrantType{
   }
 
   /**
-   * Jwt값 검증
+   * Jwt 값 검증
    *
    * @param gatewayClusterDTOS 클러스터 Secret 목록
    */
   public boolean isValidToken(List<GatewayClusterDTO> gatewayClusterDTOS, String jwtToken) {
 
-    // 등록 되어 있는 Cluster의 Key값으로 검증 작업 진행
+    // 등록 되어 있는 Cluster Key 값으로 검증 작업 진행
     for (GatewayClusterDTO gatewayCluster : gatewayClusterDTOS) {
 
       try {

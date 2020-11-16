@@ -1,7 +1,6 @@
 package com.kbds.gateway.security;
 
 import com.kbds.gateway.code.GatewayCode;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -25,37 +24,46 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
-  @Autowired
-  AuthenticationManager authenticationManager;
+  private final AuthenticationManager authenticationManager;
+  private final SecurityContextRepository securityContextRepository;
+  private final CommonAuthenticationEntryPoint commonAuthenticationEntryPoint;
 
-  @Autowired
-  SecurityContextRepository securityContextRepository;
+  /**
+   * Constructor Injections
+   *
+   * @param authenticationManager          AuthenticationManager 객체
+   * @param securityContextRepository      SecurityContextRepository 객체
+   * @param commonAuthenticationEntryPoint CommonAuthenticationEntryPoint 객체
+   */
+  public SecurityConfig(
+      AuthenticationManager authenticationManager,
+      SecurityContextRepository securityContextRepository,
+      CommonAuthenticationEntryPoint commonAuthenticationEntryPoint) {
 
-  @Autowired
-  CommonAuthenticationEntryPoint commonAuthenticationEntryPoint;
+    this.authenticationManager = authenticationManager;
+    this.securityContextRepository = securityContextRepository;
+    this.commonAuthenticationEntryPoint = commonAuthenticationEntryPoint;
+  }
 
   @Bean
-  public SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http) throws Exception {
+  public SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http) {
 
-    //@formatter:off
-    //Actuator, Gateway 관련 API는 인증된 사람만 사용할 수 있도록 설정
+    //Actuator, Gateway 관련 API 는 인증된 사람만 사용할 수 있도록 설정
     return http.exceptionHandling()
-               .authenticationEntryPoint(commonAuthenticationEntryPoint)
-               .and()
-               .authenticationManager(authenticationManager)
-               .securityContextRepository(securityContextRepository)
-               .authorizeExchange()
-               .pathMatchers("/actuator/**")
-                 .hasAuthority(GatewayCode.ROLE_ADMIN.getCode())
-               .pathMatchers("/gateway/**")
-                 .hasAnyAuthority(GatewayCode.ROLE_ADMIN.getCode())
-               .anyExchange()
-                 .permitAll()
-               .and()
-               .csrf()
-                 .disable()
-               .build();
-    //@formatter:on
-
+        .authenticationEntryPoint(commonAuthenticationEntryPoint)
+        .and()
+        .authenticationManager(authenticationManager)
+        .securityContextRepository(securityContextRepository)
+        .authorizeExchange()
+        .pathMatchers("/actuator/**")
+        .hasAuthority(GatewayCode.ROLE_ADMIN.getCode())
+        .pathMatchers("/gateway/**")
+        .hasAnyAuthority(GatewayCode.ROLE_ADMIN.getCode())
+        .anyExchange()
+        .permitAll()
+        .and()
+        .csrf()
+        .disable()
+        .build();
   }
 }

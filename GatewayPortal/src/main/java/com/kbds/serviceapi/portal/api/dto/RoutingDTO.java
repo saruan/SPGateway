@@ -1,16 +1,13 @@
 package com.kbds.serviceapi.portal.api.dto;
 
-import com.kbds.serviceapi.apis.code.ServiceAuthType;
-import com.kbds.serviceapi.apis.code.ServiceLoginType;
-import com.kbds.serviceapi.apis.code.converter.ServiceAuthTypeConverter;
-import com.kbds.serviceapi.apis.code.converter.ServiceLoginTypeConverter;
-import java.util.Date;
-import java.util.List;
-import javax.persistence.Convert;
-import javax.validation.constraints.NotEmpty;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.kbds.serviceapi.apis.code.ServiceAuthType;
+import com.kbds.serviceapi.apis.code.ServiceLoginType;
 import com.querydsl.core.annotations.QueryProjection;
+import java.util.Date;
+import java.util.List;
+import javax.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

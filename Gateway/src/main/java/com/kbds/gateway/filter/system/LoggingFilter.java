@@ -21,8 +21,8 @@ import reactor.core.publisher.Mono;
 
 /**
  * <pre>
- *  Class Name     : LogginFilter.java
- *  Description    : Logging용 Global Filter
+ *  Class Name     : LoggingFilter.java
+ *  Description    : Logging 용 Global Filter
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
  *
  * -------------------------------------------------------------------------------
@@ -57,9 +57,9 @@ public class LoggingFilter implements GlobalFilter, Ordered {
   /**
    * Service Logging 수행
    *
-   * @param exchange
-   * @param startTime
-   * @return
+   * @param exchange  ServerWebExchange 객체
+   * @param startTime Request 시작 시간
+   * @return  ServerHttpResponseDecorator 객체
    */
   ServerHttpResponseDecorator logResponse(ServerWebExchange exchange, String startTime) {
 
@@ -74,8 +74,8 @@ public class LoggingFilter implements GlobalFilter, Ordered {
         String headerInfo = exchange.getRequest().getHeaders().toSingleValueMap().toString();
         String appKey = exchange.getRequest().getHeaders().getFirst(GatewayCode.API_KEY.getCode());
         String servicePath = exchange.getRequest().getURI().getPath();
-
         Flux<? extends DataBuffer> fluxBody = (Flux<? extends DataBuffer>) body;
+
         return super.writeWith(fluxBody.map(dataBuffer -> {
 
           // Response Body 추출

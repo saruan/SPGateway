@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 /**
  * <pre>
  *  Class Name     : CachingRequestBodyFilter.java
- *  Description    : RequestBody를 캐시에 담아 다른 Filter에서 사용할 수 있도록 하는 클래스
+ *  Description    : RequestBody 를 캐시에 담아 다른 Filter 에서 사용할 수 있도록 하는 클래스
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
  *
  * -------------------------------------------------------------------------------

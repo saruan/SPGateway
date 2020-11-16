@@ -2,70 +2,81 @@
 
 ## 1. 프로젝트 구성
 
-     - GatewayPortal - G/W Api, Filter, App 관리 서버  
-     - Gateway        - Spring Cloud Gateway 기반 API Gateway 서버
-     - AuthService    - JWT, OAuth를 사용하는 인증 서버
-     - GatewayLog     - Log 수집용 서버
-     - GatewayConfig  - Spring-Cloud-Config-Bus 연동 서버
-     - Properties     - Properties 관리 
-     - ETC            - Redis (캐싱), Kafka,  
+※ 서버 구성
+
+    - GatewayPortal  : Gateway 데이타 관리 서버
+    - gateway-portal-frontend : 포탈 화면 프로젝트  
+    - Gateway        : API Gateway 서버
+    - AuthService    : 인증, 사용자, 권한 관리 서버
+    - GatewayLog     : 로그, 통계 관리 서버
+    - GatewayConfig  : Spring-Cloud-Config-Bus Server
+    - Properties     : 모든 서비스 application.yml 파일 관리 
+    - ETC            : Redis, RabbitMQ, MySQL 
+     
+※ 개발 환경
+
+    - 백엔드 서버 : Java 1.8, Spring Boot, MySQL, RabbitMQ, Redis
+    - 프론트 서버 : React, Typescript     
 
 ## 2. 프로젝트 구성도
-<img src = "https://SPUsers-images.githubusercontent.com/6766147/86095971-9f3fde80-baed-11ea-9bb5-7e8af3e6864a.PNG"/>
 
-## 3. Gateway
-※ 개발 환경
-  - 언어: JAVA 1.8
-  - Framework: Spring Framework 5.0
-  - 기타 : FeignClient, Kafka 
+<img src = "https://user-images.githubusercontent.com/6766147/99205879-2b347780-27fd-11eb-9ef1-0dd33c672b0a.png"/>
+
+## 3. 설치 가이드 
+
+  ##### 아래 설치 가이드는 git 저장소를 변경하는 신규 환경에서의 설치 가이드
+  
+    MySQL, RabbitMQ, Redis, npm 설치 필요
+
+  ### 설치 순서
+
+  ##### Properties 프로젝트를 신규 git 서버에 등록한다.
+  ##### GatewayConfig 서버 설치 
+  
+    - application.yml 내부의 git 서버 uri, 사용자 정보, rabbitmq 정보를 환경에 맞게 변경한다.
+    - 1번에서 등록한 Properties 경로를 search-paths 에 저장한다.
     
-※ 주요 기능
-  - 인증 처리 ( AuthService와 연계 )
-  - SAML, AccessToken 검증 및 발급
-  - APP-Key 검증
-  - API 관리 및 Routing 기능 수행
-
-※ 기타
-  - DMZ에 위치할 수 있도록 기능을 분산
-    (라우팅, 인증, 로깅 서비스는 Internal 영역에 위치)
-
-## 4. GatewayPortal
-※ 개발 환경
-  - 언어: JAVA 1.8
-  - Framework: Spring Boot 2.2.7
-  - Database: MySQL
-  - Front : ReactJS
-  - 기타: FeignClient, Spring-Data-JPA, QueryDSL, Spring Cloud Config Bus 
+  ##### DB 환경 구성
+  
+    - Properties/schema 폴더에 있는 create_schema.sql 을 실행하여 Database, Table 를 생성한다.
+    - DB 서버도 분리를 한다면 해당 파일의 항목별 스크립트를 추출하여 별도로 생성한다.  
     
-※ 주요 기능
-  - API 관리
-  - APP 관리
-  - Filter 관리
-
-## 4. AuthService
-※ 개발 환경
-  - 언어: JAVA 1.8
-  - Framework: Spring Boot 2.2.7
-  - Database: MySQL
-  - 기타: Spring-Data-JPA, QueryDSL, Spring OAuth 2.0, JWT
-    
-※ 주요 기능
-  - SAML, AccessToken 발급 및 검증
-  - SAML 공유를 위한 GatewayCluster 관리
-  - OAuth GrantType은 기본적으로 Spring OAuth에서 지원하는 아래의 속성을 지원
-    (패스워드 인증, 클라이언트 기반 인증, Refresh 토큰 + @)
-
-## 5. GatewayLog
-※ 개발 환경
-  - 언어: Kotlin, Java 1.8
-  - Framework: Spring Boot 2.3.0
-  - Database: MySQL -> MongoDB (전환 중)
-  - 기타 사용 라이브러리: JPA, Kafka
-    
-※ 주요 기능
-  - Message Queue에서 로그 정보를 구독하여 DB에 저장
-  - 통계 데이터 배치 처리 (TO-BE)
+  ##### Properties 프로젝트의 각 yml 파일들의 속성들을 변경해준다.
+  
+    - datasource 의 정보를 3번에서 생성한 url, 계정 정보로 변경한다.
+    - rabbitmq, redis 정보를 설치한 정보로 변경한다. 
    
+  ##### AuthService, GatewayPortal, Gateway, gateway-portal-frontend 프로젝트를 설치한다.
+  
+    - 최초 구동 순서는 GatewayConfig -> AuthService -> GatewayPortal, gateway-portal-frontend -> Gateway
+   
+  ##### gateway-portal-frontend 의 루트 URL 로 접속할 경우 포탈 접속이 가능하다.
+  
+    - 기본 비밀번호는 admin / password 로 필요 시 수정
 
- 
+## 4. 사용 가이드
 
+  ##### API/APP 관리
+  
+    - http://GatewayPortal_IP:PORT/docs/restdoc.html 페이지의 RestAPI 규격서를 참조.
+      원하는 API를 호출하여 데이터를 등록한다.
+    - http://gateway-portal-frontend_IP:3000/ 을 접속한 후 메뉴의 API/APP을 관리한다.
+    
+  ##### 필터 관리
+   
+    - Gateway 프로젝트에 생성하되 별도 제약은 없지만 com.kbds.gateway.filter.custom에 생성하는 것을 권고하며,
+      Spring Application Context로 필터를 등록하게 되어 있어 @Service Annotation을 붙여야 한다.
+    - 필터 생성 후에는 반드시 GatewayPortal에 필터 정보를 등록 한 후에 API에서 해당 필터를 적용할 수 있다.
+    
+  ##### 토큰 관리
+  
+    - 인증 서버의 oauth_client_details에 초기 클라이언트가 등록 되어 있고 해당 아이디, 시크릿을 기반으로 access_token 발급이 가능하다.
+      Oauth2.0에서 제공하는 grant_type은 기본적으로 지원하지만 현재 구조에서는 password 타입을 사용한다.
+    - 기본 프로세스는 2단계 인증으로 되어 있으며 아래의 순서로 진행된다.
+    
+      1) http://GATEWAY_IP:PORT/gateway/jwt를 호출하여 JWT 토큰을 전달 받는다. (1차 사용자 정의 인증 서버 검증)
+      2) http://GATEWAY_IP:PORT/gateway/token 을 호출하여 access_token을 전달 받는다. (사용아 정의 인증 토큰을 기반으로 access_token 발급)
+      3) API를 호출할 경우 access_token을 헤더에 담아 요청한다.
+      
+      해당 내용이 프로젝트 환경에 따라 수정이 필요할 경우 TokenFilter에서 발급 프로세스를 환경에 맞춰 수정/생성해야 한다.
+      (com.kbds.gateway.filter.system.TokenFilter)

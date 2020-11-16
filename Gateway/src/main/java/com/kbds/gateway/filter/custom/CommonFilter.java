@@ -71,7 +71,7 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
           throw new GatewayException(GatewayExceptionCode.APP001, HttpStatus.UNAUTHORIZED);
         }
 
-        // API가 OAuth Type 일 경우 추가적으로 AccessToken 검증을 수행 한다.
+        // API 가 OAuth Type 일 경우 추가적으로 AccessToken 검증을 수행 한다.
         if (GatewayCode.OAUTH_TYPE.getCode().equals(serviceLoginType)) {
 
           String accessToken = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
@@ -97,7 +97,7 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
    */
   public boolean isValidAppKey(RoutingDTO routingDTO, String appKey) {
 
-    // Header에 있는 AppKey와 해당 Routing URL이 가지고 있는 Appkey 목록과 비교한다.
+    // Header 에 있는 AppKey 와 해당 Routing URL 이 가지고 있는 Appkey 목록과 비교한다.
     return routingDTO.getAppKeys().size() > 0 && routingDTO.getAppKeys().contains(appKey);
   }
 
@@ -123,7 +123,7 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
     try {
 
-      // AuthServer에서 토큰 유효성 체크를 수행한다.
+      // AuthServer 에서 토큰 유효성 체크를 수행한다.
       results = authClient.checkAccessToken(accessToken, headers);
     } catch (Exception e) {
 

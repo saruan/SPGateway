@@ -87,6 +87,7 @@ public class RoutingConfiguration {
 
   /**
    * Routing 정보를 조회 한 후 필터와 함께 GATEWAY에 등록 하는 메소드
+   * 메인 메소드
    *
    * @param builder Router 객체
    * @return  Router 정보

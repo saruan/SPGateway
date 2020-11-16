@@ -18,19 +18,17 @@ import com.kbds.gateway.code.GatewayCode;
 import reactor.core.publisher.Mono;
 
 /**
- *
  * <pre>
  *  Class Name     : AuthenticationManager.java
  *  Description    : JWT 토큰 인증 후 Security 권한 등록 클래스
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
- * 
+ *
  * -------------------------------------------------------------------------------
  *     변경No        변경일자        	       변경자          Description
  * -------------------------------------------------------------------------------
  *     Ver 1.0      2020-05-13    	   구경태          Initialized
  * -------------------------------------------------------------------------------
  * </pre>
- *
  */
 @Component
 public class AuthenticationManager implements ReactiveAuthenticationManager {
@@ -50,45 +48,42 @@ public class AuthenticationManager implements ReactiveAuthenticationManager {
       SecurityContextHolder.getContext().setAuthentication(auth);
 
       return Mono.just(auth);
-
     } catch (Exception e) {
+
       return Mono.empty();
     }
   }
 
   /**
    * 토큰 값을 베이스로 Security 권한 등록
-   * 
-   * @param token
-   * @return
+   *
+   * @param token Token 값
+   * @return Authentication 객체
    */
   private Authentication getUsernamePasswordAuthentication(String token) {
 
     if (token != null) {
 
       try {
-        // @formatter:off
- 
+
+        // 토큰 검증
         JWT.require(Algorithm.HMAC256(secretKey))
-           .build()
-           .verify(token);
-        
-        // @formatter:on
+            .build()
+            .verify(token);
       } catch (Exception e) {
 
         return null;
       }
 
+      // Security 권한 등록
       Collection<GrantedAuthority> tmp = new ArrayList<>();
       tmp.add(new SimpleGrantedAuthority(GatewayCode.ROLE_ADMIN.getCode()));
 
       UserDetails userDetails =
           User.builder().username("user").authorities(tmp).password("pass").build();
 
-      UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-          new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
-      return usernamePasswordAuthenticationToken;
+      return new UsernamePasswordAuthenticationToken(userDetails, null,
+          userDetails.getAuthorities());
     }
 
     return null;

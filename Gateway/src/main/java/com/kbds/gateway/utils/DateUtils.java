@@ -21,6 +21,10 @@ import java.util.Date;
  */
 public class DateUtils {
 
+  /**
+   * 현재시간 YYYY-MM-DD HH:MM:SS로 변환
+   * @return  날짜 문자열
+   */
   public static String getCurrentTime() {
 
     return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());

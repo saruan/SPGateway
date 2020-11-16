@@ -23,7 +23,7 @@ public class GrantTypeFactory {
   final String CONST_REFRESH_TOKEN_TYPE = "refresh_token";
 
   /**
-   * GrantType에 따라 생성자를 다르게 전달해준다.
+   * GrantType 에 따라 생성자를 다르게 전달해준다.
    *
    * @param grantType Oauth GrantType
    * @return GrantType 객체

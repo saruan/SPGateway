@@ -25,10 +25,10 @@ public class StringUtils {
   /**
    * 문자열 마지막 제거 메소드
    *
-   * @param str
-   * @param regex
-   * @param replacement
-   * @return
+   * @param str  문자열
+   * @param regex 정규식
+   * @param replacement 변환값
+   * @return  정규식 처리 결과값
    */
   public static String replaceLast(String str, String regex, String replacement) {
 
@@ -48,7 +48,8 @@ public class StringUtils {
   /**
    * Null/공백 체크를 하여야 한는 가변 파라미터 체크
    *
-   * @return
+   * @param params 체크용 파라미터
+   * @return  체크 결과
    */
   public static boolean isEmptyParams(String... params) {
 
@@ -66,8 +67,8 @@ public class StringUtils {
   /**
    * MAP -> JSON String
    *
-   * @param param
-   * @return
+   * @param param Map 파라미터
+   * @return  String 변환값
    */
   public static String convertToJsonString(Map<String, String> param) {
 
@@ -85,19 +86,19 @@ public class StringUtils {
   /**
    * QueryString to Map
    *
-   * @param buffer
-   * @return
+   * @param buffer  DataBuffer 객체
+   * @return  QueryString Map 객체
    */
   public static Map<String, String> queryToMap(DataBuffer buffer) {
 
     StringBuilder builder = new StringBuilder();
     builder.append(StandardCharsets.UTF_8.decode(buffer.asByteBuffer()).toString());
 
-    Map<String, String> result = new HashMap<String, String>();
+    Map<String, String> result = new HashMap<>();
 
     for (String param : builder.toString().split("&")) {
 
-      String pair[] = param.split("=");
+      String[] pair = param.split("=");
 
       if (pair.length > 1) {
 

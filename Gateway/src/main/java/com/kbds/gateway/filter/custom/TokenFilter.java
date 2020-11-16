@@ -60,7 +60,9 @@ public class TokenFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
       Map<String, String> queryParam = StringUtils.queryToMap(buffer);
 
-      GrantType grantType = new GrantTypeFactory().makeGrantType(queryParam.get(GatewayCode.GRANT_TYPE.getCode()));
+      GrantType grantType = new GrantTypeFactory()
+          .makeGrantType(queryParam.get(GatewayCode.GRANT_TYPE.getCode()));
+
       grantType.validateParameters(queryParam);
 
       // 인증 서버 헤더 변경

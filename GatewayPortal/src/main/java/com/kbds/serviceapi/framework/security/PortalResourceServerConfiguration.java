@@ -57,6 +57,7 @@ public class PortalResourceServerConfiguration extends ResourceServerConfigurerA
         .antMatchers("/portal/v1.0/menu/**").permitAll()
         .antMatchers("/portal/v1.0/user/login").permitAll()
         .antMatchers("/api/**").permitAll()
+        .antMatchers("/docs/restdoc.html").permitAll()
         .anyRequest().authenticated();
   }
 

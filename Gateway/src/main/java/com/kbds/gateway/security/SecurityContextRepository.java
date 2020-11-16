@@ -60,7 +60,7 @@ public class SecurityContextRepository implements ServerSecurityContextRepositor
 
       // JWT 토큰을 검증하여 권한 등록
       return this.authenticationManager.authenticate(auth)
-          .map((authentication) -> new SecurityContextImpl(authentication));
+          .map(SecurityContextImpl::new);
     } else {
 
       return Mono.empty();
