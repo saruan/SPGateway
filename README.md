@@ -8,7 +8,7 @@
     - gateway-portal-frontend : 포탈 화면 프로젝트  
     - Gateway        : API Gateway 서버
     - AuthService    : 인증, 사용자, 권한 관리 서버
-    - GatewayLog     : 로그, 통계 관리 서버
+    - GatewayLog     : 로그, 통계 관리 서버 (구성중)
     - GatewayConfig  : Spring-Cloud-Config-Bus Server
     - Properties     : 모든 서비스 application.yml 파일 관리 
     - ETC            : Redis, RabbitMQ, MySQL 
@@ -31,10 +31,14 @@
   ### 설치 순서
 
   ##### Properties 프로젝트를 신규 git 서버에 등록한다.
+
+    - 해당 Properties는 로컬, DB를 사용할 수도 있으며 기본적인 구성은 git이다.
+      git에서 이벤트 관리를 하기 위해 프로젝트 폴더를 push 한다.
+
   ##### GatewayConfig 서버 설치 
   
     - application.yml 내부의 git 서버 uri, 사용자 정보, rabbitmq 정보를 환경에 맞게 변경한다.
-    - 1번에서 등록한 Properties 경로를 search-paths 에 저장한다.
+    - Properties 프로젝트 경로를 search-paths 에 저장한다.
     
   ##### DB 환경 구성
   
@@ -58,8 +62,7 @@
 
   ##### API/APP 관리
   
-    - http://GatewayPortal_IP:PORT/docs/restdoc.html 페이지의 RestAPI 규격서를 참조.
-      원하는 API를 호출하여 데이터를 등록한다.
+    - http://GatewayPortal_IP:PORT/docs/restdoc.html 페이지의 RestAPI 규격서를 확인 후 API를 호출한다.
     - http://gateway-portal-frontend_IP:3000/ 을 접속한 후 메뉴의 API/APP을 관리한다.
     
   ##### 필터 관리
@@ -70,13 +73,16 @@
     
   ##### 토큰 관리
   
-    - 인증 서버의 oauth_client_details에 초기 클라이언트가 등록 되어 있고 해당 아이디, 시크릿을 기반으로 access_token 발급이 가능하다.
-      Oauth2.0에서 제공하는 grant_type은 기본적으로 지원하지만 현재 구조에서는 password 타입을 사용한다.
+    - 인증 서버의 oauth_client_details에 초기 클라이언트가 등록 되어 있고 id, secret 기반으로 
+      access_token 발급이 가능하다. Oauth2.0에서 제공하는 grant_type은 지원하나 현재 사용하는 필터에서는
+      password 타입을 사용한다.
     - 기본 프로세스는 2단계 인증으로 되어 있으며 아래의 순서로 진행된다.
     
-      1) http://GATEWAY_IP:PORT/gateway/jwt를 호출하여 JWT 토큰을 전달 받는다. (1차 사용자 정의 인증 서버 검증)
-      2) http://GATEWAY_IP:PORT/gateway/token 을 호출하여 access_token을 전달 받는다. (사용아 정의 인증 토큰을 기반으로 access_token 발급)
+      1) http://GATEWAY_IP:PORT/gateway/jwt를 호출하여 JWT 토큰을 전달 받는다. 
+        (1차 사용자 정의 인증 서버 검증)
+      2) http://GATEWAY_IP:PORT/gateway/token 을 호출하여 access_token을 전달 받는다. 
+        (사용자 정의 인증 토큰을 기반으로 access_token 발급)
       3) API를 호출할 경우 access_token을 헤더에 담아 요청한다.
       
-      해당 내용이 프로젝트 환경에 따라 수정이 필요할 경우 TokenFilter에서 발급 프로세스를 환경에 맞춰 수정/생성해야 한다.
-      (com.kbds.gateway.filter.system.TokenFilter)
+      해당 내용이 프로젝트 환경에 따라 수정이 필요할 경우 TokenFilter에서 발급 프로세스를 환경에 맞춰 
+      수정/생성해야 한다. (com.kbds.gateway.filter.system.TokenFilter)
