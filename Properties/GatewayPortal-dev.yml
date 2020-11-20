@@ -56,7 +56,7 @@ services:
     token: /oauth/token
     apis: /auth/v1.0/api
     menus: /auth/v1.0/menu
-    basic: Basic Y2xpZW50MjpwYXNzd29yZA==
+    basic: Basic R2F0ZXdheVBvcnRhbDpHYXRld2F5UG9ydGFsIQ==
 
 #인증 키관리    
 jwt:
