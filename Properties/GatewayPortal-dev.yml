@@ -56,6 +56,7 @@ services:
     token: /oauth/token
     apis: /auth/v1.0/api
     menus: /auth/v1.0/menu
+    user: /auth/v1.0/user
     basic: Basic R2F0ZXdheVBvcnRhbDpHYXRld2F5UG9ydGFsIQ==
 
 #인증 키관리    
