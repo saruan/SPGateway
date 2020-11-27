@@ -1,5 +1,4 @@
 import axios from "axios";
-import React from "react";
 
 /**
  * 공통 Axios Get 요청
@@ -98,7 +97,6 @@ export function putRequest(callback: Function, url: string, params: any) {
  * 공통 Axios Put 요청
  * @param callback
  * @param url
- * @param params
  */
 export function deleteRequest(callback: Function, url: string) {
 

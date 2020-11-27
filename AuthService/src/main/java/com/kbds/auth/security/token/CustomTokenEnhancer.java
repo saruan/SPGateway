@@ -29,7 +29,6 @@ public class CustomTokenEnhancer implements TokenEnhancer {
   @Autowired
   private SPUserCustomRepository spUserCustomRepository;
 
-
   @Override
   @Transactional
   public OAuth2AccessToken enhance(OAuth2AccessToken accessToken,

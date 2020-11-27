@@ -9,6 +9,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 /**
@@ -65,6 +67,16 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
    */
   private boolean isValidPassword(String loginPassword, String password) {
 
-    return loginPassword.equals(password);
+    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    return passwordEncoder.matches(loginPassword, password);
+  }
+
+
+  public static void main (String argv[]){
+
+    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    System.out.println(passwordEncoder.encode("GatewayPortal!"));
   }
 }

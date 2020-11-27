@@ -4,6 +4,9 @@ import {Button, Col, Form, Row} from "react-bootstrap";
 import {ApiManage} from "./ApiManage";
 import {deleteRequest} from "../../../perist/axios";
 
+/**
+ * Api 상세 인터페이스
+ */
 interface ApiDetailsInterface {
   data: any,
   serviceLoginType: any,
@@ -18,11 +21,11 @@ interface ApiDetailsInterface {
  * @param serviceLoginType  로그인 타입 코드 정보
  * @param serviceAuthType 인증 타입 코드 정보
  * @param filter
+ * @param refreshList
  * @constructor
  */
 export function ApiDetails({
-                             data, serviceLoginType, serviceAuthType,
-                             filter, refreshList
+                             data, serviceLoginType, serviceAuthType, filter, refreshList
                            }: ApiDetailsInterface) {
 
   const [click, setClick] = useState<boolean>(false)

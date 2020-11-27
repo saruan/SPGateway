@@ -4,6 +4,7 @@ import ApiComponent from "../components/api/ApiComponent";
 import AppComponent from "../components/app/AppComponent";
 import axios from "axios";
 import LoginForm from "../components/common/LoginForm";
+import RegisterForm from "../components/common/RegisterForm";
 
 export default function ContentsLayer() {
 
@@ -11,8 +12,11 @@ export default function ContentsLayer() {
   useEffect(() => {
 
     const token = localStorage.getItem("access_token")
+    const path = window.location.pathname;
+    const whitelist = ['/', '/portal/register'];
 
-    if (window.location.pathname != '/') {
+    // TODO 변경 필요
+    if (!whitelist.includes(path)) {
 
       if (token === null) {
 
@@ -33,7 +37,7 @@ export default function ContentsLayer() {
         }
       });
     }
-  }, [window.location.pathname]);
+  }, []);
 
   return (
       <div className="outer">
@@ -41,6 +45,7 @@ export default function ContentsLayer() {
           <Route exact path="/" component={LoginForm}/>
           <Route path="/portal/api" component={ApiComponent}/>
           <Route path="/portal/app" component={AppComponent}/>
+          <Route path="/portal/register" component={RegisterForm}/>
         </BrowserRouter>
       </div>
   )

@@ -1,14 +1,12 @@
 package com.kbds.serviceapi.common.feign;
 
 import com.kbds.serviceapi.framework.dto.ResponseDTO;
-import com.kbds.serviceapi.framework.dto.SessionDTO;
+import com.kbds.serviceapi.framework.dto.UserDTO;
 import java.util.Map;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,7 +35,7 @@ public interface AuthClient {
    * @param password  PASSWORD
    * @param scope     Oauth Scope
    * @param grant_type  인증 타입
-   * @return
+   * @return  로그인 결과 사용자 정보 및 토큰
    */
   @PostMapping(value = "${services.auth.token}", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
   Map<String, Object> login(@RequestHeader Map<String, String> headers,
@@ -59,4 +57,12 @@ public interface AuthClient {
    */
   @GetMapping(value = "${services.auth.menus}")
   ResponseDTO selectAllMenuList(@RequestHeader Map<String, String> headers);
+
+  /**
+   * 신규 사용자 등록
+   * @param userDTO 사용자 객체
+   * @return  등록 결과
+   */
+  @PostMapping(value = "${services.auth.user}")
+  ResponseDTO registerUser(@RequestBody UserDTO userDTO);
 }

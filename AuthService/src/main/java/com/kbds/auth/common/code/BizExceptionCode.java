@@ -25,8 +25,10 @@ public enum BizExceptionCode {
   JWT003("JWT003", "Invalid JWT Token"),
 
   COM001("COM001", "서비스 처리 실패"),
+  COM002("COM002", "유효하지 않은 정보가 포함되어 있습니다."),
 
   USR001("USR001", "사용자 정보가 없거나 잘못 되었습니다."),
+  USR002("USR002", "이미 등록된 사용자 입니다."),
 
   DUMMY("", "");
 

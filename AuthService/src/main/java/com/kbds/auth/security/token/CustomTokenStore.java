@@ -1,21 +1,21 @@
 package com.kbds.auth.security.token;
 
-import com.kbds.auth.apps.cluster.service.GatewayClusterService;
+import com.kbds.auth.common.utils.DateUtils;
+import com.kbds.auth.common.utils.OAuthUtils;
 import com.kbds.auth.security.entity.OAuthAccessToken;
 import com.kbds.auth.security.entity.OAuthRefreshToken;
 import com.kbds.auth.security.repository.OAuthAccessTokenRepository;
 import com.kbds.auth.security.repository.OAuthRefreshTokenRepository;
-import com.kbds.auth.common.utils.OAuthUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2RefreshToken;
 import org.springframework.security.oauth2.common.util.SerializationUtils;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.stereotype.Service;
 
 /**
  * <pre>
@@ -30,16 +30,24 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
  * -------------------------------------------------------------------------------
  * </pre>
  */
+@Service
 public class CustomTokenStore implements TokenStore {
 
-  @Autowired
-  OAuthAccessTokenRepository oAuthAccessTokenRepository;
+  private final OAuthAccessTokenRepository oAuthAccessTokenRepository;
+  private final OAuthRefreshTokenRepository oAuthRefreshTokenRepository;
 
-  @Autowired
-  OAuthRefreshTokenRepository oAuthRefreshTokenRepository;
-
-  @Autowired
-  GatewayClusterService gatewayClusterService;
+  /**
+   * Constructor Injections
+   *
+   * @param oAuthAccessTokenRepository  OAuthAccessTokenRepository 객체
+   * @param oAuthRefreshTokenRepository OAuthRefreshTokenRepository 객체
+   */
+  public CustomTokenStore(
+      OAuthAccessTokenRepository oAuthAccessTokenRepository,
+      OAuthRefreshTokenRepository oAuthRefreshTokenRepository) {
+    this.oAuthAccessTokenRepository = oAuthAccessTokenRepository;
+    this.oAuthRefreshTokenRepository = oAuthRefreshTokenRepository;
+  }
 
   @Override
   public OAuth2Authentication readAuthentication(OAuth2AccessToken token) {
@@ -88,6 +96,8 @@ public class CustomTokenStore implements TokenStore {
     accessToken.setAdditionalInfo(
         oAuth2Authentication.getOAuth2Request().getRequestParameters().toString());
 
+    accessToken.setExpiredTime(DateUtils.getExpiredTime(60));
+
     oAuthAccessTokenRepository.save(accessToken);
   }
 
@@ -109,7 +119,7 @@ public class CustomTokenStore implements TokenStore {
     Optional<OAuthAccessToken> accessToken = oAuthAccessTokenRepository
         .findByTokenId(OAuthUtils.extractTokenKey(oAuth2AccessToken.getValue()));
 
-    accessToken.ifPresent(oAuthAccessToken -> oAuthAccessTokenRepository.delete(oAuthAccessToken));
+    accessToken.ifPresent(oAuthAccessTokenRepository::delete);
   }
 
   @Override
@@ -121,6 +131,7 @@ public class CustomTokenStore implements TokenStore {
     oAuthRefreshToken.setTokenId(OAuthUtils.extractTokenKey(oAuth2RefreshToken.getValue()));
     oAuthRefreshToken.setToken(SerializationUtils.serialize(oAuth2RefreshToken));
     oAuthRefreshToken.setAuthentication(SerializationUtils.serialize(authentication));
+    oAuthRefreshToken.setExpiredTime(DateUtils.getExpiredTime(60));
 
     oAuthRefreshTokenRepository.save(oAuthRefreshToken);
   }
@@ -153,7 +164,7 @@ public class CustomTokenStore implements TokenStore {
         .findByTokenId(OAuthUtils.extractTokenKey(oAuth2RefreshToken.getValue()));
 
     oAuthRefreshToken
-        .ifPresent(authRefreshToken -> oAuthRefreshTokenRepository.delete(authRefreshToken));
+        .ifPresent(oAuthRefreshTokenRepository::delete);
   }
 
   @Override
@@ -163,7 +174,7 @@ public class CustomTokenStore implements TokenStore {
         .findByRefreshToken(OAuthUtils.extractTokenKey(oAuth2RefreshToken.getValue()));
 
     oAuthAccessToken
-        .ifPresent(authAccessToken -> oAuthAccessTokenRepository.delete(authAccessToken));
+        .ifPresent(oAuthAccessTokenRepository::delete);
   }
 
   @Override

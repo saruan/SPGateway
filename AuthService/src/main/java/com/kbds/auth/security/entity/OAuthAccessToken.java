@@ -1,11 +1,9 @@
 package com.kbds.auth.security.entity;
 
 import java.io.Serializable;
-import javax.persistence.Column;
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Table;
 import lombok.Data;
 
 
@@ -31,28 +29,13 @@ public class OAuthAccessToken implements Serializable {
   private static final long serialVersionUID = 1L;
 
   @Id
-  @Column
   private String authenticationId;
-
-  @Column
   private String additionalInfo;
-
-  @Lob
   private byte[] authentication;
-
-  @Column
   private String clientId;
-
-  @Column
   private String refreshToken;
-
-  @Lob
   private byte[] token;
-
-  @Column
   private String tokenId;
-
-  @Column
   private String userName;
-
+  private Date expiredTime;
 }

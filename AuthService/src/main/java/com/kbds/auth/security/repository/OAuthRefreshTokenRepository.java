@@ -1,5 +1,6 @@
 package com.kbds.auth.security.repository;
 
+import java.util.Date;
 import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -30,5 +31,11 @@ public interface OAuthRefreshTokenRepository extends CrudRepository<OAuthRefresh
    * @return  RefreshToken 객체
    */
   Optional<OAuthRefreshToken> findByTokenId(String tokenId);
+
+  /**
+   * 현재 시간 기준으로 만료된 토큰 삭제
+   * @param now 현재 시간
+   */
+  void deleteByExpiredTimeBefore(Date now);
 
 }

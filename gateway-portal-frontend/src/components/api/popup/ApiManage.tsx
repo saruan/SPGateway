@@ -32,8 +32,8 @@ export function ApiManage({
     serviceLoginType: '',
     serviceAuthType: '',
     filterId: '',
-    regUserNo: 1,
-    uptUserNo: 1
+    regUserNo: '',
+    uptUserNo: ''
   })
 
   /**
@@ -50,8 +50,8 @@ export function ApiManage({
       serviceLoginType: '',
       serviceAuthType: '',
       filterId: '',
-      regUserNo: 1,
-      uptUserNo: 1
+      regUserNo: '',
+      uptUserNo: ''
     })
   }
 
@@ -60,7 +60,8 @@ export function ApiManage({
    */
   const handleOpen = () => {
 
-    setClick(true);
+    setClick(true)
+    const userId = localStorage.getItem("userId")
 
     if (isUpdate) {
 
@@ -72,8 +73,21 @@ export function ApiManage({
         serviceLoginType: serviceDetail.serviceLoginType,
         serviceAuthType: serviceDetail.serviceAuthType,
         filterId: serviceDetail.filterId,
-        regUserNo: 1,
-        uptUserNo: 1
+        regUserNo: serviceDetail.regUserNo,
+        uptUserNo: userId !== null ? userId : 'anonymous'
+      })
+    } else{
+
+      setInputs({
+        serviceNm: '',
+        servicePath: '',
+        serviceTargetUrl: '',
+        serviceDesc: '',
+        serviceLoginType: '',
+        serviceAuthType: '',
+        filterId: '',
+        regUserNo: userId !== null ? userId : 'anonymous',
+        uptUserNo: ''
       })
     }
   }

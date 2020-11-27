@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import qs from "querystring";
+import {Link} from "react-router-dom";
 
 /**
  * Login 화면 Component
@@ -13,8 +14,8 @@ export default function LoginForm() {
 
   useEffect(() => {
 
-    setIsLogin(loginStatus == 'true')
-  }, [])
+    setIsLogin(loginStatus === 'true')
+  }, [loginStatus])
 
   // Service Rest API 규격
   const [inputs, setInputs] = useState({
@@ -31,6 +32,12 @@ export default function LoginForm() {
   // 로그인 프로세스 수행
   const login = () => {
 
+    if(inputs.id === '' || inputs.password === ''){
+
+      alert("ID 또는 비밀번호를 입력해 주세요.")
+      return
+    }
+
     axios.post("/portal/v1.0/user/login", data, {
       headers: {'content-type': 'application/x-www-form-urlencoded'},
     })
@@ -40,11 +47,12 @@ export default function LoginForm() {
       setIsLogin(true)
       localStorage.setItem("isLogin", "true");
       localStorage.setItem("access_token", res.data.accessToken);
+      localStorage.setItem("userId", res.data.userNm);
     }).catch(ex => {
 
       const data = ex.response.data
 
-      if (data.resultCode == 'USR001') {
+      if (data.resultCode === 'USR001') {
 
         alert(data.resultMessage)
       }
@@ -88,9 +96,9 @@ export default function LoginForm() {
               </div>
               <button type="button" onClick={login} className="btn btn-dark btn-lg btn-block">로그인
               </button>
-              {/*          <p className="forgot-password text-right">
-            <a href="#">회원가입</a>
-          </p>*/}
+              <p className="forgot-password text-right">
+                <Link to="/portal/register" className="btn btn-lg">회원가입</Link>
+              </p>
             </form>
           </div>
           :

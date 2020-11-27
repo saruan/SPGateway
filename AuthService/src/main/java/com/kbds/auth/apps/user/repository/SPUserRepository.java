@@ -28,4 +28,5 @@ public interface SPUserRepository extends CrudRepository<SPUsers, Long> {
    */
   SPUsers findByUserLoginId(String userLoginId);
 
+  int countByUserLoginId(String userLoginId);
 }

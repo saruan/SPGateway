@@ -20,9 +20,9 @@ public interface SPRoleRepository extends CrudRepository<SPRoles, Long> {
 
   /**
    * 권한 코드로 조회
-   * @param roleCd  Role Code Value
+   * @param roleId  Role Id
    * @return  count value
    */
-  int countByRoleCd(String roleCd);
+  int countByRoleId(Long roleId);
 
 }

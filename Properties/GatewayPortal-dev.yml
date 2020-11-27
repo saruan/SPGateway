@@ -21,7 +21,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
-  #kafka 연동
+  #cloud bus 연동
   cloud:
     bus:
       enabled: true

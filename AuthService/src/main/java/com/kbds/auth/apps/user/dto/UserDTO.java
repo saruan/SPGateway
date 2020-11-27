@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.querydsl.core.annotations.QueryProjection;
 import java.io.Serializable;
+import javax.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * <pre>
@@ -22,6 +24,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @JsonInclude(Include.NON_NULL)
 public class UserDTO implements Serializable {
 
@@ -31,18 +34,20 @@ public class UserDTO implements Serializable {
   private Long groupId;
   private Long roleId;
 
+  @NotEmpty
   private String userLoginId;
+  @NotEmpty
   private String password;
-  private String userNm;
+  private String username;
   private String roleNm;
   private String groupNm;
 
   @QueryProjection
-  public UserDTO(String userLoginId, String userNm, String roleNm,
+  public UserDTO(String userLoginId, String username, String roleNm,
       String groupNm) {
 
     this.userLoginId = userLoginId;
-    this.userNm = userNm;
+    this.username = username;
     this.roleNm = roleNm;
     this.groupNm = groupNm;
   }

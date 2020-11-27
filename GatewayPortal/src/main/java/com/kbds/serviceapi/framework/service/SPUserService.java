@@ -2,11 +2,11 @@ package com.kbds.serviceapi.framework.service;
 
 import com.kbds.serviceapi.common.feign.AuthClient;
 import com.kbds.serviceapi.common.utils.CommonUtils;
+import com.kbds.serviceapi.framework.dto.ResponseDTO;
 import com.kbds.serviceapi.framework.dto.SessionDTO;
+import com.kbds.serviceapi.framework.dto.UserDTO;
 import java.util.Map;
-import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -28,6 +28,15 @@ public class SPUserService {
   @Autowired
   AuthClient authClient;
 
+  final String CONST_GRANT_TYPE = "password";
+  final String CONST_SCOPE = "read_profile";
+  final String CONST_ACCESS_TOKEN = "access_token";
+  final String CONST_REFRESH_TOKEN = "refresh_token";
+  final String CONST_USER_NM = "userLoginId";
+  final String CONST_GROUP_NM = "groupNm";
+  final String CONST_ROLE_NM = "roleNm";
+  final String CONST_USER_INFO = "user";
+
   /**
    * Login 처리
    *
@@ -35,21 +44,12 @@ public class SPUserService {
    * @param password 사용자 비밀번호
    * @return Access Token
    */
-  @Transactional
   public SessionDTO getAccessToken(String id, String password) {
-
-    final String CONST_GRANT_TYPE = "password";
-    final String CONST_SCOPE = "read_profile";
-    final String CONST_ACCESS_TOKEN = "access_token";
-    final String CONST_REFRESH_TOKEN = "refresh_token";
-    final String CONST_USER_NM = "userNm";
-    final String CONST_GROUP_NM = "groupNm";
-    final String CONST_ROLE_NM = "roleNm";
 
     Map<String, Object> tokens = authClient
         .login(CommonUtils.setFeignCommonHeaders(), id, password, CONST_SCOPE, CONST_GRANT_TYPE);
 
-    Map<String, Object> userInfo = (Map<String, Object>) tokens.get("user");
+    Map<String, Object> userInfo = (Map<String, Object>) tokens.get(CONST_USER_INFO);
 
     String accessToken = String.valueOf(tokens.get(CONST_ACCESS_TOKEN));
     String refreshToken = String.valueOf(tokens.get(CONST_REFRESH_TOKEN));
@@ -59,5 +59,19 @@ public class SPUserService {
     String roleNm = String.valueOf(userInfo.get(CONST_ROLE_NM));
 
     return new SessionDTO(userNm, groupNm, roleNm, accessToken, refreshToken);
+  }
+
+  /**
+   * 인증서버를 통해 사용자 등록
+   * @param userDTO 사용자 정보 객체
+   * @return 등록 결과
+   */
+  public ResponseDTO registerUser(UserDTO userDTO){
+
+    //TODO 수정
+    userDTO.setRoleId(1L);
+    userDTO.setGroupId(1L);
+
+    return authClient.registerUser(userDTO);
   }
 }

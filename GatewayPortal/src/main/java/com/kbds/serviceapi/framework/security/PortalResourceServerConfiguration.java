@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
@@ -43,19 +44,22 @@ public class PortalResourceServerConfiguration extends ResourceServerConfigurerA
         // 권한 목록을 Spring Expression 에서 사용할 수 있게 'ADMIN', 'USER' 형태로 변환
         String roleList = value.stream()
             .collect(Collectors.joining("','", "'", "'"));
-
-        http.authorizeRequests().antMatchers(key)
-            .access("#oauth2.hasScope('read_profile') and hasAnyRole(" + roleList + ")");
+        // SPEL 문법에 맞게 변수 생성
+        String accessExpression = String
+            .format("#oauth2.hasScope('read_profile') and hasAnyRole(%s)", roleList);
+        // URL 별 권한 체크 등록
+        http.authorizeRequests().antMatchers(key).access(accessExpression);
       } catch (Exception e) {
 
         throw new BizException(BizExceptionCode.COM001, e.toString());
       }
     });
 
-    // 기본 필수 경로 설정
+    // 기본 경로 설정
     http.authorizeRequests()
         .antMatchers("/portal/v1.0/menu/**").permitAll()
         .antMatchers("/portal/v1.0/user/login").permitAll()
+        .antMatchers(HttpMethod.POST, "/portal/v1.0/user").permitAll()
         .antMatchers("/api/**").permitAll()
         .antMatchers("/docs/restdoc.html").permitAll()
         .anyRequest().authenticated();

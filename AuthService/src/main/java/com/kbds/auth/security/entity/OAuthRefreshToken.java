@@ -1,6 +1,7 @@
 package com.kbds.auth.security.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -28,12 +29,8 @@ import lombok.Data;
 public class OAuthRefreshToken implements Serializable {
 
   @Id
-  @Column
   private String tokenId;
-
-  @Lob
   private byte[] authentication;
-
-  @Lob
   private byte[] token;
+  private Date expiredTime;
 }
