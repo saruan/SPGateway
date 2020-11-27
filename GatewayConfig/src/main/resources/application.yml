@@ -6,7 +6,7 @@ spring:
         git:
           uri: https://github.com/saruan/SPGateway.git
           search-paths:
-            - 'Properties/*'
+            - 'GatewayConfig/*'
           password: rnrudxo1184018
           username: kookyungte@naver.com
     bus:

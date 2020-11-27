@@ -1,0 +1,65 @@
+# 서버 포트 설정
+server:
+  port: 8080
+
+spring:
+  cache:
+    type: redis
+  redis:
+    host: localhost
+    port: 6379
+  # Datasource 설정
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/gateway?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: 1234
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  #cloud bus 연동
+  cloud:
+    bus:
+      enabled: true
+  # RabbitMQ 설정
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+# Oauth Token Check
+security:
+  oauth2:
+    client:
+      client-id: GatewayPortal
+      client-secret: GatewayPortal!
+    resource:
+      filter-order: 3
+      token-info-uri: http://localhost:7777/oauth/check_token
+
+# 로그 설정
+logging:
+  config: classpath:${spring.profiles.active}/log4j2.yml
+
+#사용자 정의 속성
+services:
+  bus:
+    host: http://localhost:9999/
+    refresh: /actuator/bus-refresh
+  auth:
+    host: http://localhost:7777
+    token: /oauth/token
+    apis: /auth/v1.0/api
+    menus: /auth/v1.0/menu
+    user: /auth/v1.0/user
+    basic: Basic R2F0ZXdheVBvcnRhbDpHYXRld2F5UG9ydGFsIQ==
+
+#인증 키관리    
+jwt:
+  secret-key: 1EB87004BBEA8377C5F584DAE670AA293E6A856C2B4B4708E63B713EBDABBEF8
+  issuer: saruan
