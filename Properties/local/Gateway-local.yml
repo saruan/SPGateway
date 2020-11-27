@@ -1,0 +1,56 @@
+# 서버 포트
+server:
+  port: 8888
+
+# 로그 레벨 설정
+logging:
+  level:
+    root: INFO
+
+#사용자 정의 속성
+services:
+  api:
+    route-url: http://localhost:8080/api/service/v1.0/routes/gateway/
+  auth:
+    host: http://localhost:7777
+    check_token-uri: /oauth/check_token
+    cluster_list: /auth/v1.0/jwt/cluster
+
+# 기본 서비스
+gateway:
+  service:
+    routing:
+      path: /gateway/routes
+      url:  http://localhost:8080/api/service/v1.0/routes
+    app:
+      path: /gateway/apps
+      url:  http://localhost:8080/api/service/v1.0/app
+    filter:
+      path: /gateway/filters
+      url:  http://localhost:8080/api/service/v1.0/filter
+    jwt:
+      path: /gateway/jwt
+      url:  http://localhost:7777/auth/v1.0/oauth/jwt
+      filter: JWTFilter
+    token:
+      path: /gateway/token
+      url:  http://localhost:7777/oauth/token
+      filter: TokenFilter
+
+# 인증 키관리
+jwt:
+  secret-key: 1EB87004BBEA8377C5F584DAE670AA293E6A856C2B4B4708E63B713EBDABBEF8
+  issuer: saruan
+oauth:
+  client-id: Basic Y2xpZW50MjpwYXNzd29yZA==
+
+spring:
+  cloud:
+    bus:
+      enabled: true
+  # RabbitMQ 설정
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
