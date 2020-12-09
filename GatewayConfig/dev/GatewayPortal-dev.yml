@@ -49,7 +49,7 @@ logging:
 #사용자 정의 속성
 services:
   bus:
-    host: http://localhost:9999/
+    host: http:///
     refresh: /actuator/bus-refresh
   auth:
     host: http://localhost:7777

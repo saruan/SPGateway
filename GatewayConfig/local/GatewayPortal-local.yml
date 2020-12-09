@@ -6,7 +6,7 @@ spring:
   cache:
     type: redis
   redis:
-    host: localhost
+    host: 35.184.5.73
     port: 6379
   # Datasource 설정
   datasource:
@@ -27,7 +27,7 @@ spring:
       enabled: true
   # RabbitMQ 설정
   rabbitmq:
-    host: localhost
+    host: 35.184.5.73
     port: 5672
     username: guest
     password: guest
@@ -49,7 +49,7 @@ logging:
 #사용자 정의 속성
 services:
   bus:
-    host: http://localhost:9999/
+    host: http:///
     refresh: /actuator/bus-refresh
   auth:
     host: http://localhost:7777
