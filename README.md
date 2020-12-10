@@ -10,7 +10,6 @@
     - AuthService    : 인증, 사용자, 권한 관리 서버
     - GatewayLog     : 로그, 통계 관리 서버 (구성중)
     - GatewayConfig  : Spring-Cloud-Config-Bus Server
-    - Properties     : 모든 서비스 application.yml 파일 관리 
     - ETC            : Redis, RabbitMQ, MySQL 
      
 ※ 개발 환경
@@ -45,7 +44,7 @@
     - Properties/schema 폴더에 있는 create_schema.sql 을 실행하여 Database, Table 를 생성한다.
     - DB 서버도 분리를 한다면 해당 파일의 항목별 스크립트를 추출하여 별도로 생성한다.  
     
-  ##### Properties 프로젝트의 각 yml 파일들의 속성들을 변경해준다.
+  ##### GatewayConfig/{spring.profiles.active} 경로의 각 yml 파일들의 속성들을 변경해준다.
   
     - datasource 의 정보를 3번에서 생성한 url, 계정 정보로 변경한다.
     - rabbitmq, redis 정보를 설치한 정보로 변경한다. 

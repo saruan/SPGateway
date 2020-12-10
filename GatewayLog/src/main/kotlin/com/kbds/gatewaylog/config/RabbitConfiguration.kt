@@ -27,26 +27,26 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 open class RabbitConfiguration {
 
-    private val QUEUE_NM = "GATEWAY_LOG"
-    private val EXCHANGE_NM = "GATEWAY_EXCHANGE"
-    private val ROUTING_KEY = "gateway.routing.#"
+    private val queueNm = "GATEWAY_LOG"
+    private val exchangeNm = "GATEWAY_EXCHANGE"
+    private val routingKey = "gateway.routing.#"
 
     @Bean
     open fun queue(): Queue {
 
-        return Queue(QUEUE_NM, false)
+        return Queue(queueNm, false)
     }
 
     @Bean
     open fun exchange(): TopicExchange {
 
-        return TopicExchange(EXCHANGE_NM);
+        return TopicExchange(exchangeNm)
     }
 
     @Bean
     open fun binding(queue: Queue, exchange: TopicExchange): Binding {
 
-        return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY)
+        return BindingBuilder.bind(queue).to(exchange).with(routingKey)
     }
 
     @Bean
@@ -55,7 +55,7 @@ open class RabbitConfiguration {
 
         val rabbitTemplate = RabbitTemplate(connectionFactory)
         rabbitTemplate.messageConverter = messageConverter
-        rabbitTemplate.setExchange(EXCHANGE_NM)
+        rabbitTemplate.setExchange(exchangeNm)
 
         return rabbitTemplate
     }

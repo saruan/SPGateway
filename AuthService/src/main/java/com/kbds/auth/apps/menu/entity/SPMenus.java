@@ -14,6 +14,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -30,7 +33,8 @@ import org.hibernate.annotations.FetchMode;
  * -------------------------------------------------------------------------------
  *  </pre>
  */
-@Data
+@Setter
+@Getter
 @Entity(name = "SP_MENUS")
 public class SPMenus extends AuditLog implements Serializable{
 
