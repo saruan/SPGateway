@@ -20,6 +20,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum GatewayCode {
 
+  /* CommonCode */
   Y("Y", "예"),
   N("N", "아니오"),
   EMPTY("", "공백"),
@@ -28,15 +29,11 @@ public enum GatewayCode {
   SERVICE_NAME("GATEWAY", "현재 서비스 이름"),
   BLANK("", "공백"),
 
-  // Params, Header 정보
-  API_KEY("api_key", "appKey 헤더 정보"),
+  /* Params, Header 정보 */
   CACHE_REQUEST_BODY("cachedRequestBody", "Request Body Caching 데이터"),
   TOKEN_PREFIX("Bearer ", "TOKEN 헤더 PREFIX"),
-  REFRESH_TOKEN("refresh_token", "Refresh Token 파라미터"),
-  JWT("jwt", "JWT Token 파라미터"),
-  GRANT_TYPE("grant_type","Oauth Grant Type"),
 
-  OAUTH_TYPE("1", "OAuth 인증 방식"),
+  /* Queue 정보 */
   MQ_ROUTING_KEY("gateway.routing.all", "RabbitMQ 라우팅 키"),
 
   DUMMY("", "");

@@ -5,8 +5,9 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kbds.gateway.code.GatewayCode;
+import com.kbds.gateway.code.AuthTypeCode;
 import com.kbds.gateway.code.GatewayExceptionCode;
+import com.kbds.gateway.code.GrantTypeCode;
 import com.kbds.gateway.dto.GatewayClusterDTO;
 import com.kbds.gateway.dto.ResponseDTO;
 import com.kbds.gateway.exception.GatewayException;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 
 /**
  * <pre>
@@ -32,6 +34,7 @@ import org.springframework.http.HttpStatus;
  * -------------------------------------------------------------------------------
  *  </pre>
  */
+@Component
 public class PasswordGrantType implements GrantType{
 
   @Autowired
@@ -40,13 +43,20 @@ public class PasswordGrantType implements GrantType{
   @Override
   public void validateParameters(Map<String, String> params) {
 
-    if (!(params.containsKey(GatewayCode.JWT.getCode()) &&
-        isValidToken(selectAllClusters(), params.get(GatewayCode.JWT.getCode())))) {
+    if (!(params.containsKey(AuthTypeCode.JWT.getCode()) &&
+        isValidToken(selectAllClusters(), params.get(AuthTypeCode.JWT.getCode())))) {
 
       throw new GatewayException(GatewayExceptionCode.JWT001, HttpStatus.UNAUTHORIZED,
-          params.toString());
+          String.valueOf(params));
     }
   }
+
+  @Override
+  public String getGrantTypeName() {
+
+    return GrantTypeCode.PASSWORD.getCode();
+  }
+
   /**
    * JWT 값 검증을 위한 Gateway Cluster Secret 정보 조회 (캐싱 데이터)
    *
@@ -54,6 +64,8 @@ public class PasswordGrantType implements GrantType{
    */
   @Cacheable(cacheNames = "gatewayClusterList")
   public List<GatewayClusterDTO> selectAllClusters() {
+
+    System.out.println("! " + authClient);
 
     ResponseDTO responseDTO = Objects.requireNonNull(authClient.getIfAvailable())
         .selectAllClusters();
@@ -71,7 +83,7 @@ public class PasswordGrantType implements GrantType{
    */
   public boolean isValidToken(List<GatewayClusterDTO> gatewayClusterDTOS, String jwtToken) {
 
-    // 등록 되어 있는 Cluster Key 값으로 검증 작업 진행
+    /* 등록 되어 있는 Cluster Key 값으로 검증 작업 진행 */
     for (GatewayClusterDTO gatewayCluster : gatewayClusterDTOS) {
 
       try {
@@ -82,6 +94,7 @@ public class PasswordGrantType implements GrantType{
 
         return true;
       } catch (JWTVerificationException ignore) {
+
       }
     }
 

@@ -1,5 +1,6 @@
 package com.kbds.gateway.filter.custom;
 
+import com.kbds.gateway.code.AuthTypeCode;
 import com.kbds.gateway.code.GatewayCode;
 import com.kbds.gateway.code.GatewayExceptionCode;
 import com.kbds.gateway.dto.RoutingDTO;
@@ -49,11 +50,11 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
       ServerHttpRequest request = exchange.getRequest();
 
-      // 인증 타입, APP Key
+      /* 인증 타입, APP Key */
       String serviceLoginType = routingDTO.getServiceLoginType();
-      String appKey = request.getHeaders().getFirst(GatewayCode.API_KEY.getCode());
+      String appKey = request.getHeaders().getFirst(AuthTypeCode.API_KEY.getCode());
 
-      // Request Body 추출
+      /* Request Body 추출 */
       Object attribute = exchange.getAttribute(GatewayCode.CACHE_REQUEST_BODY.getCode());
       DataBuffer buffer = (DataBuffer) attribute;
 
@@ -71,8 +72,8 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
           throw new GatewayException(GatewayExceptionCode.APP001, HttpStatus.UNAUTHORIZED);
         }
 
-        // API 가 OAuth Type 일 경우 추가적으로 AccessToken 검증을 수행 한다.
-        if (GatewayCode.OAUTH_TYPE.getCode().equals(serviceLoginType)) {
+        /* API 가 OAuth Type 일 경우 추가적으로 AccessToken 검증을 수행 한다. */
+        if (AuthTypeCode.OAUTH.getCode().equals(serviceLoginType)) {
 
           String accessToken = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
@@ -97,7 +98,7 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
    */
   public boolean isValidAppKey(RoutingDTO routingDTO, String appKey) {
 
-    // Header 에 있는 AppKey 와 해당 Routing URL 이 가지고 있는 Appkey 목록과 비교한다.
+    /* Header 에 있는 AppKey 와 해당 Routing URL 이 가지고 있는 Appkey 목록과 비교한다. */
     return routingDTO.getAppKeys().size() > 0 && routingDTO.getAppKeys().contains(appKey);
   }
 
@@ -123,7 +124,7 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
     try {
 
-      // AuthServer 에서 토큰 유효성 체크를 수행한다.
+      /* AuthServer 에서 토큰 유효성 체크를 수행한다. */
       results = authClient.checkAccessToken(accessToken, headers);
     } catch (Exception e) {
 

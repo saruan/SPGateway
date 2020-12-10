@@ -4,6 +4,6 @@ spring:
   cloud:
     config:
       uri:
-      - http://35.184.5.73:9999
+      - http://localhost:9999
 
       

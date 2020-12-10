@@ -1,19 +1,19 @@
 package com.kbds.serviceapi.portal.api.repository.querydsl.impl;
 
-import static com.kbds.serviceapi.portal.app.entity.QGwApp.gwApp;
 import static com.kbds.serviceapi.portal.api.entity.QGwService.gwService;
+import static com.kbds.serviceapi.portal.app.entity.QGwApp.gwApp;
 import static com.kbds.serviceapi.portal.app.entity.QGwServiceAppMapping.gwServiceAppMapping;
 import static com.kbds.serviceapi.portal.filter.entity.QGwServiceFilter.gwServiceFilter;
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
 
+import com.kbds.serviceapi.common.code.CommonCode;
+import com.kbds.serviceapi.common.utils.StringUtils;
+import com.kbds.serviceapi.framework.dto.SearchDTO;
 import com.kbds.serviceapi.portal.api.dto.QRoutingDTO;
 import com.kbds.serviceapi.portal.api.dto.RoutingDTO;
 import com.kbds.serviceapi.portal.api.entity.GwService;
 import com.kbds.serviceapi.portal.api.repository.querydsl.GwRoutingCustomRepository;
-import com.kbds.serviceapi.common.code.CommonCode;
-import com.kbds.serviceapi.common.utils.StringUtils;
-import com.kbds.serviceapi.framework.dto.SearchDTO;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import java.util.List;
@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
 
 /**
@@ -49,9 +48,6 @@ public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
     super(GwService.class);
   }
 
-  /**
-   * Gw Bean Bean 등록 정보 조회 Custom Repository
-   */
   @Override
   public List<RoutingDTO> findByGwConditions() {
 
@@ -87,9 +83,6 @@ public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
     }).collect(Collectors.toList());
   }
 
-  /**
-   * 검색 조건에 맞게 GW_SERVICE 테이블을 조회하는 Custom Repository
-   */
   @Override
   public List<RoutingDTO> findByConditions(SearchDTO searchDTO) {
 
@@ -120,9 +113,6 @@ public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
           .fetch();
   }
 
-  /**
-   * 서비스 등록 전 중복 서비스 여부 체크
-   */
   @Override
   public boolean isRegisteredService(RoutingDTO param) {
 
@@ -134,9 +124,6 @@ public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
         .fetchCount() > 0;
   }
 
-  /**
-   * 서비스 수정 전 중복 서비스 체크
-   */
   @Override
   public boolean isValidUpdateData(RoutingDTO param, Long serviceId) {
 
@@ -150,10 +137,6 @@ public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
         .fetchCount() <= 0;
   }
 
-
-  /**
-   * 서비스 삭제
-   */
   @Override
   public long deleteService(Long serviceId) {
 
@@ -167,8 +150,8 @@ public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
 
   /**
    * 이름 LIKE 검색
-   * @param name
-   * @return
+   * @param name  이름
+   * @return  검색 조건
    */
   private BooleanExpression likeNm(String name){
 
@@ -177,8 +160,8 @@ public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
 
   /**
    * 사용 유무 검색
-   * @param useYn
-   * @return
+   * @param useYn 사용 유무
+   * @return 검색 조건
    */
   private BooleanExpression eqUseYn(String useYn){
 
@@ -187,9 +170,9 @@ public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
   }
 
   /**
-   * 이름 LIKE 검색
-   * @param servicePath
-   * @return
+   * servicePath LIKE 검색
+   * @param servicePath servicePath
+   * @return  검색 조건
    */
   private BooleanExpression likeServicePath(String servicePath){
 
@@ -197,10 +180,10 @@ public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
   }
 
   /**
-   * 사용 중인 SERVICE인지 체크
-   * @param servicePath
-   * @param serviceNm
-   * @return
+   * 사용 중인 SERVICE 인지 체크
+   * @param servicePath 서비스 경로
+   * @param serviceNm 서비스 이름
+   * @return  검색 조건
    */
   private BooleanExpression eqServicePathOrServiceNm(String servicePath, String serviceNm){
 
@@ -210,8 +193,8 @@ public class GwRoutingCustomRepositoryImpl extends QuerydslRepositorySupport
 
   /**
    * 현재 서비스 ID를 제외한 검색
-   * @param serviceId
-   * @return
+   * @param serviceId 서비스 ID
+   * @return  검색 조건
    */
   private BooleanExpression neServiceId(Long serviceId){
 

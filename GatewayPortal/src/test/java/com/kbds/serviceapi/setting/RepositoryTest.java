@@ -1,12 +1,9 @@
 package com.kbds.serviceapi.setting;
 
-import lombok.Data;
-import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * <pre>

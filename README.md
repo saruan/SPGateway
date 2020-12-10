@@ -29,11 +29,6 @@
 
   ### 설치 순서
 
-  ##### Properties 프로젝트를 신규 git 서버에 등록한다.
-
-    - 해당 Properties는 로컬, DB를 사용할 수도 있으며 기본적인 구성은 git이다.
-      git에서 이벤트 관리를 하기 위해 프로젝트 폴더를 push 한다.
-
   ##### GatewayConfig 서버 설치 
   
     - application.yml 내부의 git 서버 uri, 사용자 정보, rabbitmq 정보를 환경에 맞게 변경한다.

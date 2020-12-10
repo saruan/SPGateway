@@ -2,9 +2,11 @@ package com.kbds.gateway.factory;
 
 import com.kbds.gateway.code.GatewayCode;
 import com.kbds.gateway.code.GatewayExceptionCode;
+import com.kbds.gateway.code.GrantTypeCode;
 import com.kbds.gateway.exception.GatewayException;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 
 /**
  * <pre>
@@ -19,15 +21,22 @@ import org.springframework.http.HttpStatus;
  * -------------------------------------------------------------------------------
  *  </pre>
  */
+@Component
 public class RefreshGrantType implements GrantType{
 
   @Override
   public void validateParameters(Map<String, String> params) {
 
-    if (!params.containsKey(GatewayCode.REFRESH_TOKEN.getCode())) {
+    if (!params.containsKey(GrantTypeCode.REFRESH_TOKEN.getCode())) {
 
       throw new GatewayException(GatewayExceptionCode.TOK004, HttpStatus.UNAUTHORIZED,
           params.toString());
     }
+  }
+
+  @Override
+  public String getGrantTypeName() {
+
+    return GrantTypeCode.REFRESH_TOKEN.getCode();
   }
 }

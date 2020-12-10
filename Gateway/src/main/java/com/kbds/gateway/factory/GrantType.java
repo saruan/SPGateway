@@ -22,4 +22,10 @@ public interface GrantType {
    * @param params  Body 전문
    */
   void validateParameters(Map<String, String> params);
+
+  /**
+   * GrantType 이름 리턴
+   * @return  GrantType 명
+   */
+  String getGrantTypeName();
 }

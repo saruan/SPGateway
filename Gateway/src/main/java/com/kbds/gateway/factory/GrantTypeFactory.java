@@ -1,8 +1,8 @@
 package com.kbds.gateway.factory;
 
-import com.kbds.gateway.code.GatewayExceptionCode;
-import com.kbds.gateway.exception.GatewayException;
-import org.springframework.http.HttpStatus;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * <pre>
@@ -17,26 +17,27 @@ import org.springframework.http.HttpStatus;
  * -------------------------------------------------------------------------------
  *  </pre>
  */
+@Service
 public class GrantTypeFactory {
 
-  final String CONST_PASSWORD_TYPE = "password";
-  final String CONST_REFRESH_TOKEN_TYPE = "refresh_token";
+  @Autowired
+  List<GrantType> grantTypes;
 
   /**
    * GrantType 에 따라 생성자를 다르게 전달해준다.
    *
-   * @param grantType Oauth GrantType
+   * @param grantTypeName GrantType 명
    * @return GrantType 객체
    */
-  public GrantType makeGrantType(String grantType) {
+  public GrantType makeGrantType(String grantTypeName) {
 
-    switch (grantType) {
-      case CONST_PASSWORD_TYPE:
-        return new PasswordGrantType();
-      case CONST_REFRESH_TOKEN_TYPE:
-        return new RefreshGrantType();
-      default:
-        throw new GatewayException(GatewayExceptionCode.GWE002, HttpStatus.UNAUTHORIZED);
+    for (GrantType grantType : grantTypes) {
+      if (grantTypeName.equals(grantType.getGrantTypeName())) {
+
+        return grantType;
+      }
     }
+    
+    return null;
   }
 }

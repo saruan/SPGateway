@@ -250,8 +250,6 @@ public class RoutingConfiguration {
       servicePath += "/**";
     }
 
-    System.out.println(servicePath);
-
     return servicePath;
   }
 }

@@ -1,5 +1,6 @@
 package com.kbds.gateway.filter.system;
 
+import com.kbds.gateway.code.AuthTypeCode;
 import com.kbds.gateway.code.GatewayCode;
 import com.kbds.gateway.dto.ServiceLogDTO;
 import com.kbds.gateway.utils.DateUtils;
@@ -72,18 +73,18 @@ public class LoggingFilter implements GlobalFilter, Ordered {
 
         String endTime = DateUtils.getCurrentTime();
         String headerInfo = exchange.getRequest().getHeaders().toSingleValueMap().toString();
-        String appKey = exchange.getRequest().getHeaders().getFirst(GatewayCode.API_KEY.getCode());
+        String appKey = exchange.getRequest().getHeaders().getFirst(AuthTypeCode.API_KEY.getCode());
         String servicePath = exchange.getRequest().getURI().getPath();
         Flux<? extends DataBuffer> fluxBody = (Flux<? extends DataBuffer>) body;
 
         return super.writeWith(fluxBody.map(dataBuffer -> {
 
-          // Response Body 추출
+          /* Response Body 추출 */
           byte[] content = new byte[dataBuffer.readableByteCount()];
           dataBuffer.read(content);
           String responseBody = new String(content, StandardCharsets.UTF_8);
 
-          // Request Body 추출
+          /* Request Body 추출 */
           Object attribute = exchange.getAttribute(GatewayCode.CACHE_REQUEST_BODY.getCode());
           String requestBody = "";
 
@@ -93,7 +94,7 @@ public class LoggingFilter implements GlobalFilter, Ordered {
             requestBody = StandardCharsets.UTF_8.decode(buffer.asByteBuffer()).toString();
           }
 
-          // 큐에 서비스 로그 전송
+          /* 큐에 서비스 로그 전송 */
           ServiceLogDTO serviceLog =
               new ServiceLogDTO(headerInfo, requestBody, responseBody,
                   appKey == null ? "" : appKey, servicePath, CLIENT_NAME, startTime, endTime);

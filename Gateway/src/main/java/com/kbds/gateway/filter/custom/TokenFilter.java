@@ -2,14 +2,13 @@ package com.kbds.gateway.filter.custom;
 
 import com.kbds.gateway.code.GatewayCode;
 import com.kbds.gateway.code.GatewayExceptionCode;
+import com.kbds.gateway.code.GrantTypeCode;
 import com.kbds.gateway.dto.RoutingDTO;
 import com.kbds.gateway.exception.GatewayException;
 import com.kbds.gateway.factory.GrantType;
 import com.kbds.gateway.factory.GrantTypeFactory;
-import com.kbds.gateway.feign.AuthClient;
 import com.kbds.gateway.utils.StringUtils;
 import java.util.Map;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -40,18 +39,18 @@ public class TokenFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
   String oAuthKey;
 
   @Autowired
-  ObjectProvider<AuthClient> authClient;
+  GrantTypeFactory grantTypeFactory;
 
   @Override
   public GatewayFilter apply(RoutingDTO routingDTO) {
 
     return (exchange, chain) -> {
 
-      // Request Body 추출
+      /* Request Body 추출 */
       Object attribute = exchange.getAttribute(GatewayCode.CACHE_REQUEST_BODY.getCode());
       DataBuffer buffer = (DataBuffer) attribute;
 
-      // 필수 파라미터 체크
+      /* 필수 파라미터 체크 */
       if (buffer == null) {
 
         throw new GatewayException(GatewayExceptionCode.GWE002, HttpStatus.UNAUTHORIZED,
@@ -60,12 +59,12 @@ public class TokenFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
       Map<String, String> queryParam = StringUtils.queryToMap(buffer);
 
-      GrantType grantType = new GrantTypeFactory()
-          .makeGrantType(queryParam.get(GatewayCode.GRANT_TYPE.getCode()));
+      GrantType grantType = grantTypeFactory
+          .makeGrantType(queryParam.get(GrantTypeCode.GRANT_TYPE.getCode()));
 
       grantType.validateParameters(queryParam);
 
-      // 인증 서버 헤더 변경
+      /* 인증 서버 헤더 변경 */
       ServerHttpRequest request = exchange.getRequest()
           .mutate()
           .header(HttpHeaders.AUTHORIZATION, oAuthKey)
