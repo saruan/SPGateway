@@ -13,7 +13,7 @@ spring:
       enabled: true
   # RabbitMQ 설정
   rabbitmq:
-    host: 35.184.5.73
+    host: localhost
     port: 5672
     username: guest
     password: guest
