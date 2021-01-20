@@ -1,9 +1,8 @@
 package com.kbds.auth.common.utils;
 
 import com.kbds.auth.common.code.ConstantsCode;
-import org.springframework.stereotype.Component;
-import com.kbds.auth.common.code.AuthCode;
 import com.kbds.auth.common.dto.ResponseDTO;
+import org.springframework.stereotype.Component;
 
 /**
  * 
