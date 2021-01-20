@@ -30,7 +30,7 @@ gateway:
       url:  http://localhost:8080/api/service/v1.0/filter
     jwt:
       path: /gateway/jwt
-      url:  http://localhost:7777/auth/v1.0/oauth/jwt
+      url:  http://localhost:7777//auth/v1.0/jwt
       filter: JWTFilter
     token:
       path: /gateway/token
