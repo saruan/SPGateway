@@ -1,6 +1,8 @@
 package com.kbds.auth.apps.user.repository;
 
 import com.kbds.auth.apps.user.entity.SPUsers;
+import com.kbds.auth.apps.user.repository.querydsl.SPUserCustomRepository;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -18,7 +20,8 @@ import org.springframework.stereotype.Repository;
  *  </pre>
  */
 @Repository
-public interface SPUserRepository extends CrudRepository<SPUsers, Long> {
+@Primary
+public interface SPUserRepository extends CrudRepository<SPUsers, Long>, SPUserCustomRepository {
 
   /**
    * 사용자 로그인 아이디로 검색
@@ -28,5 +31,17 @@ public interface SPUserRepository extends CrudRepository<SPUsers, Long> {
    */
   SPUsers findByUserLoginId(String userLoginId);
 
+  /**
+   * 사용자 ID 건수 조회
+   * @param userLoginId Login Id
+   * @return  count
+   */
   int countByUserLoginId(String userLoginId);
+
+  /**
+   * 해당 Group Id를 사용하는 사용자 수 조회
+   * @param groupId GroupId
+   * @return  count
+   */
+  int countBySpGroupsGroupId(Long groupId);
 }

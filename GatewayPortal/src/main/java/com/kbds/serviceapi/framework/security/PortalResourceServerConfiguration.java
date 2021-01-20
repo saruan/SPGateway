@@ -7,6 +7,7 @@ import com.kbds.serviceapi.framework.exception.BizException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.swing.Spring;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -41,13 +42,13 @@ public class PortalResourceServerConfiguration extends ResourceServerConfigurerA
 
       try {
 
-        // 권한 목록을 Spring Expression 에서 사용할 수 있게 'ADMIN', 'USER' 형태로 변환
-        String roleList = value.stream()
-            .collect(Collectors.joining("','", "'", "'"));
-        // SPEL 문법에 맞게 변수 생성
+        /*
+         권한 목록을 Spring Expression 에서 사용할 수 있게 'ADMIN', 'USER' 형태로 변환
+         */
+        String roleList = value.stream().collect(Collectors.joining("','", "'", "'"));
         String accessExpression = String
             .format("#oauth2.hasScope('read_profile') and hasAnyRole(%s)", roleList);
-        // URL 별 권한 체크 등록
+
         http.authorizeRequests().antMatchers(key).access(accessExpression);
       } catch (Exception e) {
 

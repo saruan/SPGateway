@@ -39,7 +39,8 @@ public class GwRoutingService {
    * @param gwServiceRepository gwServiceRepository
    * @param modelMapper modelMapper
    */
-  public GwRoutingService(GwRoutingRepository gwServiceRepository, ModelMapper modelMapper) {
+  public GwRoutingService(GwRoutingRepository gwServiceRepository,
+      ModelMapper modelMapper) {
     this.gwServiceRepository = gwServiceRepository;
     this.modelMapper = modelMapper;
   }
@@ -136,20 +137,10 @@ public class GwRoutingService {
   @Transactional
   public void updateService(RoutingDTO reqParam, Long id) {
 
-    GwService gwService;
+    GwService gwService = new GwService();
 
     try {
 
-      // DB 상에서 해당 serviceId를 가진 Entity를 불러온다.
-      gwService = gwServiceRepository.findByServiceId(id);
-
-      // 해당 데이터가 없다면 화면으로 오류 전달
-      if (gwService == null) {
-
-        throw new BizException(BizExceptionCode.COM004);
-      }
-
-      // 수정하고자 하는 내용 중 중복이 허용되지 않는 데이터가 DB상에 등록되어 있는지 체크한다.
       if (!gwServiceRepository.isValidUpdateData(reqParam, id)) {
 
         throw new BizException(BizExceptionCode.COM003);
@@ -158,7 +149,7 @@ public class GwRoutingService {
       GwServiceFilter serviceFilter = new GwServiceFilter();
       serviceFilter.setFilterId(reqParam.getFilterId());
 
-      // 데이터 정합성 체크가 끝나면 최종적으로 서비스를 갱신 시킨다.
+      gwService.setServiceId(id);
       gwService.setServiceNm(reqParam.getServiceNm());
       gwService.setServicePath(reqParam.getServicePath());
       gwService.setFilter(serviceFilter);
@@ -170,7 +161,7 @@ public class GwRoutingService {
 
       gwServiceRepository.save(gwService);
 
-      // 수정 이후 게이트웨이에 해당 정보를 갱신해준다.
+      /* 수정 이후 게이트웨이에 해당 정보를 갱신해준다. */
       CommonUtils.refreshGatewayRoutes(reqParam.getUptUserNo());
     } catch (BizException e) {
 

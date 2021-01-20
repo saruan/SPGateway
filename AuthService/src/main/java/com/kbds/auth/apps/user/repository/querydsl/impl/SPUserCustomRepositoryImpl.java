@@ -10,6 +10,7 @@ import com.kbds.auth.apps.user.entity.SPUsers;
 import com.kbds.auth.apps.user.repository.querydsl.SPUserCustomRepository;
 import com.kbds.auth.common.utils.StringUtils;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import java.util.List;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
@@ -53,7 +54,7 @@ public class SPUserCustomRepositoryImpl extends QuerydslRepositorySupport implem
 
 
   /**
-   * 사용자 ID로 검색
+   * 사용자 로그인 ID로 검색
    *
    * @param userLoginId 사용자 로그인 아이디
    * @return BooleanExpression
@@ -64,4 +65,14 @@ public class SPUserCustomRepositoryImpl extends QuerydslRepositorySupport implem
         null : sPUsers.userLoginId.eq(userLoginId);
   }
 
+  /**
+   * 해당 그룹에 속하는 사용자 목록 조회 조건
+   *
+   * @param userList 사용자 아이디 목록
+   * @return BooleanExpression
+   */
+  private BooleanExpression inUserIdByGroupId(List<Long> userList, Long groupId) {
+
+    return sPUsers.userId.in(userList).and(sPUsers.spGroups.groupId.eq(groupId));
+  }
 }

@@ -4,4 +4,4 @@ spring:
   cloud:
     config:
       uri:
-      - http://localhost:9999
+      - http://211.62.204.27:9999

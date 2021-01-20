@@ -47,11 +47,11 @@ public class SPUsers extends AuditLog {
 
   private String userNm;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "GROUP_ID")
   private SPGroups spGroups;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "ROLE_ID")
   private SPRoles spRoles;
 }

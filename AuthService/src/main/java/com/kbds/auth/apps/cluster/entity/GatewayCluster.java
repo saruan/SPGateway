@@ -1,7 +1,6 @@
 package com.kbds.auth.apps.cluster.entity;
 
 import java.io.Serializable;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -30,16 +29,10 @@ public class GatewayCluster implements Serializable {
   private static final long serialVersionUID = 8105593697196965999L;
 
   @Id
-  @Column(name = "gateway_id")
   private String gatewayId;
-
-  @Column(name = "secret_key")
   private String secretKey;
-
-  @Column(name = "main_yn")
   private String mainYn;
-
-  @Column(name = "expired_time")
   private Long expiredTime;
-
+  private byte[] certificateFile;
+  private String certificatePassword;
 }

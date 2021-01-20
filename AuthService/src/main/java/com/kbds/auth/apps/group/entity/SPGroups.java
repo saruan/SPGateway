@@ -48,6 +48,6 @@ public class SPGroups extends AuditLog {
   @PrePersist
   public void prePersist() {
 
-    this.setRegUserNo(this.getRegUserNo() == null ? "default" : this.getRegUserNo());
+    this.setRegUserNo(this.getRegUserNo() == null ? "initialize" : this.getRegUserNo());
   }
 }

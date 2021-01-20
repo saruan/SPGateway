@@ -30,6 +30,13 @@ public enum BizExceptionCode {
   USR001("USR001", "사용자 정보가 없거나 잘못 되었습니다."),
   USR002("USR002", "이미 등록된 사용자 입니다."),
 
+  GRP001("GRP001", "이미 등록된 그룹입니다."),
+  GRP002("GRP002", "사용중인 사용자가 있습니다."),
+
+  SAML001("SAML001", "유효시간이 만료 되었습니다."),
+  SAML002("SAML002", "인증서 서명이 잘못 되었습니다."),
+
+
   DUMMY("", "");
 
   private String code;

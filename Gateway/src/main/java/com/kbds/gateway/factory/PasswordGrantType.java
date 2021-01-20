@@ -65,8 +65,6 @@ public class PasswordGrantType implements GrantType{
   @Cacheable(cacheNames = "gatewayClusterList")
   public List<GatewayClusterDTO> selectAllClusters() {
 
-    System.out.println("! " + authClient);
-
     ResponseDTO responseDTO = Objects.requireNonNull(authClient.getIfAvailable())
         .selectAllClusters();
 

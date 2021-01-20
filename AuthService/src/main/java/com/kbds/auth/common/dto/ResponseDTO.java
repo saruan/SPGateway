@@ -1,5 +1,7 @@
 package com.kbds.auth.common.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import lombok.Data;
 
 /**
@@ -18,6 +20,7 @@ import lombok.Data;
  *
  */
 @Data
+@JsonInclude(Include.NON_NULL)
 public class ResponseDTO {
 
   // 결과 코드

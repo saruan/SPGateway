@@ -1,15 +1,9 @@
 package com.kbds.auth.apps.role.service;
 
 import com.kbds.auth.apps.role.repository.SPRoleRepository;
-import java.util.ArrayList;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.util.AntPathMatcher;
 
 /**
  * <pre>
@@ -40,6 +34,6 @@ public class SPRoleService {
    */
   public boolean isRegisteredRoleById(Long roleId){
 
-    return spRoleRepository.countByRoleId(roleId) == 1;
+    return spRoleRepository.countByRoleId(roleId) > 0;
   }
 }

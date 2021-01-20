@@ -9,6 +9,7 @@ import com.kbds.auth.common.code.AuthCode;
 import com.kbds.auth.common.code.BizExceptionCode;
 import com.kbds.auth.apps.cluster.dto.GatewayClusterDTO;
 import com.kbds.auth.apps.cluster.entity.GatewayCluster;
+import com.kbds.auth.common.code.ConstantsCode;
 import com.kbds.auth.security.exception.CustomOAuthException;
 import com.kbds.auth.apps.cluster.repository.GatewayClusterRepository;
 import java.util.Date;
@@ -43,13 +44,14 @@ public class GatewayClusterService {
   /**
    * 현재 Gateway에서 인증된 사용자에게 JWT 발급을 위해 생성
    *
-   * @return  생성된 JWT 키값
+   * @return 생성된 JWT 키값
    */
   public String generateJWT() {
 
     try {
 
-      GatewayCluster gatewayCluster = gatewayClusterRespository.findByMainYn(AuthCode.Y.name());
+      GatewayCluster gatewayCluster = gatewayClusterRespository
+          .findByMainYn(ConstantsCode.Y.name());
 
       Algorithm algorithm = Algorithm.HMAC256(gatewayCluster.getSecretKey());
 
@@ -69,7 +71,7 @@ public class GatewayClusterService {
    * DB에 등록되어 있는 Cluster의 정보로 JWT 토큰 검증
    *
    * @param key JWT Key값
-   * @return  유효성 결과
+   * @return 유효성 결과
    */
   public boolean isValidJWT(String key) {
 
@@ -94,7 +96,8 @@ public class GatewayClusterService {
         JWT.require(algorithm).withIssuer(gatewayCluster.getGatewayId()).build().verify(key);
 
         return true;
-      } catch (JWTVerificationException ignore) {}
+      } catch (JWTVerificationException ignore) {
+      }
     }
     return false;
   }
@@ -102,11 +105,12 @@ public class GatewayClusterService {
   /**
    * 등록된 전체 클러스터 목록 조회
    *
-   * @return  클러스터 전체 목록
+   * @return 클러스터 전체 목록
    */
-  public List<GatewayClusterDTO> selectAllClusters(){
+  public List<GatewayClusterDTO> selectAllClusters() {
 
     return modelMapper.map(gatewayClusterRespository.findAll()
-        , new TypeReference<List<GatewayClusterDTO>>(){}.getType());
+        , new TypeReference<List<GatewayClusterDTO>>() {
+        }.getType());
   }
 }

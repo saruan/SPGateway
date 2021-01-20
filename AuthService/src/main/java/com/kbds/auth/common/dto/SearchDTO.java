@@ -1,42 +1,41 @@
-package com.kbds.auth.apps.group.dto;
+package com.kbds.auth.common.dto;
 
 import java.util.Date;
-import java.util.List;
-import javax.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
  * <pre>
- *  File  Name     : SPGroupDTO
- *  Description    :
+ *  File  Name     : SearchDTO
+ *  Description    : 공통 검색 조건 DTO
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
  *
  * -------------------------------------------------------------------------------
  *     변경No        변경일자        	       변경자          Description
  * -------------------------------------------------------------------------------
- *     Ver 1.0      2020-11-24          	   구경태          Initialized
+ *     Ver 1.0      2020-08-31          	   구경태          Initialized
  * -------------------------------------------------------------------------------
  *  </pre>
  */
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SPGroupDTO {
+public class SearchDTO {
 
-  private Long groupId;
+  private String name;
 
-  @NotEmpty
+  private String regUserNm;
+
   private String groupNm;
 
-  private List<Long> userList;
+  private String servicePath;
 
-  private String regUserNo;
+  private String useYn;
 
-  private String uptUserNo;
+  private Date startDt;
 
-  private Date regDt;
-
-  private Date uptDt;
+  private Date endDt;
 }

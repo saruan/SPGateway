@@ -21,21 +21,24 @@ gateway:
   service:
     routing:
       path: /gateway/routes
-      url:  http://localhost:8080/api/service/v1.0/routes
+      url: http://localhost:8080/api/service/v1.0/routes
     app:
       path: /gateway/apps
-      url:  http://localhost:8080/api/service/v1.0/app
+      url: http://localhost:8080/api/service/v1.0/app
     filter:
       path: /gateway/filters
-      url:  http://localhost:8080/api/service/v1.0/filter
+      url: http://localhost:8080/api/service/v1.0/filter
     jwt:
       path: /gateway/jwt
-      url:  http://localhost:7777/auth/v1.0/oauth/jwt
+      url: http://localhost:7777/auth/v1.0/oauth/jwt
       filter: JWTFilter
     token:
       path: /gateway/token
-      url:  http://localhost:7777/oauth/token
+      url: http://localhost:7777/oauth/token
       filter: TokenFilter
+    saml:
+      path: /gateway/saml
+      url: http://localhost:7777/auth/v1.0/saml/assertion
 
 # 인증 키관리
 jwt:
@@ -50,7 +53,7 @@ spring:
       enabled: true
   # RabbitMQ 설정
   rabbitmq:
-    host: localhost
+    host: 211.62.204.27
     port: 5672
-    username: guest
-    password: guest
+    username: gateway
+    password: gateway

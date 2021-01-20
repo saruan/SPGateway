@@ -1,5 +1,6 @@
 package com.kbds.auth.common.utils;
 
+import com.kbds.auth.common.code.ConstantsCode;
 import org.springframework.stereotype.Component;
 import com.kbds.auth.common.code.AuthCode;
 import com.kbds.auth.common.dto.ResponseDTO;
@@ -25,15 +26,15 @@ public class CommonUtils {
   /**
    * 공통 Response Model 생성 유틸 메소드
    * 
-   * @param params
-   * @return
+   * @param params  Service 호출 결과
+   * @return  ResponseDTO 객체
    */
   public static ResponseDTO getResponseEntity(Object params) {
 
     ResponseDTO responseDTO = new ResponseDTO();
 
-    responseDTO.setResultCode(AuthCode.SUCCESS.getCode());
-    responseDTO.setResultMessage(AuthCode.SUCCESS.getDesc());
+    responseDTO.setResultCode(ConstantsCode.SUCCESS.getCode());
+    responseDTO.setResultMessage(ConstantsCode.SUCCESS.getMessage());
     responseDTO.setResultData(params);
 
     return responseDTO;

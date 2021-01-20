@@ -38,7 +38,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     String userNm = (String) authentication.getPrincipal();
     String password = (String) authentication.getCredentials();
 
-    // 사용자 정보 조회 후 사용자 검증
+    /* 사용자 정보 조회 후 사용자 검증 */
     SessionDTO sessionDTO = (SessionDTO) SPUserDetailService.loadUserByUsername(userNm);
 
     if(!isValidPassword(password, sessionDTO.getPassword())) {
@@ -56,6 +56,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
   @Override
   public boolean supports(Class<?> authentication) {
+
     return true;
   }
 
@@ -70,13 +71,5 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     return passwordEncoder.matches(loginPassword, password);
-  }
-
-
-  public static void main (String argv[]){
-
-    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-    System.out.println(passwordEncoder.encode("GatewayPortal!"));
   }
 }

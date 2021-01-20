@@ -1,20 +1,18 @@
 package com.kbds.auth.apps.user.service;
 
 import com.kbds.auth.apps.group.entity.SPGroups;
+import com.kbds.auth.apps.role.entity.SPRoles;
 import com.kbds.auth.apps.role.service.SPRoleService;
 import com.kbds.auth.apps.user.dto.UserDTO;
-import com.kbds.auth.common.code.BizExceptionCode;
-import com.kbds.auth.common.dto.SessionDTO;
-import com.kbds.auth.apps.role.entity.SPRoles;
 import com.kbds.auth.apps.user.entity.SPUsers;
 import com.kbds.auth.apps.user.repository.SPUserRepository;
+import com.kbds.auth.common.code.BizExceptionCode;
+import com.kbds.auth.common.dto.SessionDTO;
 import com.kbds.auth.common.exception.BizException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.transaction.Transactional;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -40,11 +38,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class SPUserDetailService implements UserDetailsService {
 
-  @Autowired
-  private SPUserRepository spUserRepository;
+  private final SPUserRepository spUserRepository;
+  private final SPRoleService spRoleService;
 
-  @Autowired
-  private SPRoleService spRoleService;
+  public SPUserDetailService(SPUserRepository spUserRepository,
+      SPRoleService spRoleService) {
+    this.spUserRepository = spUserRepository;
+    this.spRoleService = spRoleService;
+  }
 
   @Override
   @Transactional
@@ -133,7 +134,7 @@ public class SPUserDetailService implements UserDetailsService {
    * @param userLoginId 사용자 로그인 ID
    * @return 등록 여부
    */
-  private boolean isRegisteredUser(String userLoginId) {
+  public boolean isRegisteredUser(String userLoginId) {
 
     return spUserRepository.countByUserLoginId(userLoginId) > 0;
   }

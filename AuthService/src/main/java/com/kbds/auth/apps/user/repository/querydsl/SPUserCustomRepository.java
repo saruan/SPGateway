@@ -1,6 +1,7 @@
 package com.kbds.auth.apps.user.repository.querydsl;
 
 import com.kbds.auth.apps.user.dto.UserDTO;
+import java.util.List;
 
 /**
  * <pre>
@@ -23,4 +24,5 @@ public interface SPUserCustomRepository {
    * @return  사용자 정보
    */
   UserDTO findByUserDetails(String userLoginId);
+
 }

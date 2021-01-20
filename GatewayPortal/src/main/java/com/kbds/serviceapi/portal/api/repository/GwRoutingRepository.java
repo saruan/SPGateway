@@ -2,6 +2,7 @@ package com.kbds.serviceapi.portal.api.repository;
 
 import com.kbds.serviceapi.portal.api.repository.querydsl.GwRoutingCustomRepository;
 import java.util.List;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import com.kbds.serviceapi.portal.api.entity.GwService;

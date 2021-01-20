@@ -1,13 +1,9 @@
-package com.kbds.serviceapi.framework.exception;
+package com.kbds.auth.common.exception;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import com.kbds.serviceapi.apis.dto.EmptyDataDTO;
-import com.kbds.serviceapi.common.code.BizExceptionCode;
-import com.kbds.serviceapi.common.code.SystemExceptionCode;
-import com.kbds.serviceapi.framework.dto.ResponseDTO;
-import feign.FeignException;
+import com.kbds.auth.common.code.BizExceptionCode;
+import com.kbds.auth.common.code.SystemExceptionCode;
+import com.kbds.auth.common.dto.ResponseDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,16 +36,15 @@ public class ServiceExceptionHandler {
   /**
    * BizException 처리용 Handler
    *
-   * @param ex
-   * @return
+   * @param ex  Exception
+   * @return  ResponseDTO
    */
   @ExceptionHandler(BizException.class)
   public ResponseEntity<ResponseDTO> bizExceptionHandler(BizException ex) {
 
-    // 오류 로그 출력
     if (StringUtils.isEmpty(ex.getMsg())) {
 
-      logger.error(BizExceptionCode.valueOf(ex.getMessage()).getMsg());
+      logger.error(BizExceptionCode.valueOf(ex.getMessage()).getDesc());
     } else {
 
       logger.error(ex.getMsg());
@@ -57,19 +52,18 @@ public class ServiceExceptionHandler {
 
     return new ResponseEntity<>(
         setExceptionObject(BizExceptionCode.valueOf(ex.getMessage()).getCode(),
-            BizExceptionCode.valueOf(ex.getMessage()).getMsg()), HttpStatus.BAD_REQUEST);
+            BizExceptionCode.valueOf(ex.getMessage()).getDesc()), HttpStatus.BAD_REQUEST);
   }
 
   /**
    * RequestBody로 선언되어 있는 DTO 클래스의 변수 타입과 맞지 않는 정보가 왔을 경우 발생하는 오류 핸들러
    *
-   * @param ex
-   * @return
+   * @param ex  Exception
+   * @return  ResponseDTO
    */
   @ExceptionHandler({InvalidFormatException.class, MethodArgumentTypeMismatchException.class})
   public ResponseEntity<ResponseDTO> parseExceptionHandler(Exception ex) {
 
-    // 오류 로그 출력
     logger.error(ex.getMessage());
 
     return new ResponseEntity<>(
@@ -80,57 +74,35 @@ public class ServiceExceptionHandler {
   /**
    * DTO 클래스 Validation 오류 핸들러
    *
-   * @param ex
-   * @return
+   * @param ex  Exception
+   * @return  ResponseDTO
    */
   @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
   public ResponseEntity<ResponseDTO> validationExceptionHandler(
       Exception ex) {
 
-    // 오류 로그 출력
     logger.error(ex.getMessage());
 
     return new ResponseEntity<>(
-        setExceptionObject(BizExceptionCode.COM005.getCode(),
-            BizExceptionCode.COM005.getMsg()), HttpStatus.OK);
-  }
-
-  /**
-   * FeignClient Exception Handler
-   *
-   * @param ex
-   * @return
-   */
-  @ExceptionHandler(FeignException.class)
-  public ResponseEntity<ResponseDTO> feignClientExceptionHandler(
-      FeignException ex) throws JsonProcessingException {
-
-    // 오류 로그 출력
-    logger.error(ex.getMessage());
-
-    ObjectMapper mapper = new ObjectMapper();
-
-    ResponseDTO responseDTO = mapper.readValue(ex.contentUTF8(), ResponseDTO.class);
-
-    return new ResponseEntity<>(responseDTO, HttpStatus.resolve(ex.status()));
+        setExceptionObject(BizExceptionCode.COM002.getCode(),
+            BizExceptionCode.COM002.getDesc()), HttpStatus.OK);
   }
 
   /**
    * 기타 Exception Handler
    *
-   * @param ex
-   * @return
+   * @param ex  Exception
+   * @return  ResponseDTO
    */
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ResponseDTO> feignClientExceptionHandler(
       Exception ex) {
 
-    // 오류 로그 출력
     logger.error(ex.getMessage());
 
     return new ResponseEntity<>(
         setExceptionObject(BizExceptionCode.COM001.getCode(),
-            BizExceptionCode.COM001.getMsg()), HttpStatus.OK);
+            BizExceptionCode.COM001.getDesc()), HttpStatus.OK);
   }
 
   /**
@@ -144,10 +116,9 @@ public class ServiceExceptionHandler {
 
     ResponseDTO responseDTO = new ResponseDTO();
 
-    // 서비스 레이어에서 던진 코드와 메시지를 결과 값으로 설정한다.
+    /* 서비스 레이어에서 던진 코드와 메시지를 결과 값으로 설정한다. */
     responseDTO.setResultCode(code);
     responseDTO.setResultMessage(msg);
-    responseDTO.setResultData(new EmptyDataDTO());
 
     return responseDTO;
   }

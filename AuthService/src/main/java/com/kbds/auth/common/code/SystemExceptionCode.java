@@ -4,28 +4,31 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
+ * 
  *
  * <pre>
- *  Class Name     : AuthCode.java
- *  Description    : AuthCode 공통 코드
+ *  Class Name     : SystemExceptionCode.java
+ *  Description    : Framework 실패 처리용 코드
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
  * 
  * -------------------------------------------------------------------------------
  *     변경No        변경일자        	       변경자          Description
  * -------------------------------------------------------------------------------
- *     Ver 1.0      2020-05-04     구경태          Initialized
+ *     Ver 1.0      2020-04-16             구경태          Initialized
  * -------------------------------------------------------------------------------
  * </pre>
  *
  */
+
 @Getter
 @AllArgsConstructor
-public enum AuthCode {
+public enum SystemExceptionCode {
 
-  ROLE_ADMIN("ROLE_ADMIN", "관리자 권한"),
-  PARAMETERS_JWT("jwt", "JWT 파라미터 규격"),
+  PAR001("PAR001", "요청하신 API의 전문이 잘못 되었습니다. 전문을 확인해 주세요."),
+  PAR002("PAR002", "요청하신 API의 주소 정보가 잘못 되었습니다. URI 정보를 확인해 주세요."),
+
   DUMMY("", "");
 
   private final String code;
-  private final String desc;
+  private final String msg;
 }

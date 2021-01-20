@@ -27,16 +27,20 @@ import org.springframework.stereotype.Component;
 public class TokenPurgeScheduler {
 
   private final Logger logger = LoggerFactory.getLogger(TokenPurgeScheduler.class);
+  private final OAuthAccessTokenRepository oAuthAccessTokenRepository;
+  private final OAuthRefreshTokenRepository oAuthRefreshTokenRepository;
 
-  @Autowired
-  OAuthAccessTokenRepository oAuthAccessTokenRepository;
+  public TokenPurgeScheduler(
+      OAuthAccessTokenRepository oAuthAccessTokenRepository,
+      OAuthRefreshTokenRepository oAuthRefreshTokenRepository) {
 
-  @Autowired
-  OAuthRefreshTokenRepository oAuthRefreshTokenRepository;
+    this.oAuthAccessTokenRepository = oAuthAccessTokenRepository;
+    this.oAuthRefreshTokenRepository = oAuthRefreshTokenRepository;
+  }
 
   @Transactional
   @Scheduled(fixedDelay = 3600000)
-  public void purgeTokens(){
+  public void purgeTokens() {
 
     Date now = new Date();
 
@@ -44,7 +48,7 @@ public class TokenPurgeScheduler {
 
       oAuthAccessTokenRepository.deleteByExpiredTimeBefore(now);
       oAuthRefreshTokenRepository.deleteByExpiredTimeBefore(now);
-    }catch(Exception e){
+    } catch (Exception e) {
 
       logger.error(e.toString());
     }

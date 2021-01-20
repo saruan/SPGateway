@@ -1,27 +1,26 @@
-package com.kbds.auth.apps.cluster.dto;
+package com.kbds.auth.apps.saml.dto;
 
+import java.util.Map;
 import lombok.Data;
 
 /**
  * <pre>
- *  File  Name     : GatewayClusterDTO
- *  Description    : GatewayCluster 정보 DTO 클래스
+ *  File  Name     : SamlDTO
+ *  Description    :
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
  *
  * -------------------------------------------------------------------------------
  *     변경No        변경일자        	       변경자          Description
  * -------------------------------------------------------------------------------
- *     Ver 1.0      2020-09-18          	 구경태          Initialized
+ *     Ver 1.0      2021-01-14          	   구경태          Initialized
  * -------------------------------------------------------------------------------
  *  </pre>
  */
-@Data
-public class GatewayClusterDTO {
 
-  private String gatewayId;
-  private String secretKey;
-  private String mainYn;
-  private Long expiredTime;
-  private byte[] certificateFile;
-  private String certificatePassword;
+@Data
+public class SamlDTO {
+
+  private String ci;
+  private String sessionId;
+  private String clientId;
 }
