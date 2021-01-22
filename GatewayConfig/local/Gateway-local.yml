@@ -19,15 +19,9 @@ services:
 # 기본 서비스
 gateway:
   service:
-    routing:
-      path: /gateway/routes
-      url:  http://localhost:8080/api/service/v1.0/routes
-    app:
-      path: /gateway/apps
-      url:  http://localhost:8080/api/service/v1.0/app
-    filter:
-      path: /gateway/filters
-      url:  http://localhost:8080/api/service/v1.0/filter
+    portal:
+      path: /gateway/portal
+      url:  http://localhost:8080/portal/v1.0
     jwt:
       path: /gateway/jwt
       url:  http://localhost:7777//auth/v1.0/jwt
