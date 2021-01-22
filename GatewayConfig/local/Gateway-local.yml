@@ -21,7 +21,7 @@ gateway:
   service:
     portal:
       path: /gateway/portal
-      url:  http://localhost:8080/portal/service/v1.0/
+      url:  http://localhost:8080/portal/service/v1.0
     jwt:
       path: /gateway/jwt
       url:  http://localhost:7777//auth/v1.0/jwt
