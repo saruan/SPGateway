@@ -30,7 +30,7 @@ gateway:
       url:  http://localhost:7777/oauth/token
       filter: TokenFilter
     check-token:
-      path: /gateway/token/state
+      path: /gateway/oauth/state
       url: http://localhost:7777/oauth/check_token
 
 # 인증 키관리
