@@ -2,6 +2,9 @@ package com.kbds.gateway.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import java.util.Base64;
+import java.util.UUID;
+import javax.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,8 +30,11 @@ import lombok.NoArgsConstructor;
 @JsonInclude(value = Include.NON_NULL)
 public class GatewayClusterDTO {
 
+  @NotEmpty
   private String gatewayId;
   private String secretKey;
   private String mainYn;
   private Long expiredTime;
+  private byte[] certificateFile;
+  private String certificatePassword;
 }

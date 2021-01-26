@@ -16,7 +16,7 @@ export function AppListComponent() {
 
   useEffect(() => {
 
-    getRequest((data) => setAppList(data), '/portal/service/v1.0/app', new URLSearchParams())
+    getRequest((data) => setAppList(data), '/gateway/portal/app', new URLSearchParams())
   }, [])
 
   /**

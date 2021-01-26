@@ -6,10 +6,12 @@ import com.kbds.auth.security.entity.OAuthAccessToken;
 import com.kbds.auth.security.entity.OAuthRefreshToken;
 import com.kbds.auth.security.repository.OAuthAccessTokenRepository;
 import com.kbds.auth.security.repository.OAuthRefreshTokenRepository;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2RefreshToken;
 import org.springframework.security.oauth2.common.util.SerializationUtils;
@@ -35,18 +37,22 @@ public class CustomTokenStore implements TokenStore {
 
   private final OAuthAccessTokenRepository oAuthAccessTokenRepository;
   private final OAuthRefreshTokenRepository oAuthRefreshTokenRepository;
+  private final RedisTemplate<String, Object> redisTemplate;
 
   /**
    * Constructor Injections
    *
    * @param oAuthAccessTokenRepository  OAuthAccessTokenRepository 객체
    * @param oAuthRefreshTokenRepository OAuthRefreshTokenRepository 객체
+   * @param redisTemplate               RedisTemplate 객체
    */
   public CustomTokenStore(
       OAuthAccessTokenRepository oAuthAccessTokenRepository,
-      OAuthRefreshTokenRepository oAuthRefreshTokenRepository) {
+      OAuthRefreshTokenRepository oAuthRefreshTokenRepository,
+      RedisTemplate<String, Object> redisTemplate) {
     this.oAuthAccessTokenRepository = oAuthAccessTokenRepository;
     this.oAuthRefreshTokenRepository = oAuthRefreshTokenRepository;
+    this.redisTemplate = redisTemplate;
   }
 
   @Override
@@ -56,10 +62,9 @@ public class CustomTokenStore implements TokenStore {
   }
 
   @Override
-  public OAuth2Authentication readAuthentication(String token) {
+  public OAuth2Authentication readAuthentication(String tokenValue) {
 
-    Optional<OAuthAccessToken> accessToken =
-        oAuthAccessTokenRepository.findByTokenId(OAuthUtils.extractTokenKey(token));
+    Optional<OAuthAccessToken> accessToken = getCacheOrDatabaseToken(tokenValue);
 
     return accessToken.<OAuth2Authentication>map(oAuthAccessToken -> SerializationUtils
         .deserialize(oAuthAccessToken.getAuthentication())).orElse(null);
@@ -99,13 +104,14 @@ public class CustomTokenStore implements TokenStore {
     accessToken.setExpiredTime(DateUtils.getExpiredTime(60));
 
     oAuthAccessTokenRepository.save(accessToken);
+
+    redisTemplate.opsForValue().set(accessToken.getTokenId(), accessToken, Duration.ofMinutes(60));
   }
 
   @Override
   public OAuth2AccessToken readAccessToken(String tokenValue) {
 
-    Optional<OAuthAccessToken> accessToken =
-        oAuthAccessTokenRepository.findByTokenId(OAuthUtils.extractTokenKey(tokenValue));
+    Optional<OAuthAccessToken> accessToken = getCacheOrDatabaseToken(tokenValue);
 
     return accessToken.<OAuth2AccessToken>map(
         oAuthAccessToken -> SerializationUtils.deserialize(oAuthAccessToken.getToken()))
@@ -120,6 +126,8 @@ public class CustomTokenStore implements TokenStore {
         .findByTokenId(OAuthUtils.extractTokenKey(oAuth2AccessToken.getValue()));
 
     accessToken.ifPresent(oAuthAccessTokenRepository::delete);
+
+    redisTemplate.delete(OAuthUtils.extractTokenKey(oAuth2AccessToken.getValue()));
   }
 
   @Override
@@ -229,5 +237,25 @@ public class CustomTokenStore implements TokenStore {
         .forEach(e -> tokens.add(SerializationUtils.deserialize(e.getToken())));
 
     return tokens;
+  }
+
+  /**
+   * Cache 된 데이터가 없으면 DB 토큰 정보를 가져온다
+   * @param tokenValue 토큰 값
+   * @return  OAuthAccessToken 객체
+   */
+  private Optional<OAuthAccessToken> getCacheOrDatabaseToken(String tokenValue){
+
+    Optional<OAuthAccessToken> accessToken = Optional
+        .ofNullable((OAuthAccessToken) redisTemplate.opsForValue()
+            .get(OAuthUtils.extractTokenKey(tokenValue)));
+
+    if (!accessToken.isPresent()) {
+
+      accessToken =
+          oAuthAccessTokenRepository.findByTokenId(OAuthUtils.extractTokenKey(tokenValue));
+    }
+
+    return accessToken;
   }
 }

@@ -22,6 +22,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum AuthCode {
 
+  ROLE_SYSTEM("SYSTEM", "시스템 권한"),
   ROLE_ADMIN("ROLE_ADMIN", "관리자 권한"),
   PARAMETERS_JWT("jwt", "JWT 파라미터 규격"),
   DUMMY("", "");

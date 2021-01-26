@@ -36,6 +36,10 @@ public enum GatewayCode {
   /* Queue 정보 */
   MQ_ROUTING_KEY("gateway.routing.all", "RabbitMQ 라우팅 키"),
 
+  /* API TYPE 정보 */
+  SYSTEM_TYPE("SYSTEM", "시스템 타입"),
+  API_TYPE("API", "외부 API 타입"),
+
   DUMMY("", "");
 
   private final String code;

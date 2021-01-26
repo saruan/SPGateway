@@ -36,7 +36,7 @@
     
   ##### DB 환경 구성
   
-    - Properties/schema 폴더에 있는 create_schema.sql 을 실행하여 Database, Table 를 생성한다.
+    - GatewayConfig/schema 폴더에 있는 create.sql 을 실행하여 Database, Table 를 생성한다.
     - DB 서버도 분리를 한다면 해당 파일의 항목별 스크립트를 추출하여 별도로 생성한다.  
     
   ##### GatewayConfig/{spring.profiles.active} 경로의 각 yml 파일들의 속성들을 변경해준다.

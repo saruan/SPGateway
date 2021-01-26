@@ -119,7 +119,7 @@ export function ApiManage({
 
       handleClose();
       refreshList()
-    }, '/api/service/v1.0/routes/', inputs)
+    }, '/gateway/portal/routes/', inputs)
   }
 
   /**
@@ -149,7 +149,7 @@ export function ApiManage({
 
       handleClose()
       refreshList()
-    }, '/api/service/v1.0/routes/' + serviceDetail.serviceId, inputs)
+    }, '/gateway/portal/routes/' + serviceDetail.serviceId, inputs)
   }
 
   /**

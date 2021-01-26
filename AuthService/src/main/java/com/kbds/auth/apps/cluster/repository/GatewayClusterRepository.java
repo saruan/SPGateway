@@ -55,4 +55,11 @@ public interface GatewayClusterRepository extends CrudRepository<GatewayCluster,
    * @return  GatewayCluster 정보
    */
   GatewayCluster findByMainYn(String mainYn);
+
+  /**
+   * 게이트웨이 기등록 여부 체크
+   * @param gatewayId Gateway Cluster ID
+   * @return 등록 되어 있는 숫자
+   */
+  int countByGatewayId(String gatewayId);
 }

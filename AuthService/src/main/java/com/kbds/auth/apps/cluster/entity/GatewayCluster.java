@@ -34,5 +34,6 @@ public class GatewayCluster implements Serializable {
   private String mainYn;
   private Long expiredTime;
   private byte[] certificateFile;
-  private String certificatePassword;
+  private byte[] privateKey;
+  private byte[] cert;
 }

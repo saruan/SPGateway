@@ -51,7 +51,7 @@ export function ApiDetails({
    */
   const deleteApi = () => {
 
-    deleteRequest(() => refreshList(), '/api/service/v1.0.0/routes/' + data.serviceId);
+    deleteRequest(() => refreshList(), '/gateway/portal/routes/' + data.serviceId);
   }
 
   const DetailForm = (

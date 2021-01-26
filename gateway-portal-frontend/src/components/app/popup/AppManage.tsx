@@ -38,12 +38,14 @@ interface ApiListInterface {
  */
 export function AppManage({isUpdate, appId, refreshList}: AppManageInterface) {
 
+  const currentUserId = localStorage.getItem("userId")!
+
   const [click, setClick] = useState<boolean>(false)
   const [inputs, setInputs] = useState<AppInput>({
     appNm: '',
     appDesc: '',
     serviceId: [],
-    regUserNo: "1",
+    regUserNo: currentUserId,
     uptUserNo: "1"
   })
   const [apiList, setApiList] = useState<ApiListInterface[]>([])
@@ -58,8 +60,8 @@ export function AppManage({isUpdate, appId, refreshList}: AppManageInterface) {
       appNm: '',
       appDesc: '',
       serviceId: [],
-      regUserNo: "1",
-      uptUserNo: "1"
+      regUserNo: '',
+      uptUserNo: ''
     })
   }
 
@@ -90,20 +92,20 @@ export function AppManage({isUpdate, appId, refreshList}: AppManageInterface) {
             appNm: data.appNm,
             appDesc: data.appDesc,
             serviceId: data.serviceId.map(e => e.serviceId),
-            regUserNo: "1",
-            uptUserNo: "1"
+            regUserNo: data.regUserNo,
+            uptUserNo: currentUserId
           })
 
           // CheckBox Init
           apis.map(e => serviceIdList.indexOf(e.serviceId) >= 0 ?
               e.checked = true : e.checked = false)
           setApiList(apis)
-        }, '/portal/service/v1.0/app/' + appId, new URLSearchParams())
+        }, '/gateway/portal/app/' + appId, new URLSearchParams())
       }else{
 
         setApiList(apis)
       }
-    }, '/portal/service/v1.0/routes', new URLSearchParams())
+    }, '/gateway/portal/routes', new URLSearchParams())
   }
 
   /**
@@ -120,7 +122,7 @@ export function AppManage({isUpdate, appId, refreshList}: AppManageInterface) {
     postRequest(() => {
       handleClose();
       refreshList()
-    }, '/portal/service/v1.0/app', inputs)
+    }, '/gateway/portal/app', inputs)
   }
 
   /**
@@ -130,7 +132,7 @@ export function AppManage({isUpdate, appId, refreshList}: AppManageInterface) {
       putRequest(() => {
         handleClose()
         refreshList()
-      }, '/api/service/v1.0/app/' + appId, inputs)
+      }, '/gateway/portal/app/' + appId, inputs)
 
 
   /**

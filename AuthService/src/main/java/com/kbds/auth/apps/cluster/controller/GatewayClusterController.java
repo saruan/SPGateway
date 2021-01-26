@@ -1,13 +1,18 @@
 package com.kbds.auth.apps.cluster.controller;
 
+import com.kbds.auth.apps.cluster.dto.GatewayClusterDTO;
 import com.kbds.auth.apps.cluster.service.GatewayClusterService;
 import com.kbds.auth.common.utils.CommonUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * <pre>
@@ -23,34 +28,41 @@ import org.springframework.web.bind.annotation.RestController;
  * </pre>
  */
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/auth/v1.0/cluster")
 public class GatewayClusterController {
 
-  @Autowired
-  GatewayClusterService gwClusterService;
+  private final GatewayClusterService gwClusterService;
 
-  /**
-   * JWT Token 생성 API
-   *
-   * @return  생성된 JWT Token
-   */
-  @GetMapping(value = "/v1.0/oauth/jwt")
-  public ResponseEntity<Object> generateJWT() {
-
-    Object result = CommonUtils.getResponseEntity(gwClusterService.generateJWT());
-
-    return new ResponseEntity<>(result, HttpStatus.OK);
+  public GatewayClusterController(GatewayClusterService gwClusterService) {
+    this.gwClusterService = gwClusterService;
   }
 
   /**
    * G/W 클러스터 목록 조회
    *
-   * @return  등록된 G/W 클러스터 목록
+   * @return 등록된 G/W 클러스터 목록
    */
-  @GetMapping(value = "/v1.0/jwt/cluster")
-  public ResponseEntity<Object> selectAllClusters() {
+  @GetMapping
+  public ResponseEntity<Object> selectClustersByConditions() {
 
     Object result = CommonUtils.getResponseEntity(gwClusterService.selectAllClusters());
+
+    return new ResponseEntity<>(result, HttpStatus.OK);
+  }
+
+  /**
+   * G/W 클러스터 등록
+   *
+   * @return 등록 결과
+   */
+  @PostMapping
+  public ResponseEntity<Object> registerCluster(
+      @ModelAttribute @Valid GatewayClusterDTO gatewayClusterDTO,
+      @RequestPart("file") MultipartFile fileList) {
+
+    gwClusterService.registerCluster(gatewayClusterDTO, fileList);
+
+    Object result = CommonUtils.getResponseEntity(true);
 
     return new ResponseEntity<>(result, HttpStatus.OK);
   }

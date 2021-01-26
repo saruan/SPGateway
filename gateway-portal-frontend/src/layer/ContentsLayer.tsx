@@ -24,11 +24,7 @@ export default function ContentsLayer() {
         window.location.href = "/"
       }
 
-      axios.get("/portal/v1.0/user/validate/token", {
-        headers: {
-          Authorization: "Bearer " + token,
-        }
-      }).catch((error) => {
+      axios.get("/gateway/oauth/state?token=" + token).catch((error) => {
 
         if (error.response.status === 401) {
 

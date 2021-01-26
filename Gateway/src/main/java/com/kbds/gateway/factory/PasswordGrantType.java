@@ -35,7 +35,7 @@ import org.springframework.stereotype.Component;
  *  </pre>
  */
 @Component
-public class PasswordGrantType implements GrantType{
+public class PasswordGrantType implements GrantType {
 
   @Autowired
   ObjectProvider<AuthClient> authClient;
@@ -68,8 +68,7 @@ public class PasswordGrantType implements GrantType{
     ResponseDTO responseDTO = Objects.requireNonNull(authClient.getIfAvailable())
         .selectAllClusters();
 
-    return new ObjectMapper().convertValue(
-        Objects.requireNonNull(responseDTO).getResultData(),
+    return new ObjectMapper().convertValue(Objects.requireNonNull(responseDTO).getResultData(),
         new TypeReference<List<GatewayClusterDTO>>() {
         });
   }
@@ -95,7 +94,6 @@ public class PasswordGrantType implements GrantType{
 
       }
     }
-
     return false;
   }
 }

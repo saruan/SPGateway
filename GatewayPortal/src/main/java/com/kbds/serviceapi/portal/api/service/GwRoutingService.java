@@ -36,8 +36,9 @@ public class GwRoutingService {
 
   /**
    * Constructor Injection
+   *
    * @param gwServiceRepository gwServiceRepository
-   * @param modelMapper modelMapper
+   * @param modelMapper         modelMapper
    */
   public GwRoutingService(GwRoutingRepository gwServiceRepository,
       ModelMapper modelMapper) {
@@ -121,7 +122,7 @@ public class GwRoutingService {
       gwServiceRepository.save(modelMapper.map(reqParam, GwService.class));
 
       // 등록 이후 게이트웨이에 해당 정보를 갱신해준다.
-      CommonUtils.refreshGatewayRoutes(reqParam.getRegUserNo());
+      CommonUtils.refreshGatewayRoutes();
     } catch (Exception e) {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
@@ -137,8 +138,6 @@ public class GwRoutingService {
   @Transactional
   public void updateService(RoutingDTO reqParam, Long id) {
 
-    GwService gwService = new GwService();
-
     try {
 
       if (!gwServiceRepository.isValidUpdateData(reqParam, id)) {
@@ -149,20 +148,15 @@ public class GwRoutingService {
       GwServiceFilter serviceFilter = new GwServiceFilter();
       serviceFilter.setFilterId(reqParam.getFilterId());
 
+      GwService gwService = modelMapper.map(reqParam, GwService.class);
+
+      /* 변환 이후 추가 정보 설정 */
       gwService.setServiceId(id);
-      gwService.setServiceNm(reqParam.getServiceNm());
-      gwService.setServicePath(reqParam.getServicePath());
       gwService.setFilter(serviceFilter);
-      gwService.setServiceDesc(reqParam.getServiceDesc());
-      gwService.setUptUserNo(reqParam.getUptUserNo());
-      gwService.setServiceLoginType(reqParam.getServiceLoginType());
-      gwService.setServiceAuthType(reqParam.getServiceAuthType());
-      gwService.setServiceTargetUrl(reqParam.getServiceTargetUrl());
 
       gwServiceRepository.save(gwService);
 
-      /* 수정 이후 게이트웨이에 해당 정보를 갱신해준다. */
-      CommonUtils.refreshGatewayRoutes(reqParam.getUptUserNo());
+      CommonUtils.refreshGatewayRoutes();
     } catch (BizException e) {
 
       throw new BizException(BizExceptionCode.valueOf(e.getMessage()), e.toString());
@@ -180,8 +174,6 @@ public class GwRoutingService {
   @Transactional
   public long deleteService(Long serviceId) {
 
-    long deletedCnt;
-
     try {
 
       if (isServiceUsingInApp(gwServiceRepository.countByGwAppIdServiceId(serviceId))) {
@@ -189,9 +181,7 @@ public class GwRoutingService {
         throw new BizException(BizExceptionCode.COM009);
       }
 
-      // 서비스 사용 유무를 변경한다.
-      deletedCnt = gwServiceRepository.deleteService(serviceId);
-
+      return gwServiceRepository.deleteService(serviceId);
     } catch (BizException e) {
 
       throw new BizException(BizExceptionCode.valueOf(e.getMessage()), e.toString());
@@ -199,12 +189,10 @@ public class GwRoutingService {
 
       throw new BizException(BizExceptionCode.COM001, e.toString());
     }
-
-    return deletedCnt;
   }
 
   /**
-   * 삭제하려는 API 현재 사용중인지
+   * 삭제하려는 API 현재 사용중인지 체크
    *
    * @param cnt 사용중인 APP 수
    * @return 결과

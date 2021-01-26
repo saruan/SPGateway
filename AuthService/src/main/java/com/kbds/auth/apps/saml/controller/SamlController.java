@@ -6,7 +6,6 @@ import com.kbds.auth.common.dto.ResponseDTO;
 import com.kbds.auth.common.utils.CommonUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,13 +52,14 @@ public class SamlController {
   /**
    * SAML Assertion Validation Check
    *
-   * @return  검증 결과
+   * @return 검증 결과
    */
   @PostMapping(value = "/assertion/validate")
   public ResponseEntity<Object> validateSamlAssertion(
       @RequestParam(value = "saml") String assertion) {
 
-    ResponseDTO result = CommonUtils.getResponseEntity(samlService.validateSamlAssertion(assertion));
+    ResponseDTO result = CommonUtils
+        .getResponseEntity(samlService.validateSamlAssertion(assertion));
 
     return new ResponseEntity<>(result, HttpStatus.CREATED);
   }

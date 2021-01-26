@@ -6,7 +6,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import com.kbds.serviceapi.common.utils.CommonUtils;
 
 /**
  *
@@ -39,7 +38,7 @@ public class AopLoggingComponent {
   @Around("execution(* com.kbds.serviceapi.apis.controller.*.*(..)) || execution(* com.kbds.serviceapi.framework.exception.ServiceExceptionHandler.*(..))")
   public Object setCommonLogParams(ProceedingJoinPoint pjp) throws Throwable {
 
-    CommonUtils.setCommonLog(request.getRequestURI(), "1");
+    //CommonUtils.setCommonLog(request.getRequestURI(), "1");
 
     return pjp.proceed();
   }

@@ -7,7 +7,6 @@ import com.kbds.serviceapi.common.feign.GatewayClient;
 import com.kbds.serviceapi.framework.dto.ResponseDTO;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.logging.log4j.ThreadContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,9 +74,8 @@ public class CommonUtils {
   /**
    * RoutingService의 최신 데이터를 Gateway에 변경 요청한다.
    *
-   * @param regUserNo 등록자
    */
-  public static void refreshGatewayRoutes(String regUserNo) {
+  public static void refreshGatewayRoutes() {
 
     JWTCreator.Builder builder = com.auth0.jwt.JWT.create();
     Algorithm algorithm = Algorithm.HMAC256(secretKey);
@@ -92,24 +90,10 @@ public class CommonUtils {
 
     } catch (Exception e) {
 
-      CommonUtils.setCommonLog(CommonCode.GATEWAY_REFRESH_SERVICE_NM.getCode(), regUserNo);
       logger.error(e.toString());
     }
 
   }
-
-  /**
-   * Log4j2 공통 로그 필드 설정 메소드
-   *
-   * @param serviceDesc 서비스 설명
-   * @param regUserNo 등록자
-   */
-  public static void setCommonLog(String serviceDesc, String regUserNo) {
-
-    ThreadContext.put("SERVICE_DESC", serviceDesc);
-    ThreadContext.put("REG_USER_NO", regUserNo);
-  }
-
 
   /**
    * 인증서버에서 사용하는 헤더 정보 Return

@@ -1,23 +1,25 @@
 package com.kbds.auth.apps.cluster.service;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTCreationException;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.kbds.auth.common.code.AuthCode;
-import com.kbds.auth.common.code.BizExceptionCode;
 import com.kbds.auth.apps.cluster.dto.GatewayClusterDTO;
 import com.kbds.auth.apps.cluster.entity.GatewayCluster;
-import com.kbds.auth.common.code.ConstantsCode;
-import com.kbds.auth.security.exception.CustomOAuthException;
 import com.kbds.auth.apps.cluster.repository.GatewayClusterRepository;
-import java.util.Date;
+import com.kbds.auth.common.code.BizExceptionCode;
+import com.kbds.auth.common.code.ConstantsCode;
+import com.kbds.auth.common.exception.BizException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.List;
-import java.util.UUID;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * <pre>
@@ -35,71 +37,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class GatewayClusterService {
 
-  @Autowired
-  private GatewayClusterRepository gatewayClusterRespository;
+  private final GatewayClusterRepository gatewayClusterRepository;
+  private final ModelMapper modelMapper;
 
-  @Autowired
-  ModelMapper modelMapper;
-
-  /**
-   * 현재 Gateway에서 인증된 사용자에게 JWT 발급을 위해 생성
-   *
-   * @return 생성된 JWT 키값
-   */
-  public String generateJWT() {
-
-    try {
-
-      GatewayCluster gatewayCluster = gatewayClusterRespository
-          .findByMainYn(ConstantsCode.Y.name());
-
-      Algorithm algorithm = Algorithm.HMAC256(gatewayCluster.getSecretKey());
-
-      return JWT.create().withIssuer(gatewayCluster.getGatewayId())
-          .withExpiresAt(new Date(System.currentTimeMillis() + 3600 * 1000))
-          .withClaim("Key", UUID.randomUUID().toString()).sign(algorithm);
-    } catch (JWTCreationException e) {
-
-      throw new CustomOAuthException(BizExceptionCode.JWT001, e.toString());
-    } catch (Exception e) {
-
-      throw new CustomOAuthException(BizExceptionCode.COM001, e.toString());
-    }
-  }
-
-  /**
-   * DB에 등록되어 있는 Cluster의 정보로 JWT 토큰 검증
-   *
-   * @param key JWT Key값
-   * @return 유효성 결과
-   */
-  public boolean isValidJWT(String key) {
-
-    List<GatewayCluster> gatewayClusters;
-
-    try {
-
-      gatewayClusters = gatewayClusterRespository.findAll();
-
-    } catch (Exception e) {
-
-      throw new CustomOAuthException(BizExceptionCode.COM001, e.toString());
-    }
-
-    // 등록 되어 있는 Cluster의 Key값으로 검증 작업 진행
-    for (GatewayCluster gatewayCluster : gatewayClusters) {
-
-      try {
-
-        Algorithm algorithm = Algorithm.HMAC256(gatewayCluster.getSecretKey());
-
-        JWT.require(algorithm).withIssuer(gatewayCluster.getGatewayId()).build().verify(key);
-
-        return true;
-      } catch (JWTVerificationException ignore) {
-      }
-    }
-    return false;
+  public GatewayClusterService(GatewayClusterRepository gatewayClusterRepository,
+      ModelMapper modelMapper) {
+    this.gatewayClusterRepository = gatewayClusterRepository;
+    this.modelMapper = modelMapper;
   }
 
   /**
@@ -109,8 +53,76 @@ public class GatewayClusterService {
    */
   public List<GatewayClusterDTO> selectAllClusters() {
 
-    return modelMapper.map(gatewayClusterRespository.findAll()
-        , new TypeReference<List<GatewayClusterDTO>>() {
+    return modelMapper
+        .map(gatewayClusterRepository.findAll(), new TypeReference<List<GatewayClusterDTO>>() {
         }.getType());
+  }
+
+  /**
+   * GatewayCluster 신규 등록
+   *
+   * @param gatewayClusterDTO 등록 정보
+   * @param multipartFile     인증서 파일
+   */
+  @CacheEvict(cacheNames = "clusterList", allEntries = true)
+  public void registerCluster(GatewayClusterDTO gatewayClusterDTO, MultipartFile multipartFile) {
+
+    try {
+
+      X509Certificate cert = null;
+      PrivateKey key = null;
+
+      /* 인증서 파일 유효성 검증 */
+      if (multipartFile != null) {
+
+        KeyStore keystore = KeyStore.getInstance(ConstantsCode.PKCS12.getCode());
+        keystore.load(new ByteArrayInputStream(multipartFile.getBytes()),
+            gatewayClusterDTO.getCertificatePassword().toCharArray());
+
+        gatewayClusterDTO.setCertificateFile(multipartFile.getBytes());
+
+        /*
+         * crt, .key 파일 추출
+         * Main 인증서는 생성, 검증에 모두 이용하고 Sub 인증서는 검증에만 이용한다.
+         */
+        String alias = keystore.aliases().nextElement();
+
+        cert = (X509Certificate) keystore.getCertificate(alias);
+        key = (PrivateKey) keystore
+            .getKey(alias, gatewayClusterDTO.getCertificatePassword().toCharArray());
+      }
+
+      if (isRegisteredCluster(gatewayClusterDTO.getGatewayId())) {
+
+        throw new BizException(BizExceptionCode.CLS001);
+      }
+
+      GatewayCluster gatewayCluster = modelMapper.map(gatewayClusterDTO, GatewayCluster.class);
+
+      gatewayCluster.setCert(cert.getEncoded());
+      gatewayCluster.setPrivateKey(key.getEncoded());
+
+      gatewayClusterRepository.save(gatewayCluster);
+    } catch (IOException | KeyStoreException | NoSuchAlgorithmException | CertificateException e) {
+
+      throw new BizException(BizExceptionCode.SSL001, e.toString());
+    } catch (BizException e) {
+
+      throw new BizException(BizExceptionCode.valueOf(e.getMessage()), e.toString());
+    } catch (Exception e) {
+
+      throw new BizException(BizExceptionCode.COM001, e.toString());
+    }
+  }
+
+  /**
+   * 기등록 게이트웨이인지 확인
+   *
+   * @param gatewayId 게이트웨이 ID
+   * @return 기등록여부
+   */
+  public boolean isRegisteredCluster(String gatewayId) {
+
+    return gatewayClusterRepository.countByGatewayId(gatewayId) > 0;
   }
 }

@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
  *  </pre>
  */
 @RestController
-@RequestMapping("/portal/v1.0/group")
+@RequestMapping("/auth/v1.0/group")
 public class SPGroupController {
 
   private final SPGroupService spGroupService;

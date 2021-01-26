@@ -57,11 +57,11 @@ public class RoutingConfiguration {
   private CachingRequestBodyFilter cachingRequestBodyFilter;
   private ObjectMapper objectMapper;
 
-  // Routes,Filter 관리 서버 주소
+  /* Routes,Filter 관리 서버 주소 */
   @Value("${services.api.route-url}")
   String routeSeverUrl;
 
-  // Default Routing Info
+  /* Default Routing Info */
   private Map<String, Object> service;
 
   private final String PATH = "path";
@@ -71,26 +71,23 @@ public class RoutingConfiguration {
   /**
    * Constructor Injection
    *
-   * @param appContext  스프링 context
-   * @param cachingRequestBodyFilter  캐싱 Body 데이터
-   * @param objectMapper  ObjectMapper 객체
+   * @param appContext               스프링 context
+   * @param cachingRequestBodyFilter 캐싱 Body 데이터
+   * @param objectMapper             ObjectMapper 객체
    */
   @Autowired
   RoutingConfiguration(ApplicationContext appContext,
-      CachingRequestBodyFilter cachingRequestBodyFilter,
-      ObjectMapper objectMapper) {
-
+      CachingRequestBodyFilter cachingRequestBodyFilter, ObjectMapper objectMapper) {
     this.appContext = appContext;
     this.cachingRequestBodyFilter = cachingRequestBodyFilter;
     this.objectMapper = objectMapper;
   }
 
   /**
-   * Routing 정보를 조회 한 후 필터와 함께 GATEWAY에 등록 하는 메소드
-   * 메인 메소드
+   * Routing 정보를 조회 한 후 필터와 함께 GATEWAY에 등록 하는 메소드 메인 메소드
    *
    * @param builder Router 객체
-   * @return  Router 정보
+   * @return Router 정보
    */
   @Bean
   @RefreshScope
@@ -103,7 +100,7 @@ public class RoutingConfiguration {
 
       routeLocator = registerDefaultService(routeLocator);
 
-      // Routing 관리 서버로부터 API 목록을 가져 온다.
+      /* Routing 관리 서버로부터 API 목록을 가져 온다. */
       Mono<ResponseDTO> responseDTO =
           WebClient.create()
               .get()
@@ -112,7 +109,8 @@ public class RoutingConfiguration {
               .retrieve().bodyToMono(ResponseDTO.class);
 
       routingDTOList = new ObjectMapper().convertValue(
-          Objects.requireNonNull(responseDTO.block()).getResultData(), new TypeReference<List<RoutingDTO>>() {
+          Objects.requireNonNull(responseDTO.block()).getResultData(),
+          new TypeReference<List<RoutingDTO>>() {
           });
     } catch (Exception e) {
 
@@ -146,7 +144,7 @@ public class RoutingConfiguration {
    * Gateway 시스템 기본 필수 Routing 정보 등록
    *
    * @param routeLocator Routing 관리 객체
-   * @return  Builder
+   * @return Builder
    */
   public Builder registerDefaultService(
       Builder routeLocator) {
@@ -156,7 +154,8 @@ public class RoutingConfiguration {
       try {
 
         Map<String, String> defaultPath = objectMapper
-            .convertValue(value, new TypeReference<Map<String, String>>() {});
+            .convertValue(value, new TypeReference<Map<String, String>>() {
+            });
 
         final boolean hasFilter = defaultPath.containsKey(FILTER);
         final String servicePath = defaultPath.get(PATH);
@@ -184,13 +183,12 @@ public class RoutingConfiguration {
    * @param targetUrl    Endpoint URL
    * @param hasFilter    Filter 존재 유무
    * @param filter       Filter 값 (없으면 null)
-
    * @throws Exception Exception 오류
    */
   private void registerRouterLocator(Builder routeLocator, String servicePath,
       String targetPath, String targetUrl, boolean hasFilter, String filter, RoutingDTO routingDTO)
       throws Exception {
-    
+
     if (hasFilter) {
 
       GatewayFilter mainFilter = getFilterSpec(filter, routingDTO);
@@ -222,8 +220,8 @@ public class RoutingConfiguration {
    *
    * @param filterNm 필터명
    * @param params   Routing 정보
-   * @return  GatewayFilter 객체
-   * @throws Exception  오류
+   * @return GatewayFilter 객체
+   * @throws Exception 오류
    */
   private GatewayFilter getFilterSpec(String filterNm, RoutingDTO params) throws Exception {
 
@@ -237,8 +235,9 @@ public class RoutingConfiguration {
 
   /**
    * URL Pattern을 정책에 맞게 수정
+   *
    * @param servicePath G/W Router Path
-   * @return  최종 Fix Router Path
+   * @return 최종 Fix Router Path
    */
   public String getServicePath(String servicePath) {
 

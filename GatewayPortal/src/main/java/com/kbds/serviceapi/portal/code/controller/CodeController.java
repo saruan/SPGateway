@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
  *  </pre>
  */
 @RestController
-@RequestMapping("/portal/v1.0/code")
+@RequestMapping("/portal/service/v1.0/code")
 public class CodeController {
 
   @Autowired

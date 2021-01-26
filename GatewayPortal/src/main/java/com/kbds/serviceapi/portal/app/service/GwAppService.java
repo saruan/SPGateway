@@ -151,7 +151,7 @@ public class GwAppService {
       gwServiceAppMappingService.registerServiceAppMapping(reqParam, appId);
 
       // 등록 이후 게이트웨이에 해당 정보를 갱신해준다.
-      CommonUtils.refreshGatewayRoutes(reqParam.getRegUserNo());
+      CommonUtils.refreshGatewayRoutes();
     } catch (BizException e) {
 
       throw new BizException(BizExceptionCode.valueOf(e.getMessage()));
@@ -208,7 +208,7 @@ public class GwAppService {
       // Mapping 데이터 등록
       gwServiceAppMappingService.registerServiceAppMapping(reqParam, appId);
 
-      CommonUtils.refreshGatewayRoutes(reqParam.getRegUserNo());
+      CommonUtils.refreshGatewayRoutes();
     } catch (BizException e) {
 
       throw new BizException(BizExceptionCode.valueOf(e.getMessage()));
@@ -234,7 +234,7 @@ public class GwAppService {
 
       gwAppRepository.deleteById(appId);
 
-      CommonUtils.refreshGatewayRoutes("");
+      CommonUtils.refreshGatewayRoutes();
     } catch (BizException e) {
 
       throw new BizException(BizExceptionCode.valueOf(e.getMessage()));

@@ -1,5 +1,8 @@
 package com.kbds.auth.apps.cluster.dto;
 
+import java.util.Base64;
+import java.util.UUID;
+import javax.validation.constraints.NotEmpty;
 import lombok.Data;
 
 /**
@@ -18,10 +21,13 @@ import lombok.Data;
 @Data
 public class GatewayClusterDTO {
 
+  @NotEmpty
   private String gatewayId;
-  private String secretKey;
+  private String secretKey = new String(
+      Base64.getEncoder().encode(UUID.randomUUID().toString().getBytes()));
   private String mainYn;
-  private Long expiredTime;
+  private Long expiredTime = 3600L;
   private byte[] certificateFile;
+  @NotEmpty
   private String certificatePassword;
 }

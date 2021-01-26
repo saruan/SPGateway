@@ -1,7 +1,7 @@
 package com.kbds.auth.apps.saml.service;
 
-import com.kbds.auth.apps.cluster.dto.GatewayClusterDTO;
-import com.kbds.auth.apps.cluster.service.GatewayClusterService;
+import com.kbds.auth.apps.cluster.entity.GatewayCluster;
+import com.kbds.auth.apps.cluster.repository.GatewayClusterRepository;
 import com.kbds.auth.apps.saml.dto.SamlDTO;
 import com.kbds.auth.common.code.BizExceptionCode;
 import com.kbds.auth.common.code.ConstantsCode;
@@ -14,13 +14,13 @@ import com.onelogin.saml2.util.Constants;
 import com.onelogin.saml2.util.Util;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
+import java.security.KeyFactory;
 import java.security.PrivateKey;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Enumeration;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
@@ -63,13 +63,11 @@ import org.w3c.dom.Document;
 @Service
 public class SamlService {
 
-  final GatewayClusterService gatewayClusterService;
+  final GatewayClusterRepository gatewayClusterRepository;
   /* SAML 유효시간 체크를 위한 HttpRequest 쿼리명 */
   final String SAML_RESPONSE = "SAMLResponse";
   /* SAML Response 루트 태그명 */
   final String SIGNATURE_ASSERTION_ROOT = "/saml2:Assertion/ds:Signature";
-  /* 인증서 기본 타입 */
-  final String KEYSTORE_PKCS12 = "PKCS12";
 
   XMLObjectBuilderFactory builderFactory;
   X509Certificate cert = null;
@@ -79,51 +77,18 @@ public class SamlService {
   /**
    * Constructor
    *
-   * @param gatewayClusterService GatewayClusterService
+   * @param gatewayClusterRepository GatewyCluster Repository
    */
-  public SamlService(GatewayClusterService gatewayClusterService) {
+  public SamlService(GatewayClusterRepository gatewayClusterRepository) {
 
-    this.gatewayClusterService = gatewayClusterService;
+    this.gatewayClusterRepository = gatewayClusterRepository;
 
     try {
 
       /* OpenSAML 관련 초기 설정 */
       DefaultBootstrap.bootstrap();
       builderFactory = Configuration.getBuilderFactory();
-
-      /* 인증서 정보 DB 에서 추출 */
-      List<GatewayClusterDTO> gatewayClusters = gatewayClusterService.selectAllClusters();
-
-      subCerts = new ArrayList<>();
-
-      for (GatewayClusterDTO gatewayClusterDTO : gatewayClusters) {
-
-        /* KeyStore Load From Database */
-        KeyStore keystore = KeyStore.getInstance(KEYSTORE_PKCS12);
-        keystore.load(new ByteArrayInputStream(gatewayClusterDTO.getCertificateFile()),
-            gatewayClusterDTO.getCertificatePassword().toCharArray());
-
-        /*
-         * crt, .key 파일 추출
-         * Main 인증서는 생성, 검증에 모두 이용하고 Sub 인증서는 검증에만 이용한다.
-         */
-        Enumeration enumeration = keystore.aliases();
-
-        while (enumeration.hasMoreElements()) {
-
-          String alias = (String) enumeration.nextElement();
-
-          if (ConstantsCode.Y.getCode().equals(gatewayClusterDTO.getMainYn())) {
-
-            cert = (X509Certificate) keystore.getCertificate(alias);
-            key = (PrivateKey) keystore
-                .getKey(alias, gatewayClusterDTO.getCertificatePassword().toCharArray());
-          }
-          setAllCertificate(keystore, alias);
-        }
-      }
-    }catch(Exception e){
-
+    } catch (Exception e) {
       log.error(e.toString());
     }
   }
@@ -139,6 +104,8 @@ public class SamlService {
 
       SAMLObjectBuilder assertionBuilder = (SAMLObjectBuilder) builderFactory
           .getBuilder(Assertion.DEFAULT_ELEMENT_NAME);
+
+      setAllCertificate();
 
       /* Issuer, Assertion 생성 */
       Assertion assertion = (Assertion) assertionBuilder.buildObject();
@@ -180,6 +147,8 @@ public class SamlService {
       String decodedAssertion = new String(Base64.getDecoder().decode(samlAssertion),
           StandardCharsets.UTF_8.name());
       Document doc = Util.loadXML(decodedAssertion);
+
+      setAllCertificate();
 
       if (!Util.validateSign(doc, subCerts, null, null, SIGNATURE_ASSERTION_ROOT)) {
 
@@ -296,11 +265,10 @@ public class SamlService {
 
     DateTime dateTime = new DateTime();
 
-    conditions.setNotBefore(dateTime.minus(20));
-    conditions.setNotOnOrAfter(dateTime.plus(30));
+    conditions.setNotBefore(dateTime.minusMinutes(20));
+    conditions.setNotOnOrAfter(dateTime.plusMinutes(30));
 
     audience.setAudienceURI("https://10.255.60.42");
-
     audienceRestriction.getAudiences().add(audience);
     conditions.getAudienceRestrictions().add(audienceRestriction);
 
@@ -325,12 +293,32 @@ public class SamlService {
   /**
    * 모든 인증서 생성
    *
-   * @param keystore KeyStore
-   * @param alias    별칭
-   * @throws KeyStoreException KeyStoreException
    */
-  public void setAllCertificate(KeyStore keystore, String alias) throws KeyStoreException {
+  public void setAllCertificate() throws Exception{
 
-    subCerts.add((X509Certificate) keystore.getCertificate(alias));
+    /* 인증서 정보 DB 에서 추출 */
+    List<GatewayCluster> gatewayClusters = gatewayClusterRepository.findAll();
+
+    subCerts = new ArrayList<>();
+
+    /*
+     * crt, .key 파일 추출
+     * Main 인증서는 생성, 검증에 모두 이용하고 Sub 인증서는 검증에만 이용한다.
+     */
+    for (GatewayCluster gatewayCluster : gatewayClusters) {
+
+      KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+      CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+
+      subCerts.add((X509Certificate) certificateFactory
+          .generateCertificate(new ByteArrayInputStream(gatewayCluster.getCert())));
+
+      if (ConstantsCode.Y.getCode().equals(gatewayCluster.getMainYn())) {
+
+        cert = (X509Certificate) certificateFactory
+            .generateCertificate(new ByteArrayInputStream(gatewayCluster.getCert()));
+        key = keyFactory.generatePrivate(new PKCS8EncodedKeySpec(gatewayCluster.getPrivateKey()));
+      }
+    }
   }
 }

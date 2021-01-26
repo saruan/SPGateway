@@ -25,8 +25,11 @@ export default function LoginForm() {
 
   // QueryParam 생성
   const data = qs.stringify({
-    id: inputs.id,
-    password: inputs.password
+    username: inputs.id,
+    password: inputs.password,
+    scope: 'read_profile',
+    grant_type: 'password',
+    api_type: 'portal'
   })
 
   // 로그인 프로세스 수행
@@ -38,7 +41,7 @@ export default function LoginForm() {
       return
     }
 
-    axios.post("/portal/v1.0/user/login", data, {
+    axios.post("/gateway/oauth/token", data, {
       headers: {'content-type': 'application/x-www-form-urlencoded'},
     })
     .then(res => {
@@ -46,8 +49,8 @@ export default function LoginForm() {
       // Session 정보 저장
       setIsLogin(true)
       localStorage.setItem("isLogin", "true");
-      localStorage.setItem("access_token", res.data.accessToken);
-      localStorage.setItem("userId", res.data.userNm);
+      localStorage.setItem("access_token", res.data.access_token);
+      localStorage.setItem("userId", res.data.user.username);
     }).catch(ex => {
 
       const data = ex.response.data

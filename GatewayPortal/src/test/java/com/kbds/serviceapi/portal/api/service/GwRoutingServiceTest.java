@@ -14,7 +14,6 @@ import com.kbds.serviceapi.framework.exception.BizException;
 import com.kbds.serviceapi.portal.api.dto.RoutingDTO;
 import com.kbds.serviceapi.portal.api.entity.GwService;
 import com.kbds.serviceapi.portal.api.repository.GwRoutingRepository;
-import com.kbds.serviceapi.portal.api.service.GwRoutingService;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -141,37 +140,20 @@ public class GwRoutingServiceTest {
   @Test
   void API_수정_테스트() {
 
-    GwService gwService = modelMapper.map(updateRoutingDTO, GwService.class);
-
-    doReturn(gwService).when(gwRoutingRepository).findByServiceId(serviceId);
     doReturn(true).when(gwRoutingRepository).isValidUpdateData(updateRoutingDTO, serviceId);
 
     gwRoutingService.updateService(updateRoutingDTO, serviceId);
   }
 
   @Test
-  void API_수정_중복데이터_테스트() {
+  void API_수정_유효하지_않음_테스트() {
 
-    GwService gwService = modelMapper.map(updateRoutingDTO, GwService.class);
-
-    doReturn(gwService).when(gwRoutingRepository).findByServiceId(serviceId);
     doReturn(false).when(gwRoutingRepository).isValidUpdateData(updateRoutingDTO, serviceId);
 
     BizException ex = assertThrows(BizException.class,
         () -> gwRoutingService.updateService(updateRoutingDTO, serviceId));
 
     assertEquals(ex.getMessage(), BizExceptionCode.COM003.getCode());
-  }
-
-  @Test
-  void API_수정_데이터없음_테스트() {
-
-    doReturn(null).when(gwRoutingRepository).findByServiceId(serviceId);
-
-    BizException ex = assertThrows(BizException.class,
-        () -> gwRoutingService.updateService(updateRoutingDTO, serviceId));
-
-    assertEquals(ex.getMessage(), BizExceptionCode.COM004.getCode());
   }
 
   @Test
