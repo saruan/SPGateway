@@ -22,13 +22,16 @@ gateway:
     portal:
       path: /gateway/portal
       url:  http://localhost:8080/portal/service/v1.0
-    jwt:
+    auth:
       path: /gateway/auth
       url:  http://localhost:7777/auth/v1.0
     token:
-      path: /gateway/oauth/token
+      path: /gateway/oauth/token/api
       url:  http://localhost:7777/oauth/token
       filter: TokenFilter
+    token-non-filter:
+      path: /gateway/oauth/token
+      url:  http://localhost:7777/oauth/token
     check-token:
       path: /gateway/oauth/state
       url: http://localhost:7777/oauth/check_token
