@@ -26,7 +26,7 @@ gateway:
       path: /gateway/auth
       url:  http://localhost:7777/auth/v1.0
     token:
-      path: /gateway/token
+      path: /gateway/oauth/token
       url:  http://localhost:7777/oauth/token
       filter: TokenFilter
     check-token:
