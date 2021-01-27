@@ -52,8 +52,8 @@ services:
     host: http://211.62.204.27:9999
     refresh: /actuator/bus-refresh
   auth:
-    host: http://localhost:7777
-    apis: /auth/v1.0/api
+    host: http://localhost:8888
+    apis: /gateway/auth/api
     basic: Basic R2F0ZXdheVBvcnRhbDpHYXRld2F5UG9ydGFsIQ==
 
 #인증 키관리    
