@@ -40,7 +40,7 @@ security:
       client-secret: GatewayPortal!
     resource:
       filter-order: 3
-      token-info-uri: http://localhost:8888/gateway/oauth/state
+      token-info-uri: http://localhost:7777/oauth/check_token
 
 # 로그 설정
 logging:
@@ -49,8 +49,12 @@ logging:
 #사용자 정의 속성
 services:
   bus:
-    host: http://211.62.204.27:9999
+    host: http:///
     refresh: /actuator/bus-refresh
+  auth:
+    host: http://localhost:8888
+    apis: /auth/v1.0/api
+    basic: Basic R2F0ZXdheVBvcnRhbDpHYXRld2F5UG9ydGFsIQ==
 
 #인증 키관리    
 jwt:
