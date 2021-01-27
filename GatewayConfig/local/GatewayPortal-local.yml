@@ -53,7 +53,7 @@ services:
     refresh: /actuator/bus-refresh
   auth:
     host: http://localhost:8888
-    apis: /auth/v1.0/api
+    apis: /gateway/auth/api
     basic: Basic R2F0ZXdheVBvcnRhbDpHYXRld2F5UG9ydGFsIQ==
 
 #인증 키관리    
