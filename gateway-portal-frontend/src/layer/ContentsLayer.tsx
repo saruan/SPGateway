@@ -26,7 +26,7 @@ export default function ContentsLayer() {
 
       axios.get("/gateway/oauth/state?token=" + token).catch((error) => {
 
-        if (error.response.status === 401) {
+        if (error.response.status === 400) {
 
           alert("세션 만료")
           window.location.href = "/"

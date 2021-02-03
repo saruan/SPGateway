@@ -48,7 +48,6 @@ public class SecurityConfig {
   @Bean
   public SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http) {
 
-    //Actuator, Gateway 관련 API 는 인증된 사람만 사용할 수 있도록 설정
     return http.exceptionHandling()
         .authenticationEntryPoint(commonAuthenticationEntryPoint)
         .and()

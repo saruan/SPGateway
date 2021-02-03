@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -41,10 +40,11 @@ public class SecurityOAuth2Configuration extends AuthorizationServerConfigurerAd
 
   /**
    * Constructor Injections
+   *
    * @param authenticationManager AuthenticationManager
-   * @param dataSource  DataSource
-   * @param spUserDetailService SPUserDetailService
-   * @param tokenStore  CustomTokenStore
+   * @param dataSource            DataSource
+   * @param spUserDetailService   SPUserDetailService
+   * @param tokenStore            CustomTokenStore
    */
   public SecurityOAuth2Configuration(
       AuthenticationManager authenticationManager, DataSource dataSource,
@@ -63,7 +63,8 @@ public class SecurityOAuth2Configuration extends AuthorizationServerConfigurerAd
   }
 
   @Override
-  public void configure(AuthorizationServerSecurityConfigurer authorizationServerSecurityConfigurer){
+  public void configure(
+      AuthorizationServerSecurityConfigurer authorizationServerSecurityConfigurer) {
 
     authorizationServerSecurityConfigurer
         .tokenKeyAccess("permitAll()")
@@ -77,7 +78,7 @@ public class SecurityOAuth2Configuration extends AuthorizationServerConfigurerAd
   }
 
   @Override
-  public void configure(AuthorizationServerEndpointsConfigurer endpoints){
+  public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
 
     endpoints.authenticationManager(authenticationManager);
     endpoints.tokenStore(tokenStore);

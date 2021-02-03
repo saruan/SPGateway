@@ -1,7 +1,5 @@
 import React, {useState} from "react";
-import qs from "querystring";
 import axios from "axios";
-import {postRequest} from "../../perist/axios";
 
 /**
  * 회원 가입 템플릿

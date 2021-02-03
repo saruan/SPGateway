@@ -57,11 +57,11 @@ export function AppManage({isUpdate, appId, refreshList}: AppManageInterface) {
 
     setClick(false)
     setInputs({
-      appNm: '',
-      appDesc: '',
+      appNm: "",
+      appDesc: "",
       serviceId: [],
-      regUserNo: '',
-      uptUserNo: ''
+      regUserNo: "",
+      uptUserNo: ""
     })
   }
 
