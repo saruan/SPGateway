@@ -67,16 +67,15 @@
     
   ##### 토큰 관리
   
-    - 인증 서버의 oauth_client_details에 초기 클라이언트가 등록 되어 있고 id, secret 기반으로 
-      access_token 발급이 가능하다. Oauth2.0에서 제공하는 grant_type은 지원하나 현재 사용하는 필터에서는
-      password 타입을 사용한다.
-    - 기본 프로세스는 2단계 인증으로 되어 있으며 아래의 순서로 진행된다.
-    
-      1) http://GATEWAY_IP:PORT/gateway/jwt를 호출하여 JWT 토큰을 전달 받는다. 
-        (1차 사용자 정의 인증 서버 검증)
-      2) http://GATEWAY_IP:PORT/gateway/token 을 호출하여 access_token을 전달 받는다. 
-        (사용자 정의 인증 토큰을 기반으로 access_token 발급)
-      3) API를 호출할 경우 access_token을 헤더에 담아 요청한다.
-      
-      해당 내용이 프로젝트 환경에 따라 수정이 필요할 경우 TokenFilter에서 발급 프로세스를 환경에 맞춰 
+    - 인증 서버의 oauth_client_details에 초기 클라이언트가 등록 되어 있고 id, secret 기반으로 access_token 발급이 가능하다. 
+      Oauth2.0에서 제공하는 grant_type은 지원하나 현재 사용하는 필터에서는 password 타입을 사용한다.
+    - 토큰 발급 시 현재 인증에 대한 허가를 위한 검증을 써드파티 어플리케이션에서 처리하는 2단계 인증, Gateway 사용자 정보로 acceess_token르 발급하는 1단계 인증이 있다.
+      2단계 인증의 경우 아래의 프로세스로 구성되어 있다.
+      1) http://GATEWAY_IP:PORT/gateway/auth/jwt를 호출하여 JWT 토큰을 전달 받는다. 
+        - 현재 써드파티 API의 인증 프로세스의 기준은 써드파티 어플리케이션/서버에서 사용자 확인/인증을 선행으로 진행했다는 것을 기준으로 구성되어 있다.
+          따라서 TokenFilter에는 어플리케이션 서버와 통신하여 사용자가 인증이 된 것을 확인하여야 하며 기본은 별다른 제약 없이 바로 JWT 토큰을 리턴한다.
+      2) http://GATEWAY_IP:PORT/gateway/oauth/token 을 호출하여 access_token을 전달 받는다. 
+        (1단계에서 발급 받은 JWT토큰을 검증한 후 access_token 발급)
+          
+      해당 내용이 프로젝트 환경에 따라 수정이 필요할 경우 TokenFilter, CommonFilter 에서 발급 프로세스를 환경에 맞춰 
       수정/생성해야 한다. (com.kbds.gateway.filter.system.TokenFilter)
