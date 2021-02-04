@@ -7,14 +7,14 @@
     - GatewayPortal  : Gateway 데이타 관리 서버
     - gateway-portal-frontend : 포탈 화면 프로젝트  
     - Gateway        : API Gateway 서버
-    - AuthService    : 인증, 사용자, 권한 관리 서버
+    - AuthService    : 인증, 사용자, 권한 관리 서버 (Spring Oauth)
     - GatewayLog     : 로그, 통계 관리 서버 (구성중)
     - GatewayConfig  : Spring-Cloud-Config-Bus Server
     - ETC            : Redis, RabbitMQ, MySQL 
      
 ※ 개발 환경
 
-    - 백엔드 서버 : Java 1.8, Spring Boot, MySQL, RabbitMQ, Redis
+    - 백엔드 서버 : Java 1.8, Spring Boot, MySQL, RabbitMQ, Redis, Spring Data JPA (with QueryDSL)
     - 프론트 서버 : React, Typescript     
 
 ## 2. 프로젝트 구성도
