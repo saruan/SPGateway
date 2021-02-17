@@ -6,8 +6,8 @@ spring:
   #cache(Redis) 설정
   cache:
     type: redis
-  redis: 
-    host: localhost
+  redis:
+    host: 211.62.204.27
     port: 6379
   # Datasource 설정    
   datasource:
@@ -27,10 +27,10 @@ spring:
       enabled: true
   # RabbitMQ 설정
   rabbitmq:
-    host: localhost
+    host: 211.62.204.27
     port: 5672
-    username: guest
-    password: guest
+    username: gateway
+    password: gateway
 # 로그 설정
 logging:
   config: classpath:${spring.profiles.active}/log4j2.yml   
