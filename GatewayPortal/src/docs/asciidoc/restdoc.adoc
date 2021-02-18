@@ -7,6 +7,7 @@
 :sectnums:
 :sectlinks:
 :sectanchors:
+:snippets: ../../../build/generated-snippets
 
 [[api]]
 == RoutingService

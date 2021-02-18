@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+    id "org.asciidoctor.convert" version "1.5.10"
     id 'org.springframework.boot' version "2.2.7.RELEASE"
     id "io.spring.dependency-management" version "1.0.6.RELEASE"
 }
@@ -17,9 +18,30 @@ repositories {
     }
 }
 
+asciidoctor {
+    dependsOn test
+}
+
+task copyDocument(type: Copy){
+    dependsOn asciidoctor
+    from file("build/asciidoc/html5/")
+    into file("src/main/resources/static/docs")
+}
+
+bootJar {
+    dependsOn asciidoctor
+    from("${asciidoctor.outputDir}/html5") {
+        into 'static/docs'
+    }
+}
+
+build{
+    dependsOn copyDocument
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web:2.2.7.RELEASE'
-    implementation 'org.springframework.cloud:spring-cloud-starter-feign:1.4.0.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation 'com.netflix.feign:feign-jackson:8.18.0'
     implementation 'org.springframework.boot:spring-boot-starter-actuator:2.2.7.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.2.7.RELEASE'
