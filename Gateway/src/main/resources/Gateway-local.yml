@@ -46,7 +46,12 @@ spring:
       enabled: true
   # RabbitMQ 설정
   rabbitmq:
-    host: 211.62.204.27
+    host: localhost
     port: 5672
     username: gateway
     password: gateway
+  cache:
+    type: redis
+  redis:
+    host: localhost
+    port: 6379
