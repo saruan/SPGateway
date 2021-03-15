@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
+import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
 import org.springframework.cloud.gateway.filter.ratelimit.RedisRateLimiter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
@@ -86,6 +87,11 @@ public class RoutingConfiguration {
     this.objectMapper = objectMapper;
   }
 
+  @Bean
+  KeyResolver testKeyResolver() {
+    return exchange -> Mono.just(exchange.getSession().subscribe().toString());
+  }
+
   /**
    * Routing 정보를 조회 한 후 필터와 함께 GATEWAY에 등록 하는 메소드 메인 메소드
    *
@@ -129,6 +135,7 @@ public class RoutingConfiguration {
         registerRouterLocator(routeLocator, routingDTO);
       } catch (Exception e) {
 
+        log.info(e.toString());
         logger.error(e.toString());
       }
     }
@@ -161,6 +168,7 @@ public class RoutingConfiguration {
         registerRouterLocator(routeLocator, routingDTO);
       } catch (Exception e) {
 
+        log.error(e.toString());
         throw new GatewayException(GatewayExceptionCode.GWE003, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     });
@@ -198,9 +206,9 @@ public class RoutingConfiguration {
               String.format("%s(?<segment>.*)", servicePath),
               String.format("%s${segment}", targetPath))
               .filters(cachingRequestBodyFilter.apply(new CachingRequestBodyFilter.Config()),
-                  mainFilter)
-              .requestRateLimiter(config -> config
-                  .setRateLimiter(new RedisRateLimiter(replenishRate, burstCapacity))))
+                  mainFilter))
+              //.requestRateLimiter(config -> config
+              //    .setRateLimiter(new RedisRateLimiter(replenishRate, burstCapacity))))
           .uri(targetUrl));
 
     } else {

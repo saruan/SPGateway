@@ -73,6 +73,8 @@ public class TokenFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
           .header(HttpHeaders.AUTHORIZATION, oAuthKey)
           .build();
 
+      System.out.println(request.getHeaders().get(HttpHeaders.AUTHORIZATION));
+
       return chain.filter(exchange.mutate().request(request).build());
     };
   }

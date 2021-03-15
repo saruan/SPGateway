@@ -1,0 +1,31 @@
+#Spring Config Server 설정
+spring:
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: file:///${user.home}/server-configs
+    bus:
+      enabled: true
+  # RabbitMQ 설정
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: gateway
+    password: gateway
+  application:
+    name: config-server
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+
+#Actuactor 활성화
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: ['bus-refresh', 'refresh']
+
+server:
+  port: 9999
