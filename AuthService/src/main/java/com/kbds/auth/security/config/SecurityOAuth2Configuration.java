@@ -48,7 +48,7 @@ public class SecurityOAuth2Configuration extends AuthorizationServerConfigurerAd
   }
 
   @Bean
-  public ApprovalStore approvalStore(){
+  public ApprovalStore approvalStore() {
     return new JdbcApprovalStore(dataSource);
   }
 

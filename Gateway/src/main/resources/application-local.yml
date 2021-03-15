@@ -38,7 +38,7 @@ jwt:
   secret-key: 1EB87004BBEA8377C5F584DAE670AA293E6A856C2B4B4708E63B713EBDABBEF8
   issuer: saruan
 oauth:
-  client-id: Basic R2F0ZXdheTpHYXRld2F5UG9ydGFsIQ==
+  client-id: Basic R2F0ZXdheVBvcnRhbDpHYXRld2F5UG9ydGFsIQ==
 
 spring:
   cloud:

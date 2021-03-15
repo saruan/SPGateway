@@ -31,6 +31,7 @@ spring:
     port: 5672
     username: gateway
     password: gateway
+
 # 로그 설정
 logging:
   config: classpath:${spring.profiles.active}/log4j2.yml   
