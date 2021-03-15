@@ -5,6 +5,7 @@ import com.kbds.auth.security.exception.CustomOAuthResponseExceptionTranslator;
 import com.kbds.auth.security.token.CustomTokenEnhancer;
 import com.kbds.auth.security.token.CustomTokenStore;
 import javax.sql.DataSource;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +15,8 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.approval.ApprovalStore;
+import org.springframework.security.oauth2.provider.approval.JdbcApprovalStore;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 
 /**
@@ -31,6 +34,7 @@ import org.springframework.security.oauth2.provider.token.TokenEnhancer;
  */
 @Configuration
 @EnableAuthorizationServer
+@AllArgsConstructor
 public class SecurityOAuth2Configuration extends AuthorizationServerConfigurerAdapter {
 
   private final AuthenticationManager authenticationManager;
@@ -38,28 +42,14 @@ public class SecurityOAuth2Configuration extends AuthorizationServerConfigurerAd
   private final SPUserDetailService spUserDetailService;
   private final CustomTokenStore tokenStore;
 
-  /**
-   * Constructor Injections
-   *
-   * @param authenticationManager AuthenticationManager
-   * @param dataSource            DataSource
-   * @param spUserDetailService   SPUserDetailService
-   * @param tokenStore            CustomTokenStore
-   */
-  public SecurityOAuth2Configuration(
-      AuthenticationManager authenticationManager, DataSource dataSource,
-      SPUserDetailService spUserDetailService, CustomTokenStore tokenStore) {
-
-    this.authenticationManager = authenticationManager;
-    this.dataSource = dataSource;
-    this.spUserDetailService = spUserDetailService;
-    this.tokenStore = tokenStore;
+  @Bean
+  public TokenEnhancer tokenEnhancer() {
+    return new CustomTokenEnhancer();
   }
 
   @Bean
-  public TokenEnhancer tokenEnhancer() {
-
-    return new CustomTokenEnhancer();
+  public ApprovalStore approvalStore(){
+    return new JdbcApprovalStore(dataSource);
   }
 
   @Override
@@ -82,6 +72,7 @@ public class SecurityOAuth2Configuration extends AuthorizationServerConfigurerAd
 
     endpoints.authenticationManager(authenticationManager);
     endpoints.tokenStore(tokenStore);
+    endpoints.approvalStore(approvalStore());
     endpoints.exceptionTranslator(new CustomOAuthResponseExceptionTranslator());
     endpoints.userDetailsService(spUserDetailService);
     endpoints.tokenEnhancer(tokenEnhancer());

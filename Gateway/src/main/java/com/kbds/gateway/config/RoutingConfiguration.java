@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
+import org.springframework.cloud.gateway.filter.ratelimit.RedisRateLimiter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder.Builder;
@@ -125,14 +126,7 @@ public class RoutingConfiguration {
 
       try {
 
-        final boolean hasFilter = !StringUtils.isEmptyParams(routingDTO.getFilterBean());
-        final String originUrl = routingDTO.getServiceTargetUrl();
-        final String targetPath = new URL(originUrl).getPath();
-        final String servicePath = routingDTO.getServicePath();
-        final String filter = hasFilter ? routingDTO.getFilterBean() : null;
-
-        registerRouterLocator(routeLocator, servicePath, targetPath, originUrl, hasFilter, filter,
-            routingDTO);
+        registerRouterLocator(routeLocator, routingDTO);
       } catch (Exception e) {
 
         logger.error(e.toString());
@@ -148,8 +142,7 @@ public class RoutingConfiguration {
    * @param routeLocator Routing 관리 객체
    * @return Builder
    */
-  public Builder registerDefaultService(
-      Builder routeLocator) {
+  public Builder registerDefaultService(Builder routeLocator) {
 
     service.forEach((key, value) -> {
 
@@ -159,14 +152,13 @@ public class RoutingConfiguration {
             .convertValue(value, new TypeReference<Map<String, String>>() {
             });
 
-        final boolean hasFilter = defaultPath.containsKey(FILTER);
-        final String servicePath = defaultPath.get(PATH);
-        final String originUrl = defaultPath.get(URL);
-        final String targetPath = new URL(originUrl).getPath();
-        final String filter = hasFilter ? defaultPath.get(FILTER) : null;
+        final String filter = defaultPath.getOrDefault(FILTER, null);
 
-        registerRouterLocator(routeLocator, servicePath, targetPath, originUrl, hasFilter, filter,
-            new RoutingDTO());
+        RoutingDTO routingDTO = RoutingDTO.builder().filterBean(filter)
+            .servicePath(defaultPath.get(PATH)).
+                serviceTargetUrl(defaultPath.get(URL)).build();
+
+        registerRouterLocator(routeLocator, routingDTO);
       } catch (Exception e) {
 
         throw new GatewayException(GatewayExceptionCode.GWE003, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -180,16 +172,18 @@ public class RoutingConfiguration {
    * 요청 받은 Routing 정보 등록
    *
    * @param routeLocator Routing 관리 객체
-   * @param servicePath  요청 받은 URL
-   * @param targetPath   Endpoint URI (URL Rewrite)
-   * @param targetUrl    Endpoint URL
-   * @param hasFilter    Filter 존재 유무
-   * @param filter       Filter 값 (없으면 null)
    * @throws Exception Exception 오류
    */
-  private void registerRouterLocator(Builder routeLocator, String servicePath,
-      String targetPath, String targetUrl, boolean hasFilter, String filter, RoutingDTO routingDTO)
+  private void registerRouterLocator(Builder routeLocator, RoutingDTO routingDTO)
       throws Exception {
+
+    final boolean hasFilter = !StringUtils.isEmptyParams(routingDTO.getFilterBean());
+    final String targetUrl = routingDTO.getServiceTargetUrl();
+    final String targetPath = new URL(targetUrl).getPath();
+    final String servicePath = routingDTO.getServicePath();
+    final String filter = hasFilter ? routingDTO.getFilterBean() : null;
+    final int replenishRate = routingDTO.getReplenishRate();
+    final int burstCapacity = routingDTO.getBurstCapacity();
 
     if (hasFilter) {
 
@@ -204,7 +198,9 @@ public class RoutingConfiguration {
               String.format("%s(?<segment>.*)", servicePath),
               String.format("%s${segment}", targetPath))
               .filters(cachingRequestBodyFilter.apply(new CachingRequestBodyFilter.Config()),
-                  mainFilter))
+                  mainFilter)
+              .requestRateLimiter(config -> config
+                  .setRateLimiter(new RedisRateLimiter(replenishRate, burstCapacity))))
           .uri(targetUrl));
 
     } else {
@@ -227,16 +223,19 @@ public class RoutingConfiguration {
    */
   private GatewayFilter getFilterSpec(String filterNm, RoutingDTO params) throws Exception {
 
-    // ApplicationContext 에 저장 되어 있는 Filter 메소드를 실행한다.
+    /*
+      ApplicationContext 에 저장 되어 있는 Filter 메소드를 실행한다.
+     */
     Object c = appContext.getBean(filterNm);
     Class<?> cl = c.getClass();
     Method method =
         cl.getDeclaredMethod(GatewayCode.GATEWAY_FILTER_APPLY.getCode(), RoutingDTO.class);
+
     return (GatewayFilter) method.invoke(c, params);
   }
 
   /**
-   * URL Pattern을 정책에 맞게 수정
+   * URL Pattern 을 정책에 맞게 수정
    *
    * @param servicePath G/W Router Path
    * @return 최종 Fix Router Path

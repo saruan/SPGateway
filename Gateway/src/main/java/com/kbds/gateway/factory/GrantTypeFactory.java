@@ -32,6 +32,7 @@ public class GrantTypeFactory {
   public GrantType makeGrantType(String grantTypeName) {
 
     for (GrantType grantType : grantTypes) {
+
       if (grantTypeName.equals(grantType.getGrantTypeName())) {
 
         return grantType;

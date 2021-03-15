@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -27,41 +28,31 @@ import lombok.NoArgsConstructor;
  *
  */
 @Data
+@Builder
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(value = Include.NON_NULL)
 public class RoutingDTO {
 
-  private Long serviceId;
-
-  private Long filterId;
-
+  /* 서비스명 */
   private String serviceNm;
-
+  /* 앱키 목록 */
   private List<String> appKeys;
-
+  /* 최대 Bucket 수 */
+  @Builder.Default
+  private int replenishRate = 20;
+  /* 1초에 요청 가능한 최대 수 */
+  @Builder.Default
+  private int burstCapacity = 20;
+  /* API 경로 */
   private String servicePath;
-
+  /* 목적지 경로 */
   private String serviceTargetUrl;
-
-  private String serviceDesc;
-
+  /* 서비스 로그인 타입 */
   private String serviceLoginType;
-
+  /* 서비스 인증 타입 */
   private String serviceAuthType;
-
-  private String useYn;
-
+  /* 필터 종류 */
   private String filterBean;
-
-  private String filterUseYn;
-
-  private String regUserNo;
-
-  private String uptUserNo;
-
-  private Date regDt;
-
-  private Date uptDt;
 }

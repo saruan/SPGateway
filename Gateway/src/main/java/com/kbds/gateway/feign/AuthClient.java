@@ -37,6 +37,7 @@ public interface AuthClient {
 
   /**
    * GatewayCluster 목록 조회
+   *
    * @return 클러스터 목록
    */
   @GetMapping(value = "${services.auth.cluster_list}")

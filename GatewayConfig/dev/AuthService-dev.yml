@@ -7,12 +7,12 @@ spring:
   cache:
     type: redis
   redis:
-    host: 211.62.204.27
+    host: localhost
     port: 6379
   # Datasource 설정    
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://211.62.204.27:3306/auth?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/auth?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: gateway
     password: gateway12
   jpa:
@@ -27,7 +27,7 @@ spring:
       enabled: true
   # RabbitMQ 설정
   rabbitmq:
-    host: 211.62.204.27
+    host: localhost
     port: 5672
     username: gateway
     password: gateway
