@@ -30,11 +30,17 @@ import lombok.NoArgsConstructor;
 @JsonInclude(value = Include.NON_NULL)
 public class GatewayClusterDTO {
 
+  /* 게이트웨이 클러스터 ID */
   @NotEmpty
   private String gatewayId;
+  /* 게이트웨이 비밀키 */
   private String secretKey;
+  /* 메인 클러스터 유무 */
   private String mainYn;
+  /* 토큰 만료 시간 */
   private Long expiredTime;
+  /* 인증서 파일 */
   private byte[] certificateFile;
+  /* 인증서 비밀번호 */
   private String certificatePassword;
 }

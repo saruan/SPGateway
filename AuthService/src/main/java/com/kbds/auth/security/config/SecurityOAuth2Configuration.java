@@ -17,6 +17,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.approval.JdbcApprovalStore;
+import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 
 /**
@@ -73,6 +74,7 @@ public class SecurityOAuth2Configuration extends AuthorizationServerConfigurerAd
     endpoints.authenticationManager(authenticationManager);
     endpoints.tokenStore(tokenStore);
     endpoints.approvalStore(approvalStore());
+    endpoints.authorizationCodeServices(new JdbcAuthorizationCodeServices(dataSource));
     endpoints.exceptionTranslator(new CustomOAuthResponseExceptionTranslator());
     endpoints.userDetailsService(spUserDetailService);
     endpoints.tokenEnhancer(tokenEnhancer());

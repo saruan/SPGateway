@@ -1,4 +1,4 @@
-package com.kbds.gateway.factory;
+package com.kbds.gateway.factory.granttype;
 
 import java.util.Map;
 

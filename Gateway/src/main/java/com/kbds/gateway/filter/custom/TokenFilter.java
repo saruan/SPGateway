@@ -5,8 +5,8 @@ import com.kbds.gateway.code.GatewayExceptionCode;
 import com.kbds.gateway.code.GrantTypeCode;
 import com.kbds.gateway.dto.RoutingDTO;
 import com.kbds.gateway.exception.GatewayException;
-import com.kbds.gateway.factory.GrantType;
-import com.kbds.gateway.factory.GrantTypeFactory;
+import com.kbds.gateway.factory.granttype.GrantType;
+import com.kbds.gateway.factory.granttype.GrantTypeFactory;
 import com.kbds.gateway.utils.StringUtils;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +41,9 @@ public class TokenFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
   @Autowired
   GrantTypeFactory grantTypeFactory;
 
+  /* API TYPE (System API, 포탈 API) */
+  private final String API_TYPE = "api_type";
+
   @Override
   public GatewayFilter apply(RoutingDTO routingDTO) {
 
@@ -59,7 +62,7 @@ public class TokenFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
       Map<String, String> queryParam = StringUtils.queryToMap(buffer);
 
-      if(!queryParam.containsKey("api_type")){
+      if(!queryParam.containsKey(API_TYPE)){
 
         GrantType grantType = grantTypeFactory
             .makeGrantType(queryParam.get(GrantTypeCode.GRANT_TYPE.getCode()));
@@ -72,8 +75,6 @@ public class TokenFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
           .mutate()
           .header(HttpHeaders.AUTHORIZATION, oAuthKey)
           .build();
-
-      System.out.println(request.getHeaders().get(HttpHeaders.AUTHORIZATION));
 
       return chain.filter(exchange.mutate().request(request).build());
     };

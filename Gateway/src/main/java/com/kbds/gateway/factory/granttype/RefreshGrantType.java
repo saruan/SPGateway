@@ -1,6 +1,5 @@
-package com.kbds.gateway.factory;
+package com.kbds.gateway.factory.granttype;
 
-import com.kbds.gateway.code.GatewayCode;
 import com.kbds.gateway.code.GatewayExceptionCode;
 import com.kbds.gateway.code.GrantTypeCode;
 import com.kbds.gateway.exception.GatewayException;

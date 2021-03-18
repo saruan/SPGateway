@@ -6,7 +6,6 @@ import com.kbds.auth.common.code.AuthCode;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,7 +17,7 @@ import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 /**
  * <pre>
  *  File  Name     : CustomTokenEnhancer
- *  Description    : AccessToken Custom Response
+ *  Description    : AccessToken 검증 후 Custom Response
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
  *
  * -------------------------------------------------------------------------------
@@ -42,6 +41,7 @@ public class CustomTokenEnhancer implements TokenEnhancer {
 
     UserDTO userDTO = spUserCustomRepository.findByUserDetails(userLoginId);
 
+    /* 사용자 정보를 access token 결과에 담아 전달해준다. */
     if (!isSystemAccount(authentication)) {
 
       Map<String, Object> additionalInfo = new HashMap<>();
@@ -56,8 +56,8 @@ public class CustomTokenEnhancer implements TokenEnhancer {
   /**
    * 시스템 계정인지 확인 (시스템 계정은 사용자 추가 정보를 리턴할 필요가 없음)
    *
-   * @param authentication
-   * @return
+   * @param authentication  OAuth2Authentication
+   * @return  시스템 계정 여부
    */
   private boolean isSystemAccount(OAuth2Authentication authentication) {
 

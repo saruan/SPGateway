@@ -24,13 +24,21 @@ import lombok.NoArgsConstructor;
 public class ServiceLogDTO implements Serializable {
 
   private static final long serialVersionUID = -297675997652402318L;
-
+  
+  /* 요청 헤더 */
   private String requestHeader;
+  /* 요청 파라미터 */
   private String requestParams;
+  /* 응답 전문 */
   private String response;
+  /* 앱키 */
   private String appKey;
+  /* 서비스명 */
   private String serviceNm;
+  /* 클라이언트 이름 */
   private String clientService;
+  /* 요청 시간 */
   private String requestDt;
+  /* 응답 시간 */
   private String responseDt;
 }

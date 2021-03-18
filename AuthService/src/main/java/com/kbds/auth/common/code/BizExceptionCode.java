@@ -40,6 +40,8 @@ public enum BizExceptionCode {
 
   CLS001("CLS001", "이미 등록 되어 있는 클러스터입니다"),
 
+  TOK001("TOK001", "토큰이 만료 되었거나 유효하지 않습니다."),
+
   DUMMY("", "");
 
   private String code;

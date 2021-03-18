@@ -30,7 +30,7 @@ public class AopLoggingComponent {
   private HttpServletRequest request;
 
   /**
-   * controller 패키지 하위의 메소드가 실행 될 때 기본적으로 로깅에 필요한 값들을 설정한다.
+   * hystrix 패키지 하위의 메소드가 실행 될 때 기본적으로 로깅에 필요한 값들을 설정한다.
    * 
    * @param pjp
    * @throws Throwable

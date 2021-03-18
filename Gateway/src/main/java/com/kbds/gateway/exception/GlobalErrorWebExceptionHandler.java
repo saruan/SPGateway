@@ -61,7 +61,6 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
    * 오류 Response 설정
    *
    * @param request ServerRequest 객체
-   * @request response
    */
   private Mono<ServerResponse> renderErrorResponse(final ServerRequest request) {
 
@@ -71,7 +70,7 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
     Throwable error = getError(request);
     HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
-    // 에러의 종류가 GatewayExcpetion일 경우 정해진 규격에 맞춰 화면에 전달한다.
+    // 에러의 종류가 GatewayException 경우 정해진 규격에 맞춰 화면에 전달한다.
     if (error instanceof GatewayException) {
 
       GatewayException e = (GatewayException) error;

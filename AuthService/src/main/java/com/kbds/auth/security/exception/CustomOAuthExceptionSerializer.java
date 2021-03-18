@@ -38,9 +38,8 @@ public class CustomOAuthExceptionSerializer extends StdSerializer<CustomOAuthExc
 
     if (EnumUtils.isValidEnum(BizExceptionCode.class, value.getMessage())) {
 
-      jsonGenerator
-          .writeObjectField("resultMessage",
-              BizExceptionCode.valueOf(value.getMessage()).getDesc());
+      jsonGenerator.writeObjectField("resultMessage",
+          BizExceptionCode.valueOf(value.getMessage()).getDesc());
     }
 
     if (!StringUtils.isEmptyParams(value.getArg())) {

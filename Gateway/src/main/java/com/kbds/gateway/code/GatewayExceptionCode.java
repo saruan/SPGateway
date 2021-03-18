@@ -24,6 +24,7 @@ public enum GatewayExceptionCode {
   GWE001("GWE001", "사전 검증 실패."),
   GWE002("GWE002", "Invalid Parameters."),
   GWE003("GWE003", "Gateway 기본 Routing 주소 등록 중 오류 발생"),
+  GWE004("GWE004", "대상 서버 타임 아웃 발생"),
 
   JWT001("JWT001", "Invalid JWT Token."),
 

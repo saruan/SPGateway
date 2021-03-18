@@ -30,13 +30,18 @@ public class CustomOAuthException extends OAuth2Exception {
 
   private static final long serialVersionUID = -2310235629517721586L;
 
-  // 사용자 Exception 메시지
+  /* 사용자 Exception 메시지 */
   private String arg;
 
   public CustomOAuthException(BizExceptionCode exception, String arg) {
 
     super(exception.getCode());
     this.arg = arg;
+  }
+
+  public CustomOAuthException(BizExceptionCode exception) {
+
+    super(exception.getCode());
   }
 
   public CustomOAuthException(String msg) {

@@ -1,4 +1,4 @@
-package com.kbds.gateway.factory;
+package com.kbds.gateway.factory.granttype;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

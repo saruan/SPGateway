@@ -1,6 +1,10 @@
 package com.kbds.auth.security.exception;
 
+import com.kbds.auth.common.code.BizExceptionCode;
+import java.util.Objects;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.provider.error.DefaultWebResponseExceptionTranslator;
 
@@ -23,10 +27,22 @@ public class CustomOAuthResponseExceptionTranslator extends DefaultWebResponseEx
   public ResponseEntity<OAuth2Exception> translate(Exception exception) throws Exception {
 
     ResponseEntity responseEntity = super.translate(exception);
+    HttpStatus httpStatus;
+    CustomOAuthException customOAuthException;
 
-    OAuth2Exception oAuth2Exception = (OAuth2Exception) responseEntity.getBody();
+    if (exception instanceof InvalidTokenException) {
 
-    return ResponseEntity.status(responseEntity.getStatusCode())
-        .body(new CustomOAuthException(oAuth2Exception.getMessage()));
+      httpStatus = HttpStatus.UNAUTHORIZED;
+      customOAuthException = new CustomOAuthException(BizExceptionCode.TOK001);
+    } else {
+
+      OAuth2Exception oAuth2Exception = (OAuth2Exception) responseEntity.getBody();
+      httpStatus = responseEntity.getStatusCode();
+
+      customOAuthException = new CustomOAuthException(
+          Objects.requireNonNull(oAuth2Exception).getMessage());
+    }
+
+    return ResponseEntity.status(httpStatus).body(customOAuthException);
   }
 }

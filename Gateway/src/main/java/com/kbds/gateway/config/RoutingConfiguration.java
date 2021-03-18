@@ -16,9 +16,6 @@ import java.util.Map;
 import java.util.Objects;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -31,7 +28,6 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder.Build
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -55,8 +51,6 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class RoutingConfiguration {
 
-  private final Logger logger = LoggerFactory.getLogger(RoutingConfiguration.class);
-
   private ApplicationContext appContext;
   private CachingRequestBodyFilter cachingRequestBodyFilter;
   private ObjectMapper objectMapper;
@@ -67,7 +61,6 @@ public class RoutingConfiguration {
 
   /* Default Routing Info */
   private Map<String, Object> service;
-
   private final String PATH = "path";
   private final String URL = "url";
   private final String FILTER = "filter";
@@ -79,17 +72,11 @@ public class RoutingConfiguration {
    * @param cachingRequestBodyFilter 캐싱 Body 데이터
    * @param objectMapper             ObjectMapper 객체
    */
-  @Autowired
-  RoutingConfiguration(ApplicationContext appContext,
+  public RoutingConfiguration(ApplicationContext appContext,
       CachingRequestBodyFilter cachingRequestBodyFilter, ObjectMapper objectMapper) {
     this.appContext = appContext;
     this.cachingRequestBodyFilter = cachingRequestBodyFilter;
     this.objectMapper = objectMapper;
-  }
-
-  @Bean
-  KeyResolver testKeyResolver() {
-    return exchange -> Mono.just(exchange.getSession().subscribe().toString());
   }
 
   /**
@@ -106,38 +93,21 @@ public class RoutingConfiguration {
     List<RoutingDTO> routingDTOList;
 
     try {
-
+      /* G/W 시스템 API 등록 */
       routeLocator = registerDefaultService(routeLocator);
 
-      /* Routing 관리 서버로부터 API 목록을 가져 온다. */
-      Mono<ResponseDTO> responseDTO =
-          WebClient.create()
-              .get()
-              .uri(routeSeverUrl)
-              .header(HttpHeaders.AUTHORIZATION, "Basic YWRtaW46MTIzNA== ")
-              .retrieve().bodyToMono(ResponseDTO.class);
+      /* 포탈에 등록된 API 목록 조회 */
+      routingDTOList = getApiFromPortal();
 
-      routingDTOList = new ObjectMapper().convertValue(
-          Objects.requireNonNull(responseDTO.block()).getResultData(),
-          new TypeReference<List<RoutingDTO>>() {
-          });
-    } catch (Exception e) {
-
-      logger.error(e.toString());
-      return routeLocator.build();
-    }
-
-    // 실제 Routing 서비스, 필터 들을 등록 한다.
-    for (RoutingDTO routingDTO : routingDTOList) {
-
-      try {
+      /* 사용자 API, 필터 들을 등록 한다. */
+      for (RoutingDTO routingDTO : routingDTOList) {
 
         registerRouterLocator(routeLocator, routingDTO);
-      } catch (Exception e) {
-
-        log.info(e.toString());
-        logger.error(e.toString());
       }
+    } catch (Exception e) {
+
+      log.error(e.toString());
+      return routeLocator.build();
     }
 
     return routeLocator.build();
@@ -190,8 +160,11 @@ public class RoutingConfiguration {
     final String targetPath = new URL(targetUrl).getPath();
     final String servicePath = routingDTO.getServicePath();
     final String filter = hasFilter ? routingDTO.getFilterBean() : null;
-    final int replenishRate = routingDTO.getReplenishRate();
-    final int burstCapacity = routingDTO.getBurstCapacity();
+
+    /* 유량 제어 등록 */
+    redisRateLimiter().getConfig().put(servicePath, new RedisRateLimiter.Config()
+        .setBurstCapacity(routingDTO.getBurstCapacity())
+        .setReplenishRate(routingDTO.getReplenishRate()));
 
     if (hasFilter) {
 
@@ -201,16 +174,16 @@ public class RoutingConfiguration {
        최종 Routing 서비스를 G/W에 등록한다.
        Filter 순서는 Body 캐싱용 필터 -> 서비스 API 필터 -> 로깅 필터(Global) 순으로 진행 된다.
       */
-      routeLocator.route(r -> r.path(getServicePath(servicePath))
+      routeLocator.route(servicePath, r -> r.path(getServicePath(servicePath))
           .filters(f -> f.rewritePath(
               String.format("%s(?<segment>.*)", servicePath),
               String.format("%s${segment}", targetPath))
               .filters(cachingRequestBodyFilter.apply(new CachingRequestBodyFilter.Config()),
-                  mainFilter))
-              //.requestRateLimiter(config -> config
-              //    .setRateLimiter(new RedisRateLimiter(replenishRate, burstCapacity))))
+                  mainFilter)
+              .requestRateLimiter(config -> config.setRateLimiter(redisRateLimiter()))
+              .circuitBreaker(
+                  c -> c.setName("myCircuitBreaker").setFallbackUri("forward:/fallback")))
           .uri(targetUrl));
-
     } else {
 
       routeLocator.route(r -> r.path(getServicePath(servicePath))
@@ -243,6 +216,26 @@ public class RoutingConfiguration {
   }
 
   /**
+   * Portal 서버에서 등록한 모든 API 목록 조회
+   *
+   * @return API List 객체
+   */
+  public List<RoutingDTO> getApiFromPortal() {
+
+    /* Routing 관리 서버로부터 API 목록을 가져 온다. */
+    Mono<ResponseDTO> responseDTO =
+        WebClient.create()
+            .get()
+            .uri(routeSeverUrl)
+            .retrieve().bodyToMono(ResponseDTO.class);
+
+    return new ObjectMapper().convertValue(
+        Objects.requireNonNull(responseDTO.block()).getResultData(),
+        new TypeReference<List<RoutingDTO>>() {
+        });
+  }
+
+  /**
    * URL Pattern 을 정책에 맞게 수정
    *
    * @param servicePath G/W Router Path
@@ -259,5 +252,28 @@ public class RoutingConfiguration {
     }
 
     return servicePath;
+  }
+
+  /**
+   * RateLimit 공통 설정
+   *
+   * @return RateLimit 객체
+   */
+  @Bean
+  public RedisRateLimiter redisRateLimiter() {
+
+    return new RedisRateLimiter(500, 500);
+  }
+
+  /**
+   * RateLimit 사용을 위한 KeyResolver Bean 등록
+   *
+   * @return KeyResolver 객체
+   */
+  @Bean
+  public KeyResolver ipKeyResolver() {
+
+    return exchange -> Mono
+        .just(Objects.requireNonNull(exchange.getRequest().getRemoteAddress()).getHostName());
   }
 }
