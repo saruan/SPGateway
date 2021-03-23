@@ -2,6 +2,7 @@ package com.kbds.gateway.dto;
 
 import java.io.Serializable;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,18 +20,23 @@ import lombok.NoArgsConstructor;
  * </pre>
  */
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class ServiceLogDTO implements Serializable {
 
   private static final long serialVersionUID = -297675997652402318L;
-  
+
+  /* Trace ID */
+  private String tid;
   /* 요청 헤더 */
   private String requestHeader;
   /* 요청 파라미터 */
   private String requestParams;
   /* 응답 전문 */
   private String response;
+  /* 전달 메시지 */
+  private String message;
   /* 앱키 */
   private String appKey;
   /* 서비스명 */

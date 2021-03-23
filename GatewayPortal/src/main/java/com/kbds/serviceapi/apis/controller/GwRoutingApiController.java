@@ -1,7 +1,11 @@
 package com.kbds.serviceapi.apis.controller;
 
 import com.kbds.serviceapi.framework.dto.SearchDTO;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +37,7 @@ import com.kbds.serviceapi.common.utils.CommonUtils;
  * </pre>
  *
  */
+@Slf4j
 @RestController
 @RequestMapping("/api/service/v1.0/routes")
 public class GwRoutingApiController {
@@ -46,7 +51,7 @@ public class GwRoutingApiController {
    * @return  서비스 조회 결과
    */
   @GetMapping
-  public ResponseEntity<Object> findServices(@ModelAttribute SearchDTO searchDTO) {
+  public ResponseEntity<Object> findServices(@ModelAttribute SearchDTO searchDTO, HttpServletRequest httpServletRequest) {
 
     Object result = CommonUtils.getResponseEntity(gwRoutingService.findServices(searchDTO));
 

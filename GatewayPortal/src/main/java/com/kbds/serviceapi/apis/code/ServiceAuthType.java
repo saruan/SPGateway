@@ -23,7 +23,7 @@ import lombok.Getter;
 public enum ServiceAuthType implements AbstractCode {
 
   PUBLIC("public", "public"),
-  SECURITY("sercurity", "security");
+  SECURITY("security", "security");
 
   private final String type;
   private final String desc;

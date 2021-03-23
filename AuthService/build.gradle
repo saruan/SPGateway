@@ -27,7 +27,6 @@ dependencies {
     implementation 'org.modelmapper:modelmapper:2.3.0'
     implementation 'com.querydsl:querydsl-jpa:4.2.2'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.4'
-    implementation 'org.springframework.boot:spring-boot-starter-log4j2:2.2.7.RELEASE'
     implementation 'com.auth0:java-jwt:3.8.3'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.2.7.RELEASE'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.10.4'
@@ -44,9 +43,6 @@ dependencies {
 
 configurations {
     querydsl.extendsFrom compileClasspath
-    all {
-        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
-    }
 }
 
 //queryDSL 설정

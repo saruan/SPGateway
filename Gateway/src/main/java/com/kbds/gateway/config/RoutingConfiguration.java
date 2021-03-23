@@ -4,9 +4,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kbds.gateway.code.GatewayCode;
 import com.kbds.gateway.code.GatewayExceptionCode;
+import com.kbds.gateway.dto.BlockDTO;
 import com.kbds.gateway.dto.ResponseDTO;
 import com.kbds.gateway.dto.RoutingDTO;
 import com.kbds.gateway.exception.GatewayException;
+import com.kbds.gateway.filter.system.BlockFilter;
 import com.kbds.gateway.filter.system.CachingRequestBodyFilter;
 import com.kbds.gateway.utils.StringUtils;
 import java.lang.reflect.Method;
@@ -54,6 +56,7 @@ public class RoutingConfiguration {
   private ApplicationContext appContext;
   private CachingRequestBodyFilter cachingRequestBodyFilter;
   private ObjectMapper objectMapper;
+  private BlockFilter blockFilter;
 
   /* Routes,Filter 관리 서버 주소 */
   @Value("${services.api.route-url}")
@@ -73,10 +76,12 @@ public class RoutingConfiguration {
    * @param objectMapper             ObjectMapper 객체
    */
   public RoutingConfiguration(ApplicationContext appContext,
-      CachingRequestBodyFilter cachingRequestBodyFilter, ObjectMapper objectMapper) {
+      CachingRequestBodyFilter cachingRequestBodyFilter, ObjectMapper objectMapper,
+      BlockFilter blockFilter) {
     this.appContext = appContext;
     this.cachingRequestBodyFilter = cachingRequestBodyFilter;
     this.objectMapper = objectMapper;
+    this.blockFilter = blockFilter;
   }
 
   /**

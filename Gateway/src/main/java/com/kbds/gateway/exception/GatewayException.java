@@ -27,7 +27,7 @@ public class GatewayException extends RuntimeException {
 
   private static final long serialVersionUID = -2310235629517721586L;
 
-  // 사용자 Exception Params
+  /* 사용자 Exception Params */
   private String arg;
 
   private HttpStatus httpStatus;

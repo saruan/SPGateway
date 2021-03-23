@@ -1,12 +1,12 @@
 package com.kbds.gateway.exception;
 
+import brave.Tracer;
 import com.kbds.gateway.code.GatewayCode;
 import com.kbds.gateway.code.GatewayExceptionCode;
 import com.kbds.gateway.dto.ResponseDTO;
 import com.kbds.gateway.dto.ServiceLogDTO;
 import com.kbds.gateway.utils.DateUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ResourceProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler;
 import org.springframework.boot.web.reactive.error.ErrorAttributes;
@@ -39,15 +39,17 @@ import reactor.core.publisher.Mono;
 @Component
 public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHandler {
 
-  @Autowired
-  private RabbitTemplate rabbitTemplate;
+  private final RabbitTemplate rabbitTemplate;
+  private final Tracer tracer;
 
   public GlobalErrorWebExceptionHandler(ErrorAttributes g, ApplicationContext applicationContext,
-      ServerCodecConfigurer serverCodecConfigurer) {
+      ServerCodecConfigurer serverCodecConfigurer, RabbitTemplate rabbitTemplate, Tracer tracer) {
 
     super(g, new ResourceProperties(), applicationContext);
     super.setMessageWriters(serverCodecConfigurer.getWriters());
     super.setMessageReaders(serverCodecConfigurer.getReaders());
+    this.rabbitTemplate = rabbitTemplate;
+    this.tracer = tracer;
   }
 
   @Override
@@ -67,10 +69,12 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
     ResponseDTO errorResponseDTO = new ResponseDTO();
     errorResponseDTO.setResultData(true);
 
+    String tid = tracer.currentSpan().context().traceIdString();
+    String header = request.headers().asHttpHeaders().toString();
     Throwable error = getError(request);
     HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
-    // 에러의 종류가 GatewayException 경우 정해진 규격에 맞춰 화면에 전달한다.
+    /* 에러의 종류가 GatewayException 경우 정해진 규격에 맞춰 화면에 전달한다. */
     if (error instanceof GatewayException) {
 
       GatewayException e = (GatewayException) error;
@@ -78,7 +82,7 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
       errorResponseDTO.setResultCode(GatewayExceptionCode.valueOf(e.getMessage()).getCode());
       errorResponseDTO.setResultMessage(GatewayExceptionCode.valueOf(e.getMessage()).getMsg());
 
-      // HttpStatus 설정 변경이 필요하다면 설정
+      /* HttpStatus 설정 변경이 필요하다면 설정 */
       if (e.getHttpStatus() != null) {
 
         status = e.getHttpStatus();
@@ -86,13 +90,15 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
 
       String currentTime = DateUtils.getCurrentTime();
 
-      // 큐에 오류 로그 전송
-      ServiceLogDTO serviceLog = new ServiceLogDTO(request.headers().asHttpHeaders().toString(),
-          e.getArg(), errorResponseDTO.toString(), GatewayCode.BLANK.getCode(),
-          GatewayCode.BLANK.getCode(), GatewayCode.SERVICE_NAME.getCode(), currentTime, currentTime);
+      /* 큐에 오류 로그 전송 */
+      ServiceLogDTO serviceLog = ServiceLogDTO.builder().tid(tid).requestHeader(header)
+          .requestParams(e.getArg()).response(errorResponseDTO.toString())
+          .clientService(GatewayCode.CLIENT_NAME.getCode()).requestDt(currentTime)
+          .responseDt(currentTime).build();
+
       rabbitTemplate.convertAndSend(GatewayCode.MQ_ROUTING_KEY.getCode(), serviceLog);
     }
-    // 그 이외의 정해진 규격이 아닌 Gateway 오류일 경우 아래와 같이 설정한다.
+    /* 그 이외의 정해진 규격이 아닌 Gateway 오류일 경우 아래와 같이 설정한다. */
     else {
 
       errorResponseDTO.setResultCode(GatewayExceptionCode.GWE001.getCode());

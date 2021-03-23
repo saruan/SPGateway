@@ -1,13 +1,15 @@
 package com.kbds.gateway.filter.system;
 
+import brave.Tracer;
 import com.kbds.gateway.code.AuthTypeCode;
 import com.kbds.gateway.code.GatewayCode;
 import com.kbds.gateway.dto.ServiceLogDTO;
 import com.kbds.gateway.utils.DateUtils;
 import java.nio.charset.StandardCharsets;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -34,12 +36,12 @@ import reactor.core.publisher.Mono;
  * </pre>
  */
 @Component
+@Slf4j
+@Data
 public class LoggingFilter implements GlobalFilter, Ordered {
 
-  @Autowired
-  private RabbitTemplate rabbitTemplate;
-
-  private final String CLIENT_NAME = "GATEWAY";
+  private final RabbitTemplate rabbitTemplate;
+  private final Tracer tracer;
 
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -60,7 +62,7 @@ public class LoggingFilter implements GlobalFilter, Ordered {
    *
    * @param exchange  ServerWebExchange 객체
    * @param startTime Request 시작 시간
-   * @return  ServerHttpResponseDecorator 객체
+   * @return ServerHttpResponseDecorator 객체
    */
   ServerHttpResponseDecorator logResponse(ServerWebExchange exchange, String startTime) {
 
@@ -75,6 +77,8 @@ public class LoggingFilter implements GlobalFilter, Ordered {
         String headerInfo = exchange.getRequest().getHeaders().toSingleValueMap().toString();
         String appKey = exchange.getRequest().getHeaders().getFirst(AuthTypeCode.API_KEY.getCode());
         String servicePath = exchange.getRequest().getURI().getPath();
+        String tid = tracer.currentSpan().context().traceIdString();
+
         Flux<? extends DataBuffer> fluxBody = (Flux<? extends DataBuffer>) body;
 
         return super.writeWith(fluxBody.map(dataBuffer -> {
@@ -95,11 +99,12 @@ public class LoggingFilter implements GlobalFilter, Ordered {
           }
 
           /* 큐에 서비스 로그 전송 */
-          ServiceLogDTO serviceLog =
-              new ServiceLogDTO(headerInfo, requestBody, responseBody,
-                  appKey == null ? "" : appKey, servicePath, CLIENT_NAME, startTime, endTime);
-          rabbitTemplate
-              .convertAndSend(GatewayCode.MQ_ROUTING_KEY.getCode(), serviceLog);
+          ServiceLogDTO serviceLog = ServiceLogDTO.builder().tid(tid).requestHeader(headerInfo)
+              .requestParams(requestBody).response(responseBody).appKey(appKey)
+              .serviceNm(servicePath).clientService(GatewayCode.CLIENT_NAME.getCode())
+              .requestDt(startTime).responseDt(endTime).build();
+
+          rabbitTemplate.convertAndSend(GatewayCode.MQ_ROUTING_KEY.getCode(), serviceLog);
 
           return bufferFactory.wrap(content);
         }));

@@ -28,6 +28,7 @@ public enum GatewayCode {
   GATEWAY_FILTER_APPLY("apply", "Gateway Filter 메소드명"),
   SERVICE_NAME("GATEWAY", "현재 서비스 이름"),
   BLANK("", "공백"),
+  SUCCESS("success", "오류 없이 성공"),
 
   /* Params, Header 정보 */
   CACHE_REQUEST_BODY("cachedRequestBody", "Request Body Caching 데이터"),
@@ -39,6 +40,13 @@ public enum GatewayCode {
   /* API TYPE 정보 */
   SYSTEM_TYPE("SYSTEM", "시스템 타입"),
   API_TYPE("API", "외부 API 타입"),
+
+  /* RabbitMQ 정보 */
+  CLIENT_NAME("GATEWAY", "RabbitMQ 클라이언트 명칭"),
+
+  /* Filter Servlet 정보 */
+  HTTP_REQUEST("REQUEST", "Filter Request 정보"),
+  HTTP_RESPONSE("RESPONSE", "Filter Response 정보"),
 
   DUMMY("", "");
 

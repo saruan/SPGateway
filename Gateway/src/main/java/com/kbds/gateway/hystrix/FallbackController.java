@@ -1,12 +1,22 @@
 package com.kbds.gateway.hystrix;
 
 import com.kbds.gateway.code.GatewayExceptionCode;
+import com.kbds.gateway.dto.BlockDTO;
 import com.kbds.gateway.dto.ResponseDTO;
+import com.kbds.gateway.factory.block.BlockType;
+import com.kbds.gateway.factory.block.BlockTypeFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 /**
  * <pre>
@@ -21,16 +31,21 @@ import reactor.core.publisher.Flux;
  * -------------------------------------------------------------------------------
  *  </pre>
  */
+@Slf4j
 @RestController
 public class FallbackController {
 
+  @Autowired
+  BlockTypeFactory blockTypeFactory;
+
   /**
    * FallBack Controller
-   * @return  Gateway Timeout
+   *
+   * @return Gateway Timeout
    */
   @RequestMapping("/fallback")
   @ResponseStatus(HttpStatus.GATEWAY_TIMEOUT)
-  public Flux<ResponseDTO> returnFallback(){
+  public Flux<ResponseDTO> returnFallback() {
 
     ResponseDTO responseDTO = new ResponseDTO();
 

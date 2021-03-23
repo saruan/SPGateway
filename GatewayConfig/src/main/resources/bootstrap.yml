@@ -9,7 +9,7 @@ spring:
       enabled: true
   # RabbitMQ 설정
   rabbitmq:
-    host: localhost
+    host: 192.168.40.104
     port: 5672
     username: gateway
     password: gateway
