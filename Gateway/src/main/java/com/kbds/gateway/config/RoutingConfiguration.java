@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kbds.gateway.code.GatewayCode;
 import com.kbds.gateway.code.GatewayExceptionCode;
-import com.kbds.gateway.dto.BlockDTO;
 import com.kbds.gateway.dto.ResponseDTO;
 import com.kbds.gateway.dto.RoutingDTO;
 import com.kbds.gateway.exception.GatewayException;
@@ -16,6 +15,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import javax.validation.Valid;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +31,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -51,12 +52,14 @@ import reactor.core.publisher.Mono;
 @ConfigurationProperties(prefix = "gateway")
 @Data
 @Slf4j
+@Validated
 public class RoutingConfiguration {
 
   private ApplicationContext appContext;
   private CachingRequestBodyFilter cachingRequestBodyFilter;
   private ObjectMapper objectMapper;
   private BlockFilter blockFilter;
+  private WebClient webClient;
 
   /* Routes,Filter 관리 서버 주소 */
   @Value("${services.api.route-url}")
@@ -74,14 +77,16 @@ public class RoutingConfiguration {
    * @param appContext               스프링 context
    * @param cachingRequestBodyFilter 캐싱 Body 데이터
    * @param objectMapper             ObjectMapper 객체
+   * @param webClient                WebClient 객체
    */
   public RoutingConfiguration(ApplicationContext appContext,
       CachingRequestBodyFilter cachingRequestBodyFilter, ObjectMapper objectMapper,
-      BlockFilter blockFilter) {
+      BlockFilter blockFilter, WebClient webClient) {
     this.appContext = appContext;
     this.cachingRequestBodyFilter = cachingRequestBodyFilter;
     this.objectMapper = objectMapper;
     this.blockFilter = blockFilter;
+    this.webClient = webClient;
   }
 
   /**
@@ -99,7 +104,7 @@ public class RoutingConfiguration {
 
     try {
       /* G/W 시스템 API 등록 */
-      routeLocator = registerDefaultService(routeLocator);
+      registerDefaultService(routeLocator);
 
       /* 포탈에 등록된 API 목록 조회 */
       routingDTOList = getApiFromPortal();
@@ -112,7 +117,6 @@ public class RoutingConfiguration {
     } catch (Exception e) {
 
       log.error(e.toString());
-      return routeLocator.build();
     }
 
     return routeLocator.build();
@@ -122,9 +126,8 @@ public class RoutingConfiguration {
    * Gateway 시스템 기본 필수 Routing 정보 등록
    *
    * @param routeLocator Routing 관리 객체
-   * @return Builder
    */
-  public Builder registerDefaultService(Builder routeLocator) {
+  private void registerDefaultService(Builder routeLocator) {
 
     service.forEach((key, value) -> {
 
@@ -148,7 +151,6 @@ public class RoutingConfiguration {
       }
     });
 
-    return routeLocator;
   }
 
   /**
@@ -157,7 +159,7 @@ public class RoutingConfiguration {
    * @param routeLocator Routing 관리 객체
    * @throws Exception Exception 오류
    */
-  private void registerRouterLocator(Builder routeLocator, RoutingDTO routingDTO)
+  public void registerRouterLocator(Builder routeLocator, @Valid RoutingDTO routingDTO)
       throws Exception {
 
     final boolean hasFilter = !StringUtils.isEmptyParams(routingDTO.getFilterBean());
@@ -166,8 +168,11 @@ public class RoutingConfiguration {
     final String servicePath = routingDTO.getServicePath();
     final String filter = hasFilter ? routingDTO.getFilterBean() : null;
 
+    RedisRateLimiter redisRateLimiter = new RedisRateLimiter(20, 20);
+    redisRateLimiter.setApplicationContext(appContext);
+
     /* 유량 제어 등록 */
-    redisRateLimiter().getConfig().put(servicePath, new RedisRateLimiter.Config()
+    redisRateLimiter.getConfig().put(servicePath, new RedisRateLimiter.Config()
         .setBurstCapacity(routingDTO.getBurstCapacity())
         .setReplenishRate(routingDTO.getReplenishRate()));
 
@@ -185,7 +190,7 @@ public class RoutingConfiguration {
               String.format("%s${segment}", targetPath))
               .filters(cachingRequestBodyFilter.apply(new CachingRequestBodyFilter.Config()),
                   mainFilter)
-              .requestRateLimiter(config -> config.setRateLimiter(redisRateLimiter()))
+              .requestRateLimiter(config -> config.setRateLimiter(redisRateLimiter))
               .circuitBreaker(
                   c -> c.setName("myCircuitBreaker").setFallbackUri("forward:/fallback")))
           .uri(targetUrl));
@@ -200,7 +205,7 @@ public class RoutingConfiguration {
   }
 
   /**
-   * Spring Application Conetext에 등록된 Filter Bean 호출
+   * Spring Application Context Filter Bean 호출
    *
    * @param filterNm 필터명
    * @param params   Routing 정보
@@ -229,15 +234,14 @@ public class RoutingConfiguration {
 
     /* Routing 관리 서버로부터 API 목록을 가져 온다. */
     Mono<ResponseDTO> responseDTO =
-        WebClient.create()
-            .get()
+        webClient.get()
             .uri(routeSeverUrl)
             .retrieve().bodyToMono(ResponseDTO.class);
 
-    return new ObjectMapper().convertValue(
-        Objects.requireNonNull(responseDTO.block()).getResultData(),
-        new TypeReference<List<RoutingDTO>>() {
-        });
+    return new ObjectMapper()
+        .convertValue(Objects.requireNonNull(responseDTO.block()).getResultData(),
+            new TypeReference<List<RoutingDTO>>() {
+            });
   }
 
   /**
@@ -260,17 +264,6 @@ public class RoutingConfiguration {
   }
 
   /**
-   * RateLimit 공통 설정
-   *
-   * @return RateLimit 객체
-   */
-  @Bean
-  public RedisRateLimiter redisRateLimiter() {
-
-    return new RedisRateLimiter(500, 500);
-  }
-
-  /**
    * RateLimit 사용을 위한 KeyResolver Bean 등록
    *
    * @return KeyResolver 객체
@@ -278,7 +271,6 @@ public class RoutingConfiguration {
   @Bean
   public KeyResolver ipKeyResolver() {
 
-    return exchange -> Mono
-        .just(Objects.requireNonNull(exchange.getRequest().getRemoteAddress()).getHostName());
+    return exchange -> Mono.just(exchange.getRequest().getPath().value());
   }
 }

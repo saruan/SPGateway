@@ -6,8 +6,7 @@ import com.kbds.gateway.code.GatewayCode;
 import com.kbds.gateway.dto.ServiceLogDTO;
 import com.kbds.gateway.utils.DateUtils;
 import java.nio.charset.StandardCharsets;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
+import lombok.AllArgsConstructor;
 import org.reactivestreams.Publisher;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -17,7 +16,7 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -35,9 +34,8 @@ import reactor.core.publisher.Mono;
  * -------------------------------------------------------------------------------
  * </pre>
  */
-@Component
-@Slf4j
-@Data
+@AllArgsConstructor
+@Service
 public class LoggingFilter implements GlobalFilter, Ordered {
 
   private final RabbitTemplate rabbitTemplate;

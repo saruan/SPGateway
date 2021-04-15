@@ -93,8 +93,6 @@ public class CustomTokenStore implements TokenStore {
     accessToken.setClientId(oAuth2Authentication.getOAuth2Request().getClientId());
     accessToken.setAuthentication(SerializationUtils.serialize(oAuth2Authentication));
     accessToken.setRefreshToken(OAuthUtils.extractTokenKey(refreshToken));
-    accessToken.setAdditionalInfo(
-        oAuth2Authentication.getOAuth2Request().getRequestParameters().toString());
     accessToken.setExpiredTime(oAuth2AccessToken.getExpiration());
 
     oAuthAccessTokenRepository.save(accessToken);

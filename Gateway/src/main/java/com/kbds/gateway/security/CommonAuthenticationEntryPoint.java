@@ -41,8 +41,7 @@ public class CommonAuthenticationEntryPoint implements ServerAuthenticationEntry
 
     data.put("message", e.getMessage());
 
-    byte[] response;
-    response = StringUtils.convertToJsonString(data).getBytes(StandardCharsets.UTF_8);
+    byte[] response = StringUtils.convertToJsonString(data).getBytes(StandardCharsets.UTF_8);
     DataBuffer buffer = exchange.getResponse().bufferFactory().wrap(response);
 
     return exchange.getResponse().writeWith(Flux.just(buffer));

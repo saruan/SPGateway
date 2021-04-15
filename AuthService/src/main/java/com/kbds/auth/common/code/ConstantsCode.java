@@ -27,6 +27,7 @@ public enum ConstantsCode {
   COMMON_FAIL("1000", "Server Fail"),
   
   PKCS12("PKCS12", "PKCS12 타입 코드"),
+  X509("X.509", "X509 타입 코드"),
 
   Y("Y", "예"),
   N("N", "아니오");

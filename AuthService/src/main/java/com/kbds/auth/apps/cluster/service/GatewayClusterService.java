@@ -9,13 +9,21 @@ import com.kbds.auth.common.code.ConstantsCode;
 import com.kbds.auth.common.exception.BizException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.List;
+import javax.validation.Valid;
+import org.apache.commons.io.FilenameUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
@@ -69,40 +77,53 @@ public class GatewayClusterService {
 
     try {
 
-      X509Certificate cert = null;
+      X509Certificate cert;
       PrivateKey key = null;
 
       /* 인증서 파일 유효성 검증 */
-      if (multipartFile != null) {
+      if (!isValidParams(gatewayClusterDTO, multipartFile)) {
+
+        throw new BizException(BizExceptionCode.CLS001);
+      }
+
+      String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
+      ByteArrayInputStream certFile = new ByteArrayInputStream(multipartFile.getBytes());
+      GatewayCluster gatewayCluster = modelMapper.map(gatewayClusterDTO, GatewayCluster.class);
+
+      /* 인증서 확장자에 따라 타입 지정
+       *  MAIN 클러스터는 검증/생성을 위해 반드시 P12파일로 등록하여야 한다.
+       *  SUB 클러스터는 검증만을 수행하며 CRT 파일 P12 파일 둘다 등록이 가능하다.
+       */
+      if ("p12".equals(extension)) {
 
         KeyStore keystore = KeyStore.getInstance(ConstantsCode.PKCS12.getCode());
-        keystore.load(new ByteArrayInputStream(multipartFile.getBytes()),
-            gatewayClusterDTO.getCertificatePassword().toCharArray());
+        keystore.load(certFile, gatewayClusterDTO.getCertificatePassword().toCharArray());
 
         gatewayClusterDTO.setCertificateFile(multipartFile.getBytes());
 
-        /*
-         * crt, .key 파일 추출
-         * Main 인증서는 생성, 검증에 모두 이용하고 Sub 인증서는 검증에만 이용한다.
-         */
         String alias = keystore.aliases().nextElement();
 
         cert = (X509Certificate) keystore.getCertificate(alias);
         key = (PrivateKey) keystore
             .getKey(alias, gatewayClusterDTO.getCertificatePassword().toCharArray());
+
+        gatewayCluster.setPrivateKey(key.getEncoded());
+
+      } else if ("crt".equals(extension) && ConstantsCode.N.getCode()
+          .equals(gatewayClusterDTO.getMainYn())) {
+
+        CertificateFactory certificateFactory = CertificateFactory.getInstance(ConstantsCode.X509
+            .getCode());
+        cert = (X509Certificate) certificateFactory.generateCertificate(certFile);
+
+      } else {
+
+        throw new BizException(BizExceptionCode.COM003);
       }
-
-      if (isRegisteredCluster(gatewayClusterDTO.getGatewayId())) {
-
-        throw new BizException(BizExceptionCode.CLS001);
-      }
-
-      GatewayCluster gatewayCluster = modelMapper.map(gatewayClusterDTO, GatewayCluster.class);
 
       gatewayCluster.setCert(cert.getEncoded());
-      gatewayCluster.setPrivateKey(key.getEncoded());
-
       gatewayClusterRepository.save(gatewayCluster);
+
     } catch (IOException | KeyStoreException | NoSuchAlgorithmException | CertificateException e) {
 
       throw new BizException(BizExceptionCode.SSL001, e.toString());
@@ -116,13 +137,23 @@ public class GatewayClusterService {
   }
 
   /**
-   * 기등록 게이트웨이인지 확인
+   * 기등록 게이트웨이 여부와 메인 클러스터로 등록된 정보가 있는지 확인
    *
-   * @param gatewayId 게이트웨이 ID
+   * @param gatewayClusterDTO 게이트웨이 정보
    * @return 기등록여부
    */
-  public boolean isRegisteredCluster(String gatewayId) {
+  public boolean isValidParams(GatewayClusterDTO gatewayClusterDTO, MultipartFile multipartFile) {
 
-    return gatewayClusterRepository.countByGatewayId(gatewayId) > 0;
+    if (multipartFile.isEmpty()) {
+
+      return false;
+    } else if (ConstantsCode.Y.getCode().equals(gatewayClusterDTO.getMainYn())) {
+
+      return gatewayClusterRepository.countByGatewayIdOrMainYn(gatewayClusterDTO.getGatewayId(),
+          ConstantsCode.Y.getCode()) == 0;
+    } else {
+
+      return gatewayClusterRepository.countByGatewayId(gatewayClusterDTO.getGatewayId()) == 0;
+    }
   }
 }

@@ -22,6 +22,7 @@ public enum AuthTypeCode {
 
   OAUTH("OAUTH"),
   JWT("jwt"),
+  SAML("saml"),
   API_KEY("api_key");
 
   private final String code;

@@ -1,5 +1,6 @@
 package com.kbds.gateway.security;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -14,26 +15,23 @@ import com.kbds.gateway.code.GatewayCode;
 import reactor.core.publisher.Mono;
 
 /**
- * 
- *
  * <pre>
  *  Class Name     : SecurityContextRepository.java
  *  Description    : Spring Security Authentication 등록
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
- * 
+ *
  * -------------------------------------------------------------------------------
  *     변경No        변경일자        	       변경자          Description
  * -------------------------------------------------------------------------------
  *     Ver 1.0      2020-05-13    	   구경태          Initialized
  * -------------------------------------------------------------------------------
  * </pre>
- *
  */
 @Component
+@AllArgsConstructor
 public class SecurityContextRepository implements ServerSecurityContextRepository {
 
-  @Autowired
-  private AuthenticationManager authenticationManager;
+  private final AuthenticationManager authenticationManager;
 
   @Override
   public Mono<Void> save(ServerWebExchange swe, SecurityContext sc) {
@@ -59,8 +57,7 @@ public class SecurityContextRepository implements ServerSecurityContextRepositor
       Authentication auth = new UsernamePasswordAuthenticationToken(authToken, authToken);
 
       // JWT 토큰을 검증하여 권한 등록
-      return this.authenticationManager.authenticate(auth)
-          .map(SecurityContextImpl::new);
+      return this.authenticationManager.authenticate(auth).map(SecurityContextImpl::new);
     } else {
 
       return Mono.empty();

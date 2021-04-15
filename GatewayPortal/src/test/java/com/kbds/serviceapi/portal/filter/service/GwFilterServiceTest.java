@@ -13,7 +13,6 @@ import com.kbds.serviceapi.portal.api.repository.GwRoutingRepository;
 import com.kbds.serviceapi.portal.filter.dto.FilterDTO;
 import com.kbds.serviceapi.portal.filter.entity.GwServiceFilter;
 import com.kbds.serviceapi.portal.filter.repository.GwFilterRepository;
-import com.kbds.serviceapi.portal.filter.service.GwFilterService;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

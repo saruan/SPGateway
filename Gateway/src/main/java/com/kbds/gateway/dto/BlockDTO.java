@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -38,6 +39,7 @@ public class BlockDTO {
   /**
    * Log Class
    */
+  @EqualsAndHashCode(callSuper = true)
   @Data
   @AllArgsConstructor
   @NoArgsConstructor
@@ -53,6 +55,7 @@ public class BlockDTO {
   /**
    * Assertion Class
    */
+  @EqualsAndHashCode(callSuper = true)
   @Data
   @AllArgsConstructor
   @NoArgsConstructor

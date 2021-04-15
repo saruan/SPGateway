@@ -10,6 +10,7 @@ import com.kbds.gateway.exception.GatewayException;
 import com.kbds.gateway.factory.block.BlockType;
 import com.kbds.gateway.factory.block.BlockTypeFactory;
 import java.nio.charset.StandardCharsets;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +21,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * <pre>
  *  File  Name     : BlockFilter
- *  Description    :
+ *  Description    : API 로 정의한 사용자 정의 Filter
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
  *
  * -------------------------------------------------------------------------------
@@ -34,18 +36,11 @@ import org.springframework.stereotype.Component;
  * -------------------------------------------------------------------------------
  *  </pre>
  */
-@Component
-@Slf4j
-@Data
+@Service
+@AllArgsConstructor
 public class BlockFilter extends AbstractGatewayFilterFactory<BlockDTO> {
 
-  @Autowired
-  BlockTypeFactory blockTypeFactory;
-
-  public BlockFilter() {
-
-    super();
-  }
+  private final BlockTypeFactory blockTypeFactory;
 
   @Override
   public GatewayFilter apply(BlockDTO blockDTO) {
@@ -54,7 +49,8 @@ public class BlockFilter extends AbstractGatewayFilterFactory<BlockDTO> {
 
       BlockType blockType = blockTypeFactory.makeGrantType(blockDTO.getBlockType());
 
-      if (blockDTO.getBlockServlet().equals(GatewayCode.HTTP_REQUEST.getCode())) {
+      /* Request Type Block Create */
+      if (GatewayCode.HTTP_REQUEST.getCode().equals(blockDTO.getBlockServlet())) {
 
         blockType.makeFilterData(blockDTO, exchange);
       }

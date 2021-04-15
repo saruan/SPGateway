@@ -70,8 +70,7 @@ public class LogBlockType implements BlockType {
 
       /* 큐에 서비스 로그 전송 */
       ServiceLogDTO serviceLog = ServiceLogDTO.builder().tid(tid)
-          .message(message)
-          .serviceNm(exchange.getRequest().getURI().getPath()).requestDt(startTime)
+          .message(message).serviceNm(exchange.getRequest().getURI().getPath()).requestDt(startTime)
           .requestDt(startTime).clientService(GatewayCode.CLIENT_NAME.getCode()).build();
 
       rabbitTemplate.convertAndSend(GatewayCode.MQ_ROUTING_KEY.getCode(), serviceLog);

@@ -28,6 +28,5 @@ public class GatewayClusterDTO {
   private String mainYn;
   private Long expiredTime = 3600L;
   private byte[] certificateFile;
-  @NotEmpty
   private String certificatePassword;
 }

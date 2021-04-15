@@ -62,4 +62,12 @@ public interface GatewayClusterRepository extends CrudRepository<GatewayCluster,
    * @return 등록 되어 있는 숫자
    */
   int countByGatewayId(String gatewayId);
+
+  /**
+   * 메인 클러스터 기등록 여부 체크
+   * @param gatewayId
+   * @param mainYn
+   * @return
+   */
+  int countByGatewayIdOrMainYn(String gatewayId, String mainYn);
 }

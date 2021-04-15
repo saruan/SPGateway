@@ -5,14 +5,12 @@ import com.kbds.gateway.code.GatewayCode;
 import com.kbds.gateway.code.GatewayExceptionCode;
 import com.kbds.gateway.dto.RoutingDTO;
 import com.kbds.gateway.exception.GatewayException;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
-import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -37,13 +35,15 @@ import reactor.core.publisher.Mono;
 @Service("CommonFilter")
 public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
-  /* Oauth Client ID */
-  @Value("${oauth.client-id}")
-  String clientId;
+  private final String checkTokenUrl;
+  private final WebClient webClient;
 
-  /* Token Check URL */
-  @Value("${gateway.service.check-token.url}")
-  String checkTokenUrl;
+  public CommonFilter(@Value("${gateway.service.check-token.url}") String checkTokenUrl,
+      WebClient webClient) {
+
+    this.checkTokenUrl = checkTokenUrl;
+    this.webClient = webClient;
+  }
 
   @Override
   public GatewayFilter apply(RoutingDTO routingDTO) {
@@ -84,6 +84,10 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
         throw new GatewayException(GatewayExceptionCode.valueOf(e.getMessage()), e.getHttpStatus(),
             e.toString());
+      } catch (Exception e) {
+
+        throw new GatewayException(GatewayExceptionCode.GWE005, HttpStatus.BAD_REQUEST,
+            e.toString());
       }
     };
   }
@@ -103,15 +107,16 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
   /**
    * 인증서버에서 Access 토큰 검증
+   *
    * @param chain       GatewayFilterChain 객체
    * @param exchange    ServerWebExchange 객체
    * @param accessToken 검증한 AccessToken
    * @return Mono Void
    */
-  private Mono<Void> checkAccessToken(GatewayFilterChain chain, ServerWebExchange exchange,
+  public Mono<Void> checkAccessToken(GatewayFilterChain chain, ServerWebExchange exchange,
       String accessToken) {
 
-    return WebClient.create().get()
+    return webClient.get()
         .uri(checkTokenUrl + "?token={accessToken}", accessToken)
         .retrieve()
         .bodyToMono(Map.class).flatMap(response -> chain.filter(exchange))

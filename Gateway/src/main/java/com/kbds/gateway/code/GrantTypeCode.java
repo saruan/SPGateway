@@ -20,9 +20,16 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum GrantTypeCode {
 
+  /* Grant Type */
   GRANT_TYPE("grant_type"),
   PASSWORD("password"),
-  REFRESH_TOKEN("refresh_token");
+  REFRESH_TOKEN("refresh_token"),
+  JWT("jwt"),
+  SAML("saml"),
 
-  private String code;
+  /* Grant Type Parameter */
+  USERNAME("username"),
+  SCOPE("scope");
+
+  private final String code;
 }
