@@ -56,6 +56,7 @@ CREATE TABLE IF NOT EXISTS `oauth_access_token` (
   UNIQUE KEY `token_id` (`token_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci  COMMENT='Access 토킅 테이블';
 
+
 -- 테이블 데이터 auth.oauth_access_token:~1 rows (대략적) 내보내기
 /*!40000 ALTER TABLE `oauth_access_token` DISABLE KEYS */;
 /*!40000 ALTER TABLE `oauth_access_token` ENABLE KEYS */;
