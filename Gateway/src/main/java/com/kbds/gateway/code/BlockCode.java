@@ -24,5 +24,6 @@ public enum BlockCode {
   ASSERTION("ASSERTION"),
   REST("REST");
 
+
   private String code;
 }
