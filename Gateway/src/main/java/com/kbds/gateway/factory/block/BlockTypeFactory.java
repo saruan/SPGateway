@@ -1,8 +1,7 @@
 package com.kbds.gateway.factory.block;
 
-import com.kbds.gateway.factory.granttype.GrantType;
+import com.kbds.gateway.code.BlockCode.BlockType;
 import java.util.List;
-import jdk.nashorn.internal.ir.Block;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +22,7 @@ import org.springframework.stereotype.Service;
 public class BlockTypeFactory {
 
   @Autowired
-  List<BlockType> blockTypes;
+  List<Block> blocks;
 
   /**
    * BlockType 에 따라 생성자를 다르게 전달해준다.
@@ -31,13 +30,13 @@ public class BlockTypeFactory {
    * @param blockTypeName BlockType 명
    * @return BlockType 객체
    */
-  public BlockType makeGrantType(String blockTypeName) {
+  public Block makeGrantType(BlockType blockTypeName) {
 
-    for (BlockType grantType : blockTypes) {
+    for (Block block : blocks) {
 
-      if (blockTypeName.equals(grantType.getBlockTypeName())) {
+      if (blockTypeName.equals(block.getBlockTypeName())) {
 
-        return grantType;
+        return block;
       }
     }
     

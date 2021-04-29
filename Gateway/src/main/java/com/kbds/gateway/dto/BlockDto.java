@@ -1,11 +1,16 @@
 package com.kbds.gateway.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.kbds.gateway.code.BlockCode.BlockServlet;
+import com.kbds.gateway.code.BlockCode.BlockType;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 /**
  * <pre>
@@ -22,29 +27,31 @@ import lombok.NoArgsConstructor;
  */
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class BlockDTO {
+@SuperBuilder
+public class BlockDto {
 
   /* Block Type */
-  private String blockType;
+  private BlockType blockType;
   /* Servlet Type */
-  private String blockServlet;
+  private BlockServlet blockServlet;
   /* Log Type */
-  private Log log;
+  @Builder.Default
+  private List<Log> log = new ArrayList<>();
   /* Assertion Type */
-  private Assertion assertion;
+  @Builder.Default
+  private List<Assertion> assertion = new ArrayList<>();
+  /* Reactive 형태의 Rest Type */
+  private ReactiveRest reactiveRest;
 
   /**
    * Log Class
    */
-  @EqualsAndHashCode(callSuper = true)
   @Data
-  @AllArgsConstructor
-  @NoArgsConstructor
+  @EqualsAndHashCode(callSuper = true)
   @JsonIgnoreProperties(ignoreUnknown = true)
-  public static class Log extends BlockDTO {
+  public static class Log extends BlockDto {
 
     /* 로깅할 파라미터명  */
     private String logParameter;
@@ -55,16 +62,40 @@ public class BlockDTO {
   /**
    * Assertion Class
    */
-  @EqualsAndHashCode(callSuper = true)
   @Data
-  @AllArgsConstructor
-  @NoArgsConstructor
+  @EqualsAndHashCode(callSuper = true)
   @JsonIgnoreProperties(ignoreUnknown = true)
-  public static class Assertion extends BlockDTO {
+  public static class Assertion extends BlockDto {
 
     /* 비교 파라미터 명 */
     private String compareParameter;
     /* 파라미터 값 */
     private String value;
+  }
+
+  /**
+   * Reactive Rest Class
+   */
+  @Data
+  @NoArgsConstructor
+  @SuperBuilder
+  @EqualsAndHashCode(callSuper = true)
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  public static class ReactiveRest extends BlockDto{
+
+    /* 호출 URL */
+    private String url;
+    /* HTTP METHOD */
+    private String method;
+    /* Contents-Type */
+    private String contentsType;
+    /* 호출 결과 기대 Http Status */
+    private int expectStatus;
+    /* 호출 결과 Assertions */
+    @Builder.Default
+    private List<Assertion> restAssertions = new ArrayList<>();
+    /* 호출 결과 Logs */
+    @Builder.Default
+    private List<Log> restLogs = new ArrayList<>();
   }
 }

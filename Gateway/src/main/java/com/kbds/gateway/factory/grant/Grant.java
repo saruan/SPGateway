@@ -1,4 +1,4 @@
-package com.kbds.gateway.factory.granttype;
+package com.kbds.gateway.factory.grant;
 
 import java.util.Map;
 
@@ -15,7 +15,7 @@ import java.util.Map;
  * -------------------------------------------------------------------------------
  *  </pre>
  */
-public interface GrantType {
+public interface Grant {
 
   /**
    * GrantType 별 Parameter 체크 메소드

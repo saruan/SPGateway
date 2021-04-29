@@ -1,12 +1,8 @@
 package com.kbds.gateway.security;
 
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.kbds.gateway.code.GatewayExceptionCode;
-import com.kbds.gateway.exception.GatewayException;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -44,10 +40,18 @@ public class AuthenticationManager implements ReactiveAuthenticationManager {
   public Mono<Authentication> authenticate(Authentication authentication) {
 
     String authToken = authentication.getCredentials().toString();
-    Authentication auth = getUsernamePasswordAuthentication(authToken);
-    SecurityContextHolder.getContext().setAuthentication(auth);
 
-    return Mono.just(auth);
+    try {
+
+      Authentication auth = getUsernamePasswordAuthentication(authToken);
+
+      SecurityContextHolder.getContext().setAuthentication(auth);
+
+      return Mono.just(auth);
+    } catch (Exception e) {
+
+      return Mono.empty();
+    }
   }
 
   /**
@@ -66,12 +70,9 @@ public class AuthenticationManager implements ReactiveAuthenticationManager {
         JWT.require(Algorithm.HMAC256(secretKey))
             .build()
             .verify(token);
-      } catch (JWTVerificationException e) {
+      } catch (Exception e) {
 
-        throw new GatewayException(GatewayExceptionCode.JWT001, HttpStatus.UNAUTHORIZED);
-      } catch (Exception e){
-
-        throw new GatewayException(GatewayExceptionCode.JWT002, HttpStatus.UNAUTHORIZED);
+        return null;
       }
 
       // Security 권한 등록

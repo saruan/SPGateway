@@ -1,20 +1,24 @@
 package com.kbds.gateway.filter.custom;
 
-import com.kbds.gateway.code.AuthTypeCode;
 import com.kbds.gateway.code.GatewayCode;
 import com.kbds.gateway.code.GatewayExceptionCode;
-import com.kbds.gateway.dto.RoutingDTO;
+import com.kbds.gateway.code.GrantTypeCode;
+import com.kbds.gateway.code.RoutingCode.ServiceLoginType;
+import com.kbds.gateway.dto.RoutingDto;
 import com.kbds.gateway.exception.GatewayException;
+import com.kbds.gateway.utils.FilterUtils;
 import java.util.Map;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -33,12 +37,13 @@ import reactor.core.publisher.Mono;
  * </pre>
  */
 @Service("CommonFilter")
-public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
+@Validated
+public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDto> {
 
   private final String checkTokenUrl;
   private final WebClient webClient;
 
-  public CommonFilter(@Value("${gateway.service.check-token.url}") String checkTokenUrl,
+  public CommonFilter(@Value("${services.auth.check-token-url}") String checkTokenUrl,
       WebClient webClient) {
 
     this.checkTokenUrl = checkTokenUrl;
@@ -46,7 +51,7 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
   }
 
   @Override
-  public GatewayFilter apply(RoutingDTO routingDTO) {
+  public GatewayFilter apply(RoutingDto routingDTO) {
 
     return (exchange, chain) -> {
 
@@ -55,16 +60,32 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
       try {
 
         /* 인증 타입, APP Key */
-        String serviceLoginType = routingDTO.getServiceLoginType();
-        String appKey = request.getHeaders().getFirst(AuthTypeCode.API_KEY.getCode());
+        String appKey = request.getHeaders().getFirst(GrantTypeCode.API_KEY.getCode());
+        String hsKey = request.getHeaders().getFirst(GatewayCode.HS_KEY.getCode());
 
+        /* Request Body 추출 */
+        Object attribute = exchange.getAttribute(GatewayCode.CACHE_REQUEST_BODY.getCode());
+
+        /* Hs Key 검증 */
+        if (attribute instanceof DataBuffer) {
+
+          DataBuffer buffer = (DataBuffer) attribute;
+          byte[] requestBody = FilterUtils.getByteArrayFromByteBuffer(buffer.asByteBuffer());
+
+          if (!FilterUtils.isValidHsKey(hsKey, appKey, requestBody)) {
+
+            throw new GatewayException(GatewayExceptionCode.HSK001, HttpStatus.UNAUTHORIZED);
+          }
+        }
+
+        /* APP KEY 검증 */
         if (!isValidAppKey(routingDTO, appKey)) {
 
           throw new GatewayException(GatewayExceptionCode.APP001, HttpStatus.UNAUTHORIZED);
         }
 
-        /* API 가 OAuth Type 일 경우 추가적으로 AccessToken 검증을 수행 한다. */
-        if (AuthTypeCode.OAUTH.getCode().equals(serviceLoginType)) {
+        /* Oauth 추가 AccessToken 검증 */
+        if (ServiceLoginType.OAUTH.equals(routingDTO.getServiceLoginType())) {
 
           if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
 
@@ -75,7 +96,6 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
               .requireNonNull(request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION))
               .replace(GatewayCode.TOKEN_PREFIX.getCode(), "");
 
-          /* Oauth 방식일 경우 인증서버에서 토큰 검증 */
           return checkAccessToken(chain, exchange, accessToken);
         }
 
@@ -99,7 +119,7 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
    * @param appKey     Header AppKey
    * @return AppKey 검증 결과
    */
-  public boolean isValidAppKey(RoutingDTO routingDTO, String appKey) {
+  public boolean isValidAppKey(RoutingDto routingDTO, String appKey) {
 
     /* Header 에 있는 AppKey 와 해당 Routing URL 이 가지고 있는 Appkey 목록과 비교한다. */
     return routingDTO.getAppKeys().size() > 0 && routingDTO.getAppKeys().contains(appKey);
@@ -120,9 +140,7 @@ public class CommonFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
         .uri(checkTokenUrl + "?token={accessToken}", accessToken)
         .retrieve()
         .bodyToMono(Map.class).flatMap(response -> chain.filter(exchange))
-        .onErrorMap(
-            error -> new GatewayException(GatewayExceptionCode.TOK001,
-                HttpStatus.UNAUTHORIZED,
-                error.getMessage()));
+        .onErrorMap(error -> new GatewayException(GatewayExceptionCode.TOK001
+            , HttpStatus.UNAUTHORIZED, error.getMessage()));
   }
 }

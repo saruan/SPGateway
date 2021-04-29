@@ -1,27 +1,16 @@
 package com.kbds.gateway.filter.system;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.kbds.gateway.code.AuthTypeCode;
+import com.kbds.gateway.code.BlockCode.BlockServlet;
 import com.kbds.gateway.code.GatewayCode;
-import com.kbds.gateway.code.GatewayExceptionCode;
-import com.kbds.gateway.dto.BlockDTO;
-import com.kbds.gateway.dto.RoutingDTO;
-import com.kbds.gateway.exception.GatewayException;
-import com.kbds.gateway.factory.block.BlockType;
+import com.kbds.gateway.dto.BlockDto;
+import com.kbds.gateway.factory.block.Block;
 import com.kbds.gateway.factory.block.BlockTypeFactory;
-import java.nio.charset.StandardCharsets;
+import java.util.List;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 /**
  * <pre>
@@ -38,24 +27,29 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @AllArgsConstructor
-public class BlockFilter extends AbstractGatewayFilterFactory<BlockDTO> {
+public class BlockFilter extends AbstractGatewayFilterFactory<List<BlockDto>> {
 
   private final BlockTypeFactory blockTypeFactory;
 
   @Override
-  public GatewayFilter apply(BlockDTO blockDTO) {
+  public GatewayFilter apply(List<BlockDto> blockDtoList) {
 
     return (exchange, chain) -> {
 
-      BlockType blockType = blockTypeFactory.makeGrantType(blockDTO.getBlockType());
+      Mono<Void> preFilter = Mono.empty();
 
-      /* Request Type Block Create */
-      if (GatewayCode.HTTP_REQUEST.getCode().equals(blockDTO.getBlockServlet())) {
+      for (BlockDto blockDto : blockDtoList) {
 
-        blockType.makeFilterData(blockDTO, exchange);
+        /* Request Type Block Create */
+        Block block = blockTypeFactory.makeGrantType(blockDto.getBlockType());
+
+        if (BlockServlet.REQUEST.equals(blockDto.getBlockServlet())) {
+
+          preFilter = preFilter.then(block.makeFilterData(blockDto, exchange));
+        }
       }
 
-      return chain.filter(exchange);
+      return preFilter.then(chain.filter(exchange));
     };
   }
 }

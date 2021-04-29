@@ -1,10 +1,9 @@
 package com.kbds.gateway.factory.block;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.kbds.gateway.dto.BlockDTO;
-import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.http.server.reactive.ServerHttpResponse;
+import com.kbds.gateway.code.BlockCode.BlockType;
+import com.kbds.gateway.dto.BlockDto;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
 
 /**
  * <pre>
@@ -19,19 +18,19 @@ import org.springframework.web.server.ServerWebExchange;
  * -------------------------------------------------------------------------------
  *  </pre>
  */
-public interface BlockType {
+public interface Block {
 
   /**
    * Filter 데이터 생성
    * @param blockDTO  파라미터
    * @param serverWebExchange ServerWebExchange 객체
    */
-  void makeFilterData(BlockDTO blockDTO, ServerWebExchange serverWebExchange);
+  Mono<Void> makeFilterData(BlockDto blockDTO, ServerWebExchange serverWebExchange);
 
   /**
    * BlockType 이름 리턴
    *
    * @return BlockType 명
    */
-  String getBlockTypeName();
+  BlockType getBlockTypeName();
 }

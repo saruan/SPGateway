@@ -1,9 +1,9 @@
 package com.kbds.gateway.filter.system;
 
 import brave.Tracer;
-import com.kbds.gateway.code.AuthTypeCode;
 import com.kbds.gateway.code.GatewayCode;
-import com.kbds.gateway.dto.ServiceLogDTO;
+import com.kbds.gateway.code.GrantTypeCode;
+import com.kbds.gateway.dto.ServiceLogDto;
 import com.kbds.gateway.utils.DateUtils;
 import java.nio.charset.StandardCharsets;
 import lombok.AllArgsConstructor;
@@ -62,7 +62,7 @@ public class LoggingFilter implements GlobalFilter, Ordered {
    * @param startTime Request 시작 시간
    * @return ServerHttpResponseDecorator 객체
    */
-  ServerHttpResponseDecorator logResponse(ServerWebExchange exchange, String startTime) {
+  public ServerHttpResponseDecorator logResponse(ServerWebExchange exchange, String startTime) {
 
     ServerHttpResponse origResponse = exchange.getResponse();
     DataBufferFactory bufferFactory = origResponse.bufferFactory();
@@ -73,7 +73,7 @@ public class LoggingFilter implements GlobalFilter, Ordered {
 
         String endTime = DateUtils.getCurrentTime();
         String headerInfo = exchange.getRequest().getHeaders().toSingleValueMap().toString();
-        String appKey = exchange.getRequest().getHeaders().getFirst(AuthTypeCode.API_KEY.getCode());
+        String appKey = exchange.getRequest().getHeaders().getFirst(GrantTypeCode.API_KEY.getCode());
         String servicePath = exchange.getRequest().getURI().getPath();
         String tid = tracer.currentSpan().context().traceIdString();
 
@@ -97,12 +97,12 @@ public class LoggingFilter implements GlobalFilter, Ordered {
           }
 
           /* 큐에 서비스 로그 전송 */
-          ServiceLogDTO serviceLog = ServiceLogDTO.builder().tid(tid).requestHeader(headerInfo)
+          ServiceLogDto serviceLog = ServiceLogDto.builder().tid(tid).requestHeader(headerInfo)
               .requestParams(requestBody).response(responseBody).appKey(appKey)
               .serviceNm(servicePath).clientService(GatewayCode.CLIENT_NAME.getCode())
               .requestDt(startTime).responseDt(endTime).build();
 
-          rabbitTemplate.convertAndSend(GatewayCode.MQ_ROUTING_KEY.getCode(), serviceLog);
+          rabbitTemplate.convertAndSend(GatewayCode.SYSTEM_ROUTING_KEY.getCode(), serviceLog);
 
           return bufferFactory.wrap(content);
         }));

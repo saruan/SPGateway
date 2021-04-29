@@ -21,29 +21,30 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum GatewayExceptionCode {
 
-  GWE001("GWE001", "사전 검증 실패."),
-  GWE002("GWE002", "Invalid Parameters."),
-  GWE003("GWE003", "Gateway 기본 Routing 주소 등록 중 오류 발생"),
-  GWE004("GWE004", "대상 서버 타임 아웃 발생"),
-  GWE005("GWE005", "Filter 동작 실패"),
-  GWE006("GWE006", "Invalid API Type"),
+  GWE001("사전 검증 실패."),
+  GWE002("Invalid Parameters."),
+  GWE003("Gateway 기본 Routing 주소 등록 중 오류 발생"),
+  GWE004("대상 서버 타임 아웃 발생"),
+  GWE005("Filter 동작 실패"),
+  GWE006("Invalid API Type"),
 
-  JWT001("JWT001", "Invalid JWT Token."),
-  JWT002("JWT002", "JWT Token Validation Failed."),
+  JWT001("Invalid JWT Token."),
+  JWT002("JWT Token Validation Failed."),
 
-  TOK001("TOK001", "AccessToken 만료"),
-  TOK002("TOK002", "AccessToken 이 유효하지 않습니다."),
-  TOK003("TOK003", "API KEY가 유효하지 않습니다."),
-  TOK004("TOK004", "Refresh Token이 유효하지 않습니다."),
+  TOK001("AccessToken is Expired or Invalid"),
+  TOK002("AccessToken 이 유효하지 않습니다."),
+  TOK003("API KEY 가 유효하지 않습니다."),
+  TOK004("Refresh Token 이 유효하지 않습니다."),
 
-  SAML001("SAML001", "SAML 검증에 실패했습니다."),
+  SAML001("SAML 검증에 실패했습니다."),
 
-  APP001("APP001", "APP이 등록되지 않았습니다."),
+  APP001("APP 이 등록되지 않았습니다."),
 
-  AUTH001("AUTH001", "인증서버 오류 발생"),
+  HSK001("Invalid HS Key"),
 
-  DUMMY("", "");
+  AUTH001("인증서버 오류 발생"),
 
-  private final String code;
+  DUMMY("");
+
   private final String msg;
 }

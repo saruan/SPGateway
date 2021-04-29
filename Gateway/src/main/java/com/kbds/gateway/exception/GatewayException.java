@@ -29,19 +29,18 @@ public class GatewayException extends RuntimeException {
 
   /* 사용자 Exception Params */
   private String arg;
-
   private HttpStatus httpStatus;
 
   public GatewayException(GatewayExceptionCode exception, HttpStatus httpStatus, String arg) {
 
-    super(exception.getCode());
+    super(exception.name());
     this.httpStatus = httpStatus;
     this.arg = arg;
   }
 
   public GatewayException(GatewayExceptionCode exception, HttpStatus httpStatus) {
 
-    super(exception.getCode());
+    super(exception.name());
     this.httpStatus = httpStatus;
   }
 }

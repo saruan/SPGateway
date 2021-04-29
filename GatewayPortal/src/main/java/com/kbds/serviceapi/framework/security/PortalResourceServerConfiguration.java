@@ -1,18 +1,20 @@
 package com.kbds.serviceapi.framework.security;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kbds.serviceapi.common.code.BizExceptionCode;
 import com.kbds.serviceapi.common.feign.AuthClient;
 import com.kbds.serviceapi.common.utils.CommonUtils;
 import com.kbds.serviceapi.framework.exception.BizException;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
-import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * <pre>
@@ -28,11 +30,12 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
  *  </pre>
  */
 @Configuration
-@EnableResourceServer
-public class PortalResourceServerConfiguration extends ResourceServerConfigurerAdapter {
+@AllArgsConstructor
+@EnableWebSecurity
+public class PortalResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 
-  @Autowired
-  AuthClient authClient;
+  private final AuthClient authClient;
+  private final GatewayHeaderAuthenticationFilter filter;
 
   @Override
   public void configure(HttpSecurity http) throws Exception {
@@ -40,19 +43,17 @@ public class PortalResourceServerConfiguration extends ResourceServerConfigurerA
     getAllRoleApiList().forEach((key, value) -> {
 
       try {
-        /* 권한 목록을 Spring Expression 에서 사용할 수 있게 'ADMIN', 'USER' 형태로 변환 */
-        String roleList = value.stream().collect(Collectors.joining("','", "'", "'"));
-        String accessExpression = String
-            .format("#oauth2.hasScope('read_profile') and hasAnyRole(%s)", roleList);
 
-        http.authorizeRequests().antMatchers(key).access(accessExpression);
+        String[] roleList = value.toArray(new String[0]);
+        http.authorizeRequests().antMatchers(key).hasAnyAuthority(roleList);
+
       } catch (Exception e) {
 
         throw new BizException(BizExceptionCode.COM001, e.toString());
       }
     });
 
-    // 기본 경로 설정
+    /* 기본 경로 설정 */
     http.authorizeRequests()
         .antMatchers("/portal/v1.0/menu/**").permitAll()
         .antMatchers("/portal/v1.0/user/login").permitAll()
@@ -60,6 +61,9 @@ public class PortalResourceServerConfiguration extends ResourceServerConfigurerA
         .antMatchers("/api/**").permitAll()
         .antMatchers("/docs/restdoc.html").permitAll()
         .anyRequest().authenticated();
+
+    /* 인가 필터 적용 */
+    http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
   }
 
   /**
@@ -69,8 +73,11 @@ public class PortalResourceServerConfiguration extends ResourceServerConfigurerA
    */
   public Map<String, List<String>> getAllRoleApiList() {
 
-    return (Map<String, List<String>>) authClient
-        .selectListForSecurity(CommonUtils.setFeignCommonHeaders())
-        .getResultData();
+    ObjectMapper objectMapper = new ObjectMapper();
+
+    return objectMapper
+        .convertValue(authClient.selectListForSecurity(CommonUtils.setFeignCommonHeaders())
+            .getResultData(), new TypeReference<Map<String, List<String>>>() {
+        });
   }
 }

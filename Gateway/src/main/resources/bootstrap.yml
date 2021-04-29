@@ -5,3 +5,7 @@ spring:
     config:
       uri:
       - http://localhost:9999
+
+feign:
+  okhttp:
+    enabled: true

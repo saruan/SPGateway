@@ -2,9 +2,11 @@ package com.kbds.gateway.config;
 
 import com.kbds.gateway.GatewayApplication;
 import com.kbds.gateway.code.GatewayCode;
+import com.kbds.gateway.code.RoutingCode.ServiceAuthType;
+import com.kbds.gateway.code.RoutingCode.ServiceLoginType;
 import com.kbds.gateway.common.MockTest;
-import com.kbds.gateway.dto.ResponseDTO;
-import com.kbds.gateway.dto.RoutingDTO;
+import com.kbds.gateway.dto.ResponseDto;
+import com.kbds.gateway.dto.RoutingDto;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,9 +42,9 @@ class RoutingConfigurationTest extends MockTest {
   private ApplicationContext context;
 
   List<String> appKeys;
-  List<RoutingDTO> routingDTOList;
-  RoutingDTO routingDTO;
-  ResponseDTO responseDTO;
+  List<RoutingDto> routingDtoList;
+  RoutingDto routingDTO;
+  ResponseDto responseDTO;
   WebTestClient webTestClient;
 
   /**
@@ -54,18 +56,18 @@ class RoutingConfigurationTest extends MockTest {
     appKeys = new ArrayList<>();
     appKeys.add("testAppKeys");
 
-    routingDTO = RoutingDTO.builder().servicePath("/http://localhost/get")
+    routingDTO = RoutingDto.builder().servicePath("/http://localhost/get")
         .appKeys(appKeys).filterBean("").burstCapacity(20).replenishRate(20)
-        .serviceAuthType("OAUTH").serviceLoginType("api_key").serviceNm("서비스 테스트")
-        .serviceTargetUrl("https://www.backend.co.kr").build();
+        .serviceAuthType(ServiceAuthType.PUBLIC).serviceLoginType(ServiceLoginType.API_KEY)
+        .serviceNm("서비스 테스트").serviceTargetUrl("https://www.backend.co.kr").build();
 
-    routingDTOList = new ArrayList<>();
-    routingDTOList.add(routingDTO);
+    routingDtoList = new ArrayList<>();
+    routingDtoList.add(routingDTO);
 
-    responseDTO = new ResponseDTO();
+    responseDTO = new ResponseDto();
     responseDTO.setResultCode("200");
     responseDTO.setResultMessage(GatewayCode.SUCCESS.getCode());
-    responseDTO.setResultData(routingDTOList);
+    responseDTO.setResultData(routingDtoList);
 
     this.webTestClient = WebTestClient.bindToApplicationContext(this.context).build();
   }
@@ -90,10 +92,10 @@ class RoutingConfigurationTest extends MockTest {
       List<String> appKeys = new ArrayList<>();
       appKeys.add("testAppKeys");
 
-      RoutingDTO routingDTO = RoutingDTO.builder().servicePath("/post")
+      RoutingDto routingDTO = RoutingDto.builder().servicePath("/post")
           .appKeys(appKeys).burstCapacity(20).replenishRate(20)
-          .serviceAuthType("OAUTH").serviceLoginType("api_key").serviceNm("서비스 테스트")
-          .serviceTargetUrl("https://httpbin.org/get").build();
+          .serviceAuthType(ServiceAuthType.PUBLIC).serviceLoginType(ServiceLoginType.API_KEY)
+          .serviceNm("서비스 테스트").serviceTargetUrl("https://httpbin.org/get").build();
 
       RouteLocatorBuilder.Builder routeLocator = builder.routes();
 

@@ -6,21 +6,29 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import com.kbds.gateway.code.GatewayExceptionCode;
+import com.kbds.gateway.code.RoutingCode.ServiceAuthType;
+import com.kbds.gateway.code.RoutingCode.ServiceLoginType;
 import com.kbds.gateway.common.MockTest;
-import com.kbds.gateway.dto.RoutingDTO;
+import com.kbds.gateway.dto.RoutingDto;
 import com.kbds.gateway.exception.GatewayException;
+import com.kbds.gateway.filter.system.CachingRequestBodyFilter;
+import com.kbds.gateway.filter.system.CachingRequestBodyFilter.Config;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.digest.HmacAlgorithms;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.http.HttpHeaders;
@@ -47,7 +55,7 @@ import reactor.core.publisher.Mono;
 public class CommonFilterTest extends MockTest {
 
   List<String> appKeys;
-  RoutingDTO routingDTO;
+  RoutingDto routingDTO;
   GatewayFilter filter;
   CommonFilter commonFilter;
 
@@ -71,10 +79,10 @@ public class CommonFilterTest extends MockTest {
     appKeys = new ArrayList<>();
     appKeys.add("testAppKeys");
 
-    routingDTO = RoutingDTO.builder().servicePath("/http://localhost/get")
+    routingDTO = RoutingDto.builder().servicePath("/http://localhost/get")
         .appKeys(appKeys).filterBean("").burstCapacity(20).replenishRate(20)
-        .serviceAuthType("OAUTH").serviceLoginType("api_key").serviceNm("서비스 테스트")
-        .serviceTargetUrl("https://www.backend.co.kr").build();
+        .serviceAuthType(ServiceAuthType.PUBLIC).serviceLoginType(ServiceLoginType.API_KEY)
+        .serviceNm("서비스 테스트").serviceTargetUrl("https://www.backend.co.kr").build();
 
     commonFilter = new CommonFilter("http://localhost:7777/oauth/check_token", webClientMock);
     filter = commonFilter.apply(routingDTO);
@@ -99,16 +107,35 @@ public class CommonFilterTest extends MockTest {
   }
 
   @Test
-  void OAUTH_정상_필터_테스트() {
+  void OAUTH_정상_필터_테스트() throws NoSuchAlgorithmException, InvalidKeyException {
 
     String routeUrl = "http://localhost/get";
-    MockServerHttpRequest mockServerHttpRequest = MockServerHttpRequest.get(routeUrl)
+    String body = "{\"city\":\"chicago\",\"name\":\"jon doe\",\"age\":\"22\"}";
+
+    byte[] keys = "testAppKeys".getBytes();
+    SecretKeySpec secretKeySpec = new SecretKeySpec(keys, HmacAlgorithms.HMAC_SHA_256.getName());
+    Mac mac = Mac.getInstance(HmacAlgorithms.HMAC_SHA_256.getName());
+    mac.init(secretKeySpec);
+
+    String hsKey = Base64.encodeBase64String(mac.doFinal(body.getBytes()));
+
+    MockServerHttpRequest mockServerHttpRequest = MockServerHttpRequest.post(routeUrl)
         .header("api_key", "testAppKeys")
-        .header(HttpHeaders.AUTHORIZATION, "Bearer dummy_key").build();
+        .header("hsKey", hsKey)
+        .header(HttpHeaders.AUTHORIZATION, "Bearer dummy_key")
+        .body(body);
 
     ServerWebExchange exchange = MockServerWebExchange.from(mockServerHttpRequest);
 
-    routingDTO.setServiceLoginType("OAUTH");
+    ArgumentCaptor<ServerWebExchange> captor = ArgumentCaptor.forClass(ServerWebExchange.class);
+    when(filterChain.filter(captor.capture())).thenReturn(Mono.empty());
+
+    /* Body Caching Filter 먼저 수행 */
+    CachingRequestBodyFilter cachingRequestBodyFilter = new CachingRequestBodyFilter();
+    filter = cachingRequestBodyFilter.apply(new Config());
+    filter.filter(exchange, filterChain).block();
+
+    routingDTO.setServiceLoginType(ServiceLoginType.OAUTH);
     filter = commonFilter.apply(routingDTO);
 
     when(webClientMock.get()).thenReturn(requestHeadersUriMock);
@@ -131,7 +158,7 @@ public class CommonFilterTest extends MockTest {
     GatewayException ex = assertThrows(GatewayException.class,
         () -> filter.filter(exchange, filterChain));
 
-    assertEquals(ex.getMessage(), GatewayExceptionCode.APP001.getCode());
+    assertEquals(ex.getMessage(), GatewayExceptionCode.APP001.name());
   }
 
   @Test
@@ -141,7 +168,7 @@ public class CommonFilterTest extends MockTest {
     MockServerHttpRequest mockServerHttpRequest = MockServerHttpRequest.get(routeUrl)
         .header("api_key", "testAppKeys").build();
 
-    routingDTO.setServiceLoginType("OAUTH");
+    routingDTO.setServiceLoginType(ServiceLoginType.OAUTH);
     filter = commonFilter.apply(routingDTO);
 
     MockServerWebExchange exchange = MockServerWebExchange.from(mockServerHttpRequest);
@@ -149,7 +176,7 @@ public class CommonFilterTest extends MockTest {
     GatewayException ex = assertThrows(GatewayException.class,
         () -> filter.filter(exchange, filterChain));
 
-    assertEquals(ex.getMessage(), GatewayExceptionCode.TOK002.getCode());
+    assertEquals(ex.getMessage(), GatewayExceptionCode.TOK002.name());
   }
 
   @Test
@@ -160,7 +187,7 @@ public class CommonFilterTest extends MockTest {
     mockWebServer.start();
 
     WebClient webClient = WebClient.create();
-    String baseUrl = String.format("http://localhost:%s",mockWebServer.getPort());
+    String baseUrl = String.format("http://localhost:%s", mockWebServer.getPort());
     commonFilter = new CommonFilter(baseUrl + "/oauth/check_token", webClient);
 
     MockServerHttpRequest mockServerHttpRequest = MockServerHttpRequest.get(routeUrl)
@@ -177,13 +204,13 @@ public class CommonFilterTest extends MockTest {
 
     mockWebServer.enqueue(mockResponse);
 
-    routingDTO.setServiceLoginType("OAUTH");
+    routingDTO.setServiceLoginType(ServiceLoginType.OAUTH);
     filter = commonFilter.apply(routingDTO);
 
     GatewayException ex = assertThrows(GatewayException.class,
         () -> filter.filter(exchange, filterChain).block());
 
-    assertEquals(ex.getMessage(), GatewayExceptionCode.TOK001.getCode());
+    assertEquals(ex.getMessage(), GatewayExceptionCode.TOK001.name());
     mockWebServer.shutdown();
   }
 
@@ -204,6 +231,6 @@ public class CommonFilterTest extends MockTest {
     GatewayException ex = assertThrows(GatewayException.class,
         () -> filter.filter(exchange, filterChain));
 
-    assertEquals(ex.getMessage(), GatewayExceptionCode.GWE005.getCode());
+    assertEquals(ex.getMessage(), GatewayExceptionCode.GWE005.name());
   }
 }

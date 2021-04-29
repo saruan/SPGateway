@@ -6,7 +6,7 @@ import lombok.Getter;
 /**
  * <pre>
  *  Class Name     : GatewayCode.java
- *  Description    : Gateway 공통 코드
+ *  Description    : Gateway 공통 상수 코드
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
  *
  * -------------------------------------------------------------------------------
@@ -34,16 +34,15 @@ public enum GatewayCode {
   /* Params, Header 정보 */
   CACHE_REQUEST_BODY("cachedRequestBody", "Request Body Caching 데이터"),
   TOKEN_PREFIX("Bearer ", "TOKEN 헤더 PREFIX"),
+  HS_KEY("hsKey","전문 위변조 검증 파라미터"),
 
   /* Queue 정보 */
-  MQ_ROUTING_KEY("gateway.routing.all", "RabbitMQ 라우팅 키"),
+  SYSTEM_ROUTING_KEY("gateway.routing.system", "Global Logging Rabbit Routing Key"),
+  ERROR_ROUTING_KEY("gateway.routing.error", "Global Error Logging Rabbit Routing Key"),
+  SERVICE_LOGGING_ROUTING_KEY("gateway.routing.services", "Custom Logging Rabbit Routing Key"),
 
   /* RabbitMQ 정보 */
   CLIENT_NAME("GATEWAY", "RabbitMQ 클라이언트 명칭"),
-
-  /* Filter Servlet 정보 */
-  HTTP_REQUEST("REQUEST", "Filter Request 정보"),
-  HTTP_RESPONSE("RESPONSE", "Filter Response 정보"),
 
   DUMMY("", "");
 
