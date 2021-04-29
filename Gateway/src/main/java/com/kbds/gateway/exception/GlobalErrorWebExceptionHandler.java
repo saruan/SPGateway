@@ -3,8 +3,8 @@ package com.kbds.gateway.exception;
 import brave.Tracer;
 import com.kbds.gateway.code.GatewayCode;
 import com.kbds.gateway.code.GatewayExceptionCode;
-import com.kbds.gateway.dto.ResponseDTO;
-import com.kbds.gateway.dto.ServiceLogDTO;
+import com.kbds.gateway.dto.ResponseDto;
+import com.kbds.gateway.dto.ServiceLogDto;
 import com.kbds.gateway.utils.DateUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.autoconfigure.web.ResourceProperties;
@@ -66,8 +66,8 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
    */
   private Mono<ServerResponse> renderErrorResponse(final ServerRequest request) {
 
-    ResponseDTO errorResponseDTO = new ResponseDTO();
-    errorResponseDTO.setResultData(true);
+    ResponseDto errorResponseDto = new ResponseDto();
+    errorResponseDto.setResultData(true);
 
     String tid = tracer.currentSpan().context().traceIdString();
     String header = request.headers().asHttpHeaders().toString();
@@ -79,8 +79,8 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
 
       GatewayException e = (GatewayException) error;
 
-      errorResponseDTO.setResultCode(GatewayExceptionCode.valueOf(e.getMessage()).getCode());
-      errorResponseDTO.setResultMessage(GatewayExceptionCode.valueOf(e.getMessage()).getMsg());
+      errorResponseDto.setResultCode(GatewayExceptionCode.valueOf(e.getMessage()).name());
+      errorResponseDto.setResultMessage(GatewayExceptionCode.valueOf(e.getMessage()).getMsg());
 
       /* HttpStatus 설정 변경이 필요하다면 설정 */
       if (e.getHttpStatus() != null) {
@@ -88,24 +88,29 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
         status = e.getHttpStatus();
       }
 
+      if(e.getArg() != null){
+
+        errorResponseDto.setResultMessage(e.getArg());
+      }
+
       String currentTime = DateUtils.getCurrentTime();
 
       /* 큐에 오류 로그 전송 */
-      ServiceLogDTO serviceLog = ServiceLogDTO.builder().tid(tid).requestHeader(header)
-          .requestParams(e.getArg()).response(errorResponseDTO.toString())
+      ServiceLogDto serviceLog = ServiceLogDto.builder().tid(tid).requestHeader(header)
+          .requestParams(e.getArg()).response(errorResponseDto.toString())
           .clientService(GatewayCode.CLIENT_NAME.getCode()).requestDt(currentTime)
           .responseDt(currentTime).build();
 
-      rabbitTemplate.convertAndSend(GatewayCode.MQ_ROUTING_KEY.getCode(), serviceLog);
+      rabbitTemplate.convertAndSend(GatewayCode.ERROR_ROUTING_KEY.getCode(), serviceLog);
     }
     /* 그 이외의 정해진 규격이 아닌 Gateway 오류일 경우 아래와 같이 설정한다. */
     else {
 
-      errorResponseDTO.setResultCode(GatewayExceptionCode.GWE001.getCode());
-      errorResponseDTO.setResultMessage(error.getMessage());
+      errorResponseDto.setResultCode(GatewayExceptionCode.GWE001.name());
+      errorResponseDto.setResultMessage(error.getMessage());
     }
 
     return ServerResponse.status(status).contentType(MediaType.APPLICATION_JSON)
-        .body(BodyInserters.fromValue(errorResponseDTO));
+        .body(BodyInserters.fromValue(errorResponseDto));
   }
 }

@@ -1,16 +1,16 @@
-package com.kbds.gateway.factory.granttype;
+package com.kbds.gateway.factory.grant.impl;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kbds.gateway.code.AuthTypeCode;
 import com.kbds.gateway.code.GatewayExceptionCode;
 import com.kbds.gateway.code.GrantTypeCode;
-import com.kbds.gateway.dto.GatewayClusterDTO;
-import com.kbds.gateway.dto.ResponseDTO;
+import com.kbds.gateway.dto.GatewayClusterDto;
+import com.kbds.gateway.dto.ResponseDto;
 import com.kbds.gateway.exception.GatewayException;
+import com.kbds.gateway.factory.grant.Grant;
 import com.kbds.gateway.feign.AuthClient;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +35,7 @@ import org.springframework.stereotype.Component;
  *  </pre>
  */
 @Component
-public class JwtGrantType implements GrantType {
+public class JwtGrant implements Grant {
 
   @Autowired
   ObjectProvider<AuthClient> authClient;
@@ -45,14 +45,14 @@ public class JwtGrantType implements GrantType {
 
     /* 파라미터 검증 */
     if (!params.containsKey(GrantTypeCode.GRANT_TYPE.getCode()) ||
-        !params.containsKey(AuthTypeCode.JWT.getCode())) {
+        !params.containsKey(GrantTypeCode.JWT.getCode())) {
 
       throw new GatewayException(GatewayExceptionCode.GWE002, HttpStatus.UNAUTHORIZED,
           String.valueOf(params));
     }
 
     /* JWT 토큰 검증 */
-    if (!isValidToken(selectAllClusters(), params.get(AuthTypeCode.JWT.getCode()))){
+    if (!isValidToken(selectAllClusters(), params.get(GrantTypeCode.JWT.getCode()))){
 
       throw new GatewayException(GatewayExceptionCode.JWT001, HttpStatus.UNAUTHORIZED,
           String.valueOf(params));
@@ -71,25 +71,25 @@ public class JwtGrantType implements GrantType {
    * @return GatewayCluster Secret Key 목록
    */
   @Cacheable(cacheNames = "gatewayClusterList")
-  public List<GatewayClusterDTO> selectAllClusters() {
+  public List<GatewayClusterDto> selectAllClusters() {
 
-    ResponseDTO responseDTO = Objects.requireNonNull(authClient.getIfAvailable())
+    ResponseDto responseDTO = Objects.requireNonNull(authClient.getIfAvailable())
         .selectAllClusters();
 
     return new ObjectMapper().convertValue(Objects.requireNonNull(responseDTO).getResultData(),
-        new TypeReference<List<GatewayClusterDTO>>() {
+        new TypeReference<List<GatewayClusterDto>>() {
         });
   }
 
   /**
    * Jwt 값 검증
    *
-   * @param gatewayClusterDTOS 클러스터 Secret 목록
+   * @param gatewayClusterDtos 클러스터 Secret 목록
    */
-  public boolean isValidToken(List<GatewayClusterDTO> gatewayClusterDTOS, String jwtToken) {
+  public boolean isValidToken(List<GatewayClusterDto> gatewayClusterDtos, String jwtToken) {
 
     /* 등록 되어 있는 Cluster Key 값으로 검증 작업 진행 */
-    for (GatewayClusterDTO gatewayCluster : gatewayClusterDTOS) {
+    for (GatewayClusterDto gatewayCluster : gatewayClusterDtos) {
 
       try {
 

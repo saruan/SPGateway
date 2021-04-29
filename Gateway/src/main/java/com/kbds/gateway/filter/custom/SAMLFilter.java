@@ -1,6 +1,6 @@
 package com.kbds.gateway.filter.custom;
 
-import com.kbds.gateway.dto.RoutingDTO;
+import com.kbds.gateway.dto.RoutingDto;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.stereotype.Service;
@@ -19,10 +19,10 @@ import org.springframework.stereotype.Service;
  *  </pre>
  */
 @Service("SAMLFilter")
-public class SAMLFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
+public class SAMLFilter extends AbstractGatewayFilterFactory<RoutingDto> {
 
   @Override
-  public GatewayFilter apply(RoutingDTO routingDTO) {
+  public GatewayFilter apply(RoutingDto routingDTO) {
 
     return (exchange, chain) -> chain.filter(exchange);
   }

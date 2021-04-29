@@ -16,14 +16,22 @@ import lombok.Getter;
  * -------------------------------------------------------------------------------
  *  </pre>
  */
-@Getter
-@AllArgsConstructor
-public enum BlockCode {
+public class BlockCode {
 
-  LOG("LOG"),
-  ASSERTION("ASSERTION"),
-  REST("REST");
+  /**
+   * Block Type
+   */
+  public enum BlockType {
+    LOG,
+    ASSERTION,
+    REACTIVE_REST
+  }
 
-
-  private String code;
+  /**
+    Block Servlet Type
+   */
+  public enum BlockServlet{
+    REQUEST,
+    RESPONSE
+  }
 }

@@ -1,29 +1,35 @@
 package com.kbds.gateway.code;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 /**
  * <pre>
- *  File  Name     : AuthTypeCode
- *  Description    : 인증 타입 코드
+ *  File  Name     : RoutingCode
+ *  Description    : 등록 API 속성 Code
  *  Author         : 구경태 (kyungtae.koo@kbfg.com)
  *
  * -------------------------------------------------------------------------------
  *     변경No        변경일자        	       변경자          Description
  * -------------------------------------------------------------------------------
- *     Ver 1.0      2020-12-10         	   구경태          Initialized
+ *     Ver 1.0      2021-04-21             구경태          Initialized
  * -------------------------------------------------------------------------------
  *  </pre>
  */
-@AllArgsConstructor
-@Getter
-public enum AuthTypeCode {
+public class RoutingCode {
 
-  OAUTH("OAUTH"),
-  JWT("jwt"),
-  SAML("saml"),
-  API_KEY("api_key");
+  /**
+   * 서비스 로그인 타입
+   */
+  public enum ServiceLoginType{
 
-  private final String code;
+    OAUTH,
+    API_KEY
+  }
+
+  /**
+   * 서비스 인증 타입
+   */
+  public enum ServiceAuthType{
+
+    SECURITY,
+    PUBLIC
+  }
 }

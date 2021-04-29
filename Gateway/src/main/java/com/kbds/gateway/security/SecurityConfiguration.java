@@ -1,6 +1,5 @@
 package com.kbds.gateway.security;
 
-import com.kbds.gateway.code.GatewayCode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -55,14 +54,13 @@ public class SecurityConfiguration {
         .securityContextRepository(securityContextRepository)
         .authorizeExchange()
         .pathMatchers("/actuator/**")
-        .hasAuthority(GatewayCode.ROLE_ADMIN.getCode())
-        .pathMatchers("/gateway/**")
-        .hasAnyAuthority(GatewayCode.ROLE_ADMIN.getCode())
+        .authenticated()
+        .and()
+        .authorizeExchange()
         .anyExchange()
         .permitAll()
         .and()
         .csrf()
-        .disable()
-        .build();
+        .disable().build();
   }
 }

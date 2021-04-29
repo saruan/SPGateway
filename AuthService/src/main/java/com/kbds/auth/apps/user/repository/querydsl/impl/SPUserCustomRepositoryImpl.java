@@ -48,7 +48,7 @@ public class SPUserCustomRepositoryImpl extends QuerydslRepositorySupport implem
         .innerJoin(sPGroups)
         .on(sPUsers.spGroups.groupId.eq(sPGroups.groupId))
         .where(eqUserLoginId(userLoginId))
-        .select(new QUserDTO(sPUsers.userLoginId, sPUsers.userNm, sPRoles.roleNm, sPGroups.groupNm))
+        .select(new QUserDTO(sPUsers.userLoginId, sPUsers.userNm, sPRoles.roleCd, sPGroups.groupNm))
         .fetchOne();
   }
 

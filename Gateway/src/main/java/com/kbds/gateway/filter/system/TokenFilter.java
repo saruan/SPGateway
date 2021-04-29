@@ -3,10 +3,10 @@ package com.kbds.gateway.filter.system;
 import com.kbds.gateway.code.GatewayCode;
 import com.kbds.gateway.code.GatewayExceptionCode;
 import com.kbds.gateway.code.GrantTypeCode;
-import com.kbds.gateway.dto.RoutingDTO;
+import com.kbds.gateway.dto.RoutingDto;
 import com.kbds.gateway.exception.GatewayException;
-import com.kbds.gateway.factory.granttype.GrantType;
-import com.kbds.gateway.factory.granttype.GrantTypeFactory;
+import com.kbds.gateway.factory.grant.Grant;
+import com.kbds.gateway.factory.grant.GrantTypeFactory;
 import com.kbds.gateway.utils.StringUtils;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,7 +34,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  * </pre>
  */
 @Service("TokenFilter")
-public class TokenFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
+public class TokenFilter extends AbstractGatewayFilterFactory<RoutingDto> {
 
   private final String oAuthKey;
   private final String username;
@@ -63,7 +63,7 @@ public class TokenFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
   }
 
   @Override
-  public GatewayFilter apply(RoutingDTO routingDTO) {
+  public GatewayFilter apply(RoutingDto routingDTO) {
 
     return (exchange, chain) -> {
 
@@ -82,8 +82,9 @@ public class TokenFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
 
       /* 파라미터 검증 */
       String grantTypeParams = queryParam.get(GrantTypeCode.GRANT_TYPE.getCode());
-      GrantType grantType = grantTypeFactory.makeGrantType(grantTypeParams);
-      grantType.validateParameters(queryParam);
+      Grant grant = grantTypeFactory.makeGrantType(grantTypeParams);
+
+      grant.validateParameters(queryParam);
 
       Builder builder = exchange.getRequest().mutate().header(HttpHeaders.AUTHORIZATION, oAuthKey);
 
@@ -101,7 +102,6 @@ public class TokenFilter extends AbstractGatewayFilterFactory<RoutingDTO> {
         /* 인증 서버 헤더 변경 */
         builder.uri(UriComponentsBuilder.fromUri(exchange.getRequest().getURI())
             .replaceQueryParams(tokenParams).build().toUri());
-
       }
 
       return chain.filter(exchange.mutate().request(builder.build()).build());

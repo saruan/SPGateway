@@ -55,6 +55,7 @@ public class SPApiCustomRepositoryImpl extends QuerydslRepositorySupport impleme
         .innerJoin(sPGroups)
         .on(sPUsers.spGroups.groupId.eq(sPGroups.groupId))
         .select(new QMenuDTO(sPApis.apiUrl, sPRoles.roleNm))
+        .groupBy(sPApis.apiUrl, sPRoles.roleCd)
         .transform(groupBy(sPApis.apiUrl).as(list(sPRoles.roleCd)));
   }
 }

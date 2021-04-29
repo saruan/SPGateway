@@ -4,9 +4,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kbds.gateway.code.GatewayCode;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.digest.HmacAlgorithms;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.web.server.ServerWebExchange;
 
@@ -78,5 +85,42 @@ public class FilterUtils {
 
       return false;
     }
+  }
+
+  /**
+   * HS Key 검증
+   * @param hsKey HS Key 값
+   * @param appKey  검증 Secret 값
+   * @param requestBody Body 값
+   * @return  검증 결과
+   * @throws NoSuchAlgorithmException NoSuchAlgorithmException
+   * @throws InvalidKeyException  InvalidKeyException
+   */
+  public static boolean isValidHsKey(String hsKey, String appKey, byte[] requestBody)
+      throws NoSuchAlgorithmException, InvalidKeyException {
+
+    if(StringUtils.isEmptyParams(appKey, hsKey)){
+
+      return false;
+    }
+
+    byte[] keys = appKey.getBytes();
+    SecretKeySpec secretKeySpec = new SecretKeySpec(keys, HmacAlgorithms.HMAC_SHA_256.getName());
+    Mac mac = Mac.getInstance(HmacAlgorithms.HMAC_SHA_256.getName());
+    mac.init(secretKeySpec);
+
+    return hsKey.equals(Base64.encodeBase64String(mac.doFinal(requestBody)));
+  }
+
+  /**
+   * ByteBuffer to byte[]
+   *
+   * @param byteBuffer ByteBuffer 값
+   * @return  Byte Array
+   */
+  public static byte[] getByteArrayFromByteBuffer(ByteBuffer byteBuffer) {
+    byte[] bytesArray = new byte[byteBuffer.remaining()];
+    byteBuffer.get(bytesArray, 0, bytesArray.length);
+    return bytesArray;
   }
 }

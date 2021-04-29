@@ -1,21 +1,25 @@
-package com.kbds.gateway.factory.block;
+package com.kbds.gateway.factory.block.impl;
 
 import brave.Tracer;
-import com.kbds.gateway.code.BlockCode;
+import com.kbds.gateway.code.BlockCode.BlockType;
 import com.kbds.gateway.code.GatewayCode;
 import com.kbds.gateway.code.GatewayExceptionCode;
-import com.kbds.gateway.dto.BlockDTO;
-import com.kbds.gateway.dto.ServiceLogDTO;
+import com.kbds.gateway.dto.BlockDto;
+import com.kbds.gateway.dto.BlockDto.Log;
+import com.kbds.gateway.dto.ServiceLogDto;
 import com.kbds.gateway.exception.GatewayException;
+import com.kbds.gateway.factory.block.Block;
 import com.kbds.gateway.utils.DateUtils;
 import com.kbds.gateway.utils.FilterUtils;
+import java.util.List;
 import java.util.Map;
-import lombok.Data;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
 
 /**
  * <pre>
@@ -32,28 +36,57 @@ import org.springframework.web.server.ServerWebExchange;
  */
 @Slf4j
 @Component
-@Data
-public class LogBlockType implements BlockType {
+@AllArgsConstructor
+public class LogBlock implements Block {
 
   private final RabbitTemplate rabbitTemplate;
   private final Tracer tracer;
 
   @Override
-  public void makeFilterData(BlockDTO blockDTO, ServerWebExchange exchange) {
+  public Mono<Void> makeFilterData(BlockDto blockDTO, ServerWebExchange exchange) {
 
-    try {
+    return Mono.fromRunnable(() -> {
+
+      try {
+
+        List<Log> logList = blockDTO.getLog();
+        Map<String, Object> requestParams = FilterUtils.getRequestParams(exchange);
+
+        /* 로그 메시지 적재 */
+        setLogMessage(requestParams, logList, exchange);
+
+      } catch (Exception e) {
+
+        throw new GatewayException(GatewayExceptionCode.GWE001, HttpStatus.BAD_REQUEST,
+            e.toString());
+      }
+    });
+  }
+
+  @Override
+  public BlockType getBlockTypeName() {
+
+    return BlockType.LOG;
+  }
+
+  /**
+   * 로그 메시지 적재
+   *
+   * @param requestParams 파라미터
+   * @param logList       로깅할 정보
+   * @param exchange      ServerWebExchange
+   */
+  public void setLogMessage(Map<String, Object> requestParams, List<Log> logList,
+      ServerWebExchange exchange) {
+
+    for (Log logBlock : logList) {
 
       String startTime = DateUtils.getCurrentTime();
       String tid = tracer.currentSpan().context().traceIdString();
-      String message = blockDTO.getLog().getLogMessage();
-      String parameter = blockDTO.getLog().getLogParameter();
-
-      log.info("message : " + message);
-      log.info("parameter : " + parameter);
+      String message = logBlock.getLogMessage();
+      String parameter = logBlock.getLogParameter();
 
       if (!GatewayCode.BLANK.getCode().equals(parameter)) {
-
-        Map<String, Object> requestParams = FilterUtils.getRequestParams(exchange);
 
         if (requestParams == null || !requestParams.containsKey(parameter)) {
 
@@ -66,24 +99,17 @@ public class LogBlockType implements BlockType {
         }
       }
 
+      log.info("parameter : " + parameter);
       log.info(message);
 
       /* 큐에 서비스 로그 전송 */
-      ServiceLogDTO serviceLog = ServiceLogDTO.builder().tid(tid)
-          .message(message).serviceNm(exchange.getRequest().getURI().getPath()).requestDt(startTime)
+      ServiceLogDto serviceLog = ServiceLogDto.builder().tid(tid)
+          .message(message).serviceNm(exchange.getRequest().getURI().getPath())
+          .requestDt(startTime)
           .requestDt(startTime).clientService(GatewayCode.CLIENT_NAME.getCode()).build();
 
-      rabbitTemplate.convertAndSend(GatewayCode.MQ_ROUTING_KEY.getCode(), serviceLog);
-    } catch (Exception e) {
-
-      System.out.println(e.toString());
-      throw new GatewayException(GatewayExceptionCode.GWE001, HttpStatus.BAD_REQUEST, e.toString());
+      rabbitTemplate
+          .convertAndSend(GatewayCode.SERVICE_LOGGING_ROUTING_KEY.getCode(), serviceLog);
     }
-  }
-
-  @Override
-  public String getBlockTypeName() {
-
-    return BlockCode.LOG.name();
   }
 }

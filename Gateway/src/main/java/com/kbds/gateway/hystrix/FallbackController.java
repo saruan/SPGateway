@@ -1,7 +1,7 @@
 package com.kbds.gateway.hystrix;
 
 import com.kbds.gateway.code.GatewayExceptionCode;
-import com.kbds.gateway.dto.ResponseDTO;
+import com.kbds.gateway.dto.ResponseDto;
 import com.kbds.gateway.factory.block.BlockTypeFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,11 +38,11 @@ public class FallbackController {
    */
   @RequestMapping("/fallback")
   @ResponseStatus(HttpStatus.GATEWAY_TIMEOUT)
-  public Flux<ResponseDTO> returnFallback() {
+  public Flux<ResponseDto> returnFallback() {
 
-    ResponseDTO responseDTO = new ResponseDTO();
+    ResponseDto responseDTO = new ResponseDto();
 
-    responseDTO.setResultCode(GatewayExceptionCode.GWE004.getCode());
+    responseDTO.setResultCode(GatewayExceptionCode.GWE004.name());
     responseDTO.setResultMessage(GatewayExceptionCode.GWE004.getMsg());
     responseDTO.setResultMessage("");
 

@@ -1,8 +1,7 @@
-package com.kbds.gateway.factory.granttype;
+package com.kbds.gateway.factory.grant;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -22,7 +21,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class GrantTypeFactory {
 
-  final List<GrantType> grantTypes;
+  private final List<Grant> grants;
 
   /**
    * GrantType 에 따라 생성자를 다르게 전달해준다.
@@ -30,13 +29,13 @@ public class GrantTypeFactory {
    * @param grantTypeName GrantType 명
    * @return GrantType 객체
    */
-  public GrantType makeGrantType(String grantTypeName) {
+  public Grant makeGrantType(String grantTypeName) {
 
-    for (GrantType grantType : grantTypes) {
+    for (Grant grant : grants) {
 
-      if (grantTypeName.equals(grantType.getGrantTypeName())) {
+      if (grantTypeName.equals(grant.getGrantTypeName())) {
 
-        return grantType;
+        return grant;
       }
     }
     return null;

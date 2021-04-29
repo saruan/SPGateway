@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.kbds.serviceapi.common.code.CommonCode;
 import com.kbds.serviceapi.common.feign.GatewayClient;
 import com.kbds.serviceapi.framework.dto.ResponseDTO;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;

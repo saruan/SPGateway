@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(value = Include.NON_NULL)
-public class GatewayClusterDTO {
+public class GatewayClusterDto {
 
   /* 게이트웨이 클러스터 ID */
   @NotEmpty

@@ -1,11 +1,11 @@
 package com.kbds.gateway.config;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import feign.codec.Decoder;
 import feign.codec.Encoder;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  *
@@ -26,14 +26,12 @@ import feign.jackson.JacksonEncoder;
 public class FeignConfiguration {
 
   @Bean
-  public Decoder decoder() {
-
-    return new JacksonDecoder();
+  public Encoder feignFormEncoder() {
+    return new JacksonEncoder();
   }
 
   @Bean
-  public Encoder encoder() {
-
-    return new JacksonEncoder();
+  public Decoder feignFormDecoder() {
+    return new JacksonDecoder();
   }
 }

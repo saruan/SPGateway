@@ -23,15 +23,14 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfiguration {
 
-  private final String GATEWAY_EXCHANGE = "GATEWAY_EXCHANGE";
-
   @Bean
   public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory,
       MessageConverter messageConverter) {
 
     RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
     rabbitTemplate.setMessageConverter(messageConverter);
-    rabbitTemplate.setExchange(GATEWAY_EXCHANGE);
+    rabbitTemplate.setExchange("GATEWAY_EXCHANGE");
+
     return rabbitTemplate;
   }
 
@@ -40,5 +39,4 @@ public class RabbitConfiguration {
 
     return new Jackson2JsonMessageConverter();
   }
-
 }

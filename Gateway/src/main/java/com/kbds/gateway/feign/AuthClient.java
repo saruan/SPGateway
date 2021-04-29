@@ -1,6 +1,6 @@
 package com.kbds.gateway.feign;
 
-import com.kbds.gateway.dto.ResponseDTO;
+import com.kbds.gateway.dto.ResponseDto;
 import java.util.Map;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,7 +42,7 @@ public interface AuthClient {
    * @return 클러스터 목록
    */
   @GetMapping(value = "${services.auth.cluster_list}")
-  ResponseDTO selectAllClusters();
+  ResponseDto selectAllClusters();
 
   /**
    * SAML Assertion 검증
@@ -50,5 +50,5 @@ public interface AuthClient {
    * @return 검증 결과
    */
   @PostMapping(value = "${services.auth.validate-saml-assertion}")
-  ResponseDTO validateSamlAssertion(@RequestParam(value = "saml") String samlAssertion);
+  ResponseDto validateSamlAssertion(@RequestParam(value = "saml") String samlAssertion);
 }

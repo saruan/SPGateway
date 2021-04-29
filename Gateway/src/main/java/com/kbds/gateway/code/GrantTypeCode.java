@@ -26,6 +26,7 @@ public enum GrantTypeCode {
   REFRESH_TOKEN("refresh_token"),
   JWT("jwt"),
   SAML("saml"),
+  API_KEY("api_key"),
 
   /* Grant Type Parameter */
   USERNAME("username"),

@@ -2,16 +2,22 @@ package com.kbds.gateway.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kbds.gateway.code.BlockCode.BlockServlet;
+import com.kbds.gateway.code.BlockCode.BlockType;
 import com.kbds.gateway.code.GatewayCode;
 import com.kbds.gateway.code.GatewayExceptionCode;
-import com.kbds.gateway.dto.ResponseDTO;
-import com.kbds.gateway.dto.RoutingDTO;
+import com.kbds.gateway.dto.BlockDto;
+import com.kbds.gateway.dto.BlockDto.Assertion;
+import com.kbds.gateway.dto.BlockDto.ReactiveRest;
+import com.kbds.gateway.dto.ResponseDto;
+import com.kbds.gateway.dto.RoutingDto;
 import com.kbds.gateway.exception.GatewayException;
 import com.kbds.gateway.filter.system.BlockFilter;
 import com.kbds.gateway.filter.system.CachingRequestBodyFilter;
 import com.kbds.gateway.utils.StringUtils;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -30,6 +36,7 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder.Build
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -100,17 +107,17 @@ public class RoutingConfiguration {
   public RouteLocator routeLocator(RouteLocatorBuilder builder) {
 
     RouteLocatorBuilder.Builder routeLocator = builder.routes();
-    List<RoutingDTO> routingDTOList;
+    List<RoutingDto> routingDtoList;
 
     try {
       /* G/W 시스템 API 등록 */
       registerDefaultService(routeLocator);
 
       /* 포탈에 등록된 API 목록 조회 */
-      routingDTOList = getApiFromPortal();
+      routingDtoList = getApiFromPortal();
 
       /* 사용자 API, 필터 들을 등록 한다. */
-      for (RoutingDTO routingDTO : routingDTOList) {
+      for (RoutingDto routingDTO : routingDtoList) {
 
         registerRouterLocator(routeLocator, routingDTO);
       }
@@ -139,7 +146,7 @@ public class RoutingConfiguration {
 
         final String filter = defaultPath.getOrDefault(FILTER, null);
 
-        RoutingDTO routingDTO = RoutingDTO.builder().filterBean(filter)
+        RoutingDto routingDTO = RoutingDto.builder().filterBean(filter)
             .servicePath(defaultPath.get(PATH)).
                 serviceTargetUrl(defaultPath.get(URL)).build();
 
@@ -159,7 +166,7 @@ public class RoutingConfiguration {
    * @param routeLocator Routing 관리 객체
    * @throws Exception Exception 오류
    */
-  public void registerRouterLocator(Builder routeLocator, @Valid RoutingDTO routingDTO)
+  public void registerRouterLocator(Builder routeLocator, @Valid RoutingDto routingDTO)
       throws Exception {
 
     final boolean hasFilter = !StringUtils.isEmptyParams(routingDTO.getFilterBean());
@@ -179,6 +186,7 @@ public class RoutingConfiguration {
     if (hasFilter) {
 
       GatewayFilter mainFilter = getFilterSpec(filter, routingDTO);
+      List<BlockDto> blockList = routingDTO.getBlockList();
 
       /*
        최종 Routing 서비스를 G/W에 등록한다.
@@ -189,7 +197,7 @@ public class RoutingConfiguration {
               String.format("%s(?<segment>.*)", servicePath),
               String.format("%s${segment}", targetPath))
               .filters(cachingRequestBodyFilter.apply(new CachingRequestBodyFilter.Config()),
-                  mainFilter)
+                  blockFilter.apply(blockList), mainFilter)
               .requestRateLimiter(config -> config.setRateLimiter(redisRateLimiter))
               .circuitBreaker(
                   c -> c.setName("myCircuitBreaker").setFallbackUri("forward:/fallback")))
@@ -212,7 +220,7 @@ public class RoutingConfiguration {
    * @return GatewayFilter 객체
    * @throws Exception 오류
    */
-  private GatewayFilter getFilterSpec(String filterNm, RoutingDTO params) throws Exception {
+  private GatewayFilter getFilterSpec(String filterNm, RoutingDto params) throws Exception {
 
     /*
       ApplicationContext 에 저장 되어 있는 Filter 메소드를 실행한다.
@@ -220,7 +228,7 @@ public class RoutingConfiguration {
     Object c = appContext.getBean(filterNm);
     Class<?> cl = c.getClass();
     Method method =
-        cl.getDeclaredMethod(GatewayCode.GATEWAY_FILTER_APPLY.getCode(), RoutingDTO.class);
+        cl.getDeclaredMethod(GatewayCode.GATEWAY_FILTER_APPLY.getCode(), RoutingDto.class);
 
     return (GatewayFilter) method.invoke(c, params);
   }
@@ -230,17 +238,17 @@ public class RoutingConfiguration {
    *
    * @return API List 객체
    */
-  public List<RoutingDTO> getApiFromPortal() {
+  public List<RoutingDto> getApiFromPortal() {
 
     /* Routing 관리 서버로부터 API 목록을 가져 온다. */
-    Mono<ResponseDTO> responseDTO =
+    Mono<ResponseDto> responseDTO =
         webClient.get()
             .uri(routeSeverUrl)
-            .retrieve().bodyToMono(ResponseDTO.class);
+            .retrieve().bodyToMono(ResponseDto.class);
 
     return new ObjectMapper()
         .convertValue(Objects.requireNonNull(responseDTO.block()).getResultData(),
-            new TypeReference<List<RoutingDTO>>() {
+            new TypeReference<List<RoutingDto>>() {
             });
   }
 
